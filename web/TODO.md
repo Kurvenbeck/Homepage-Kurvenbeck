@@ -61,7 +61,22 @@ getauscht werden.
 - [ ] Impressum, Datenschutz, AGB mit echten Texten füllen
       (`app/impressum`, `app/datenschutz`, `app/agb` sind Platzhalter).
 
-## 7. Feinschliff (optional)
+## 7. Repo auf Kurvenbeck-Org umziehen
+
+**Stand:** Code liegt vorerst im privaten Repo
+`ihringmichael-max/Homepage-Kurvenbeck` (Account `ihringmichael-max` ist kein
+Mitglied der Org `Kurvenbeck`, daher konnte nicht direkt nach
+`Kurvenbeck/Homepage-Kurvenbeck` gepusht werden).
+
+- [ ] Zugang klären: `ihringmichael-max` in die Org **Kurvenbeck** einladen
+      (Schreibrechte) **oder** mit dem Org-Account arbeiten.
+- [ ] Umzug auf `Kurvenbeck/Homepage-Kurvenbeck`, eine der Optionen:
+  - Repo per GitHub **transferieren** (Settings → Transfer ownership), oder
+  - Org-Repo anlegen und Remote umhängen:
+    `git remote set-url origin https://github.com/Kurvenbeck/Homepage-Kurvenbeck.git && git push -u origin main`
+- [ ] Danach ggf. lokale Klone/Links aktualisieren.
+
+## 8. Feinschliff (optional)
 
 - [ ] `aria-label` für Telefon-/WhatsApp-CTAs (z. B. „Per WhatsApp schreiben").
 - [ ] Scroll-Reveal selektiv aktivieren (`enable-scroll-animations` am `<body>`),

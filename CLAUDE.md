@@ -13,6 +13,9 @@ kein auszuliefernder Code.
 
 Die lauffähige App liegt unter **`web/`** (Next.js App Router, TypeScript).
 
+**Einstieg/Übergabe:** `HANDOFF.md` (Root) bündelt Stand, Setup, Struktur und
+nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen.
+
 ## Sprache & Anrede (verbindlich)
 
 - Sämtliche **nutzersichtbaren Texte sind auf Deutsch**.
