@@ -1,0 +1,293 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Backstube — Kurvenbeck</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* Warenkorb-Button im Header */
+  .cart-btn {
+    position: relative;
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    background: var(--color-primary); color: #fff;
+    border: none; cursor: pointer;
+    padding: var(--space-3) var(--space-5);
+    border-radius: var(--radius-md);
+    font-family: var(--font-body); font-weight: 500; font-size: var(--text-sm);
+    transition: box-shadow var(--transition-fast);
+  }
+  .cart-btn:hover { box-shadow: 0 6px 16px rgba(86,86,85,0.35); }
+  .cart-count {
+    min-width: 20px; height: 20px; padding: 0 5px;
+    background: var(--color-accent); color: #fff;
+    border-radius: 999px; font-size: 11px; font-weight: 500;
+    display: inline-flex; align-items: center; justify-content: center;
+  }
+
+  .info-banner {
+    background: var(--color-surface);
+    border-bottom: 1px solid var(--color-border);
+  }
+  .info-banner .container { display: flex; align-items: center; gap: var(--space-6); padding-block: var(--space-4); flex-wrap: wrap; }
+  .info-banner p { font-size: var(--text-sm); color: var(--color-text-secondary); }
+  .info-banner strong { color: var(--color-accent); font-weight: 500; }
+
+  /* Produkt-Raster */
+  .shop-grid { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-8); }
+  @media (max-width: 980px) { .shop-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 600px)  { .shop-grid { grid-template-columns: 1fr; } }
+  .product {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); overflow: hidden;
+    display: flex; flex-direction: column;
+    transition: box-shadow var(--transition-fast);
+  }
+  .product:hover { box-shadow: 0 8px 24px rgba(86,86,85,0.10); }
+  .product .ph { aspect-ratio: 4/3; border: none; border-bottom: 1px solid var(--color-border); }
+  .product-body { padding: var(--space-6); display: flex; flex-direction: column; gap: var(--space-2); flex: 1; }
+  .product-body h3 { font-size: var(--text-xl); }
+  .product-body .desc { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-snug); flex: 1; }
+  .product-foot { display: flex; align-items: center; justify-content: space-between; margin-top: var(--space-4); gap: var(--space-3); }
+  .product-foot .price { font-family: var(--font-display); font-weight: 700; font-size: var(--text-2xl); color: var(--color-primary); }
+  .product-foot .price small { font-family: var(--font-body); font-weight: 400; font-size: var(--text-xs); color: var(--color-text-muted); display: block; }
+  .add-btn {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    background: var(--color-accent); color: #fff; border: none; cursor: pointer;
+    padding: var(--space-2) var(--space-4); border-radius: var(--radius-md);
+    font-family: var(--font-body); font-weight: 500; font-size: var(--text-sm);
+    transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+  }
+  .add-btn:hover { box-shadow: 0 6px 16px rgba(171,13,14,0.35); }
+  .add-btn:active { transform: scale(0.95); }
+  .badge {
+    align-self: flex-start;
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--color-accent); border: 1px solid rgba(171,13,14,0.3);
+    padding: 2px 7px; border-radius: var(--radius-sm);
+  }
+
+  /* Warenkorb-Drawer */
+  .drawer-scrim {
+    position: fixed; inset: 0; background: rgba(86,86,85,0.4);
+    opacity: 0; visibility: hidden; transition: opacity var(--transition-normal), visibility var(--transition-normal);
+    z-index: 80;
+  }
+  .drawer-scrim.open { opacity: 1; visibility: visible; }
+  .drawer {
+    position: fixed; top: 0; right: 0; height: 100%; width: 380px; max-width: 90vw;
+    background: #fff; z-index: 90; box-shadow: -8px 0 32px rgba(86,86,85,0.18);
+    transform: translateX(100%); transition: transform var(--transition-normal);
+    display: flex; flex-direction: column;
+  }
+  .drawer.open { transform: translateX(0); }
+  .drawer-head { display: flex; align-items: center; justify-content: space-between; padding: var(--space-6); border-bottom: 1px solid var(--color-border); }
+  .drawer-head h3 { font-size: var(--text-2xl); }
+  .drawer-close { background: none; border: none; font-size: 24px; line-height: 1; color: var(--color-text-secondary); cursor: pointer; padding: 4px; }
+  .drawer-close:hover { color: var(--color-accent); }
+  .drawer-body { flex: 1; overflow-y: auto; padding: var(--space-6); }
+  .drawer-empty { color: var(--color-text-muted); text-align: center; margin-top: var(--space-16); font-size: var(--text-sm); }
+  .cart-line { display: grid; grid-template-columns: 1fr auto; gap: var(--space-2) var(--space-4); align-items: center; padding: var(--space-4) 0; border-bottom: 1px dotted var(--color-border); }
+  .cart-line .cl-name { font-weight: 500; color: var(--color-text-primary); }
+  .cart-line .cl-price { font-family: var(--font-display); font-weight: 700; color: var(--color-primary); }
+  .qty { display: inline-flex; align-items: center; gap: var(--space-3); }
+  .qty button { width: 26px; height: 26px; border: 1px solid var(--color-border); background: var(--color-surface); border-radius: var(--radius-sm); cursor: pointer; color: var(--color-primary); font-size: 16px; line-height: 1; }
+  .qty button:hover { border-color: var(--color-accent); color: var(--color-accent); }
+  .qty span { min-width: 18px; text-align: center; font-size: var(--text-sm); }
+  .drawer-foot { padding: var(--space-6); border-top: 1px solid var(--color-border); background: var(--color-surface); }
+  .drawer-total { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: var(--space-4); }
+  .drawer-total .t-label { color: var(--color-text-secondary); font-size: var(--text-sm); }
+  .drawer-total .t-val { font-family: var(--font-display); font-weight: 800; font-size: var(--text-3xl); color: var(--color-primary); }
+  .demo-note { font-size: var(--text-xs); color: var(--color-text-muted); text-align: center; margin-top: var(--space-3); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="kb-logo">Kurven<span class="kb-mark">beck</span><small>Backstube</small></a>
+    <nav class="site-nav">
+      <a href="biergarten.html">Biergarten</a>
+      <a href="catering.html">Catering</a>
+      <a href="backstube.html" class="active">Backstube</a>
+    </nav>
+    <div class="header-actions">
+      <button class="cart-btn" onclick="openCart()">
+        Warenkorb <span class="cart-count" id="cartCount">0</span>
+      </button>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero" data-screen-label="Backstube Hero">
+  <div class="container">
+    <p class="eyebrow">Backstube</p>
+    <h1>Schnell sei, sonst isch's weg.</h1>
+    <p class="lede">Brezel, Briegl und Körnerwecken — in der Nacht von Hand geschlungen, am Morgen frisch aus dem Steinofen. Heute vorbestellen, morgen abholen.</p>
+  </div>
+</section>
+
+<div class="info-banner">
+  <div class="container">
+    <p><strong>Frisch heute:</strong> Vorbestellungen bis 18 Uhr für Abholung am nächsten Morgen ab 6 Uhr.</p>
+    <p>Solange der Vorrat reicht — und der ist morgens schnell weg.</p>
+  </div>
+</div>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Aus dem Ofen</p>
+      <h2>Heute frisch gebacken</h2>
+      <p>Vorbestellen für die Abholung. Preise pro Stück, inkl. MwSt.</p>
+    </div>
+    <div class="shop-grid" id="shop">
+      <!-- Produkte werden per JS gerendert -->
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="kb-logo">Kurven<span class="kb-mark">beck</span></span>
+        <p>Biergarten, Catering und Backstube — drei Handwerke, ein Familienbetrieb. Seit 1978.</p>
+      </div>
+      <div>
+        <h4>Bereiche</h4>
+        <ul>
+          <li><a href="biergarten.html">Biergarten</a></li>
+          <li><a href="catering.html">Catering</a></li>
+          <li><a href="backstube.html">Backstube</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Mühlweg 12, 72074 Musterstadt</li>
+          <li>07071 / 12 34 56</li>
+          <li><a href="#">hallo@kurvenbeck.de</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Öffnungszeiten</h4>
+        <ul>
+          <li>Biergarten: Di–So 11–23 Uhr</li>
+          <li>Backstube: Mo–Sa 6–13 Uhr</li>
+          <li>Catering: nach Vereinbarung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 Kurvenbeck Familienbetrieb</span>
+      <span>Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+<!-- Warenkorb -->
+<div class="drawer-scrim" id="scrim" onclick="closeCart()"></div>
+<aside class="drawer" id="drawer" aria-label="Warenkorb">
+  <div class="drawer-head">
+    <h3>Ihr Warenkorb</h3>
+    <button class="drawer-close" onclick="closeCart()" aria-label="Schließen">×</button>
+  </div>
+  <div class="drawer-body" id="drawerBody">
+    <p class="drawer-empty">Noch nichts drin — schnappen Sie sich eine Brezel, bevor sie weg ist.</p>
+  </div>
+  <div class="drawer-foot">
+    <div class="drawer-total">
+      <span class="t-label">Summe (Abholung)</span>
+      <span class="t-val" id="cartTotal">0,00 €</span>
+    </div>
+    <button class="btn btn-primary" style="width:100%; justify-content:center;">Zur Abholung bestellen</button>
+    <p class="demo-note">Demo-Warenkorb — keine echte Bestellung.</p>
+  </div>
+</aside>
+
+<script>
+  const products = [
+    { id: 'brezel',   name: 'Original Brezel',     price: 1.20, badge: 'Klassiker', desc: 'Von Hand geschlungen, laugengebadet, mit grobem Salz. Außen knusprig, innen weich.', ph: 'Foto: Laugenbrezel, Salzkristalle — 4:3' },
+    { id: 'briegl',   name: 'Briegl',              price: 0.95, badge: 'Schwäbisch', desc: 'Das schwäbische Brötchen schlechthin — rustikale Kruste, lockere Krume. Paarweise gebacken.', ph: 'Foto: Briegl-Paar, bemehlt — 4:3' },
+    { id: 'koerner',  name: 'Körnerwecken',        price: 1.10, badge: null, desc: 'Saftiges Brötchen mit Sonnenblumen-, Lein- und Sesamkernen. Hält lange frisch.', ph: 'Foto: Körnerwecken, Saaten — 4:3' },
+    { id: 'laugen',   name: 'Laugenstange',        price: 1.40, badge: null, desc: 'Lange Laugenstange, ideal aufgeschnitten mit Butter oder herzhaftem Belag.', ph: 'Foto: Laugenstange, längs — 4:3' },
+    { id: 'bauernbrot', name: 'Bauernbrot',        price: 4.80, badge: 'Steinofen', desc: 'Kräftiges Mischbrot aus dem Steinofen, lange Teigführung. Halber oder ganzer Laib.', ph: 'Foto: Bauernbrot, dunkle Kruste — 4:3' },
+    { id: 'zopf',     name: 'Sonntagszopf',        price: 3.60, badge: 'Nur Sa', desc: 'Buttriger Hefezopf mit Hagelzucker — der Klassiker fürs Wochenend-Frühstück.', ph: 'Foto: Hefezopf, geflochten — 4:3' },
+  ];
+
+  const cart = {}; // id -> qty
+
+  function fmt(n) { return n.toFixed(2).replace('.', ',') + ' €'; }
+
+  function renderShop() {
+    document.getElementById('shop').innerHTML = products.map(p => `
+      <article class="product">
+        <div class="ph" data-label="${p.ph}"></div>
+        <div class="product-body">
+          ${p.badge ? `<span class="badge">${p.badge}</span>` : ''}
+          <h3>${p.name}</h3>
+          <p class="desc">${p.desc}</p>
+          <div class="product-foot">
+            <span class="price">${fmt(p.price)}<small>pro Stück</small></span>
+            <button class="add-btn" onclick="addToCart('${p.id}')">+ In den Korb</button>
+          </div>
+        </div>
+      </article>
+    `).join('');
+  }
+
+  function addToCart(id) {
+    cart[id] = (cart[id] || 0) + 1;
+    updateCart();
+    openCart();
+  }
+  function changeQty(id, delta) {
+    cart[id] = (cart[id] || 0) + delta;
+    if (cart[id] <= 0) delete cart[id];
+    updateCart();
+  }
+
+  function updateCart() {
+    const count = Object.values(cart).reduce((a, b) => a + b, 0);
+    document.getElementById('cartCount').textContent = count;
+    let total = 0;
+    const lines = Object.entries(cart).map(([id, qty]) => {
+      const p = products.find(x => x.id === id);
+      total += p.price * qty;
+      return `
+        <div class="cart-line">
+          <span class="cl-name">${p.name}</span>
+          <span class="cl-price">${fmt(p.price * qty)}</span>
+          <div class="qty">
+            <button onclick="changeQty('${id}',-1)" aria-label="weniger">–</button>
+            <span>${qty}</span>
+            <button onclick="changeQty('${id}',1)" aria-label="mehr">+</button>
+          </div>
+        </div>`;
+    });
+    const body = document.getElementById('drawerBody');
+    body.innerHTML = lines.length
+      ? lines.join('')
+      : '<p class="drawer-empty">Noch nichts drin — schnappen Sie sich eine Brezel, bevor sie weg ist.</p>';
+    document.getElementById('cartTotal').textContent = fmt(total);
+  }
+
+  function openCart() {
+    document.getElementById('drawer').classList.add('open');
+    document.getElementById('scrim').classList.add('open');
+  }
+  function closeCart() {
+    document.getElementById('drawer').classList.remove('open');
+    document.getElementById('scrim').classList.remove('open');
+  }
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeCart(); });
+
+  renderShop();
+  updateCart();
+</script>
+
+</body>
+</html>

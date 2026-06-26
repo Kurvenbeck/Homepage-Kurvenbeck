@@ -1,0 +1,248 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Biergarten — Kurvenbeck</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .biergarten-intro {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16);
+    align-items: center;
+  }
+  .biergarten-intro .ph { aspect-ratio: 4/5; border-radius: var(--radius-lg); }
+  @media (max-width: 860px) { .biergarten-intro { grid-template-columns: 1fr; gap: var(--space-8); } }
+
+  /* Speisekarte */
+  .menu-wrap { background: var(--color-surface); }
+  .menu-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: var(--space-16) var(--space-20);
+  }
+  @media (max-width: 860px) { .menu-grid { grid-template-columns: 1fr; gap: var(--space-12); } }
+
+  .menu-block h3 {
+    font-size: var(--text-2xl);
+    padding-bottom: var(--space-4);
+    border-bottom: 2px solid var(--color-accent);
+    display: inline-block;
+  }
+  .menu-list { display: flex; flex-direction: column; margin-top: var(--space-6); }
+  .menu-item {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: baseline;
+    gap: var(--space-3);
+    padding: var(--space-4) 0;
+    border-bottom: 1px dotted var(--color-border);
+  }
+  .menu-item:last-child { border-bottom: none; }
+  .menu-item .mi-name { font-weight: 500; color: var(--color-text-primary); }
+  .menu-item .mi-desc { display: block; font-weight: 400; font-size: var(--text-sm); color: var(--color-text-secondary); margin-top: 2px; }
+  .menu-item .mi-price {
+    font-family: var(--font-display);
+    font-weight: 700;
+    color: var(--color-primary);
+    white-space: nowrap;
+    font-size: var(--text-lg);
+  }
+  .menu-tag {
+    font-size: 10px; font-weight: 500; letter-spacing: 0.06em; text-transform: uppercase;
+    color: var(--color-accent); border: 1px solid rgba(171,13,14,0.3);
+    padding: 1px 6px; border-radius: var(--radius-sm); margin-left: var(--space-2);
+    vertical-align: middle;
+  }
+
+  .info-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-6); }
+  @media (max-width: 860px) { .info-cards { grid-template-columns: 1fr; } }
+  .info-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); padding: var(--space-8);
+  }
+  .info-card h4 { font-family: var(--font-body); font-weight: 500; font-size: var(--text-base); color: var(--color-primary); margin-bottom: var(--space-2); }
+  .info-card p { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+  .info-card .big { font-family: var(--font-display); font-weight: 700; font-size: var(--text-3xl); color: var(--color-primary); }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="kb-logo">Kurven<span class="kb-mark">beck</span><small>Tradition</small></a>
+    <nav class="site-nav">
+      <a href="biergarten.html" class="active">Biergarten</a>
+      <a href="catering.html">Catering</a>
+      <a href="backstube.html">Backstube</a>
+    </nav>
+    <div class="header-actions">
+      <a href="catering.html" class="btn btn-ghost">Tisch reservieren</a>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero" data-screen-label="Biergarten Hero">
+  <div class="container">
+    <p class="eyebrow">Biergarten</p>
+    <h1>Hock di na.</h1>
+    <p class="lede">Schattige Plätze unter alten Kastanien, kühle Getränke und ehrliche schwäbische Küche — mitten im Grünen, einfach zum Wohlfühlen.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container biergarten-intro">
+    <div>
+      <p class="eyebrow">Unser Garten</p>
+      <h2 style="font-size:var(--text-4xl); margin-top:var(--space-3);">Wo der Feierabend anfängt</h2>
+      <p style="color:var(--color-text-secondary); font-size:var(--text-lg); margin-top:var(--space-4); line-height:var(--leading-relaxed);">
+        220 Plätze, frisch gezapftes Bier und eine Küche, die noch selber kocht. Ob nach der Arbeit, am Wochenende mit der Familie oder zum großen Tisch mit Freunden — bei uns sitzt man gern länger.
+      </p>
+      <div style="display:flex; gap:var(--space-4); margin-top:var(--space-8); flex-wrap:wrap;">
+        <a href="#speisekarte" class="btn btn-primary">Zur Speisekarte</a>
+        <a href="catering.html" class="btn btn-ghost">Tisch reservieren</a>
+      </div>
+    </div>
+    <div class="ph" data-label="Foto: Biergarten unter Kastanien, Abendsonne — 4:5"></div>
+  </div>
+</section>
+
+<section class="section menu-wrap" id="speisekarte">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Speisekarte</p>
+      <h2>Drauß' schmeckt's am besten</h2>
+      <p>Täglich frisch, regional eingekauft. Preise inkl. MwSt.</p>
+    </div>
+    <div class="menu-grid">
+
+      <div class="menu-block">
+        <h3>Vesper &amp; Warmes</h3>
+        <div class="menu-list">
+          <div class="menu-item">
+            <span class="mi-name">Original Kurvenbeck-Brezel <span class="mi-desc">mit guter Butter, frisch aus der eigenen Backstube</span></span>
+            <span class="mi-price">3,80</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Schwäbischer Wurstsalat <span class="mi-desc">mit Bauernbrot &amp; Röstzwiebeln</span></span>
+            <span class="mi-price">9,50</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Maultaschen in der Brühe <span class="mi-desc">hausgemacht, mit Schnittlauch</span></span>
+            <span class="mi-price">11,80</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Käsespätzle <span class="menu-tag">vegetarisch</span><span class="mi-desc">mit Bergkäse &amp; gerösteten Zwiebeln</span></span>
+            <span class="mi-price">12,90</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Schnitzel mit Pommes <span class="mi-desc">vom Schwein, mit Zitrone &amp; Preiselbeeren</span></span>
+            <span class="mi-price">15,80</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Große Vesperplatte <span class="mi-desc">Wurst, Käse, Brezel, Gewürzgurke — zum Teilen</span></span>
+            <span class="mi-price">16,50</span>
+          </div>
+        </div>
+      </div>
+
+      <div class="menu-block">
+        <h3>Getränke</h3>
+        <div class="menu-list">
+          <div class="menu-item">
+            <span class="mi-name">Helles vom Fass <span class="mi-desc">0,5 l, frisch gezapft</span></span>
+            <span class="mi-price">4,40</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Naturtrübes Radler <span class="mi-desc">0,5 l</span></span>
+            <span class="mi-price">4,20</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Weizenbier <span class="mi-desc">hell oder dunkel, 0,5 l</span></span>
+            <span class="mi-price">4,60</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Apfelschorle <span class="mi-desc">vom Streuobst, 0,4 l</span></span>
+            <span class="mi-price">3,60</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Trollinger im Viertele <span class="mi-desc">0,25 l, vom Weingut nebenan</span></span>
+            <span class="mi-price">5,20</span>
+          </div>
+          <div class="menu-item">
+            <span class="mi-name">Hausgemachte Limonade <span class="menu-tag">alkoholfrei</span><span class="mi-desc">Holunder oder Zitrone, 0,4 l</span></span>
+            <span class="mi-price">3,80</span>
+          </div>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="info-cards">
+      <div class="info-card">
+        <h4>Öffnungszeiten</h4>
+        <p class="big">11 – 23 Uhr</p>
+        <p style="margin-top:var(--space-2);">Di – So &amp; an Feiertagen.<br>Montag Ruhetag.<br>Bei schönem Wetter durchgehend warme Küche.</p>
+      </div>
+      <div class="info-card">
+        <h4>Finden &amp; Parken</h4>
+        <p>Mühlweg 12<br>72074 Musterstadt</p>
+        <p style="margin-top:var(--space-3);">Kostenlose Parkplätze direkt am Garten, 6 Min. vom Bahnhof.</p>
+      </div>
+      <div class="info-card">
+        <h4>Größere Runden</h4>
+        <p>Vereinsausflug, Geburtstag oder Firmenfeier? Wir reservieren gern lange Tische.</p>
+        <a href="catering.html" class="text-link" style="display:inline-block; margin-top:var(--space-3); font-weight:500;">Anfrage senden →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="kb-logo">Kurven<span class="kb-mark">beck</span></span>
+        <p>Biergarten, Catering und Backstube — drei Handwerke, ein Familienbetrieb. Seit 1978.</p>
+      </div>
+      <div>
+        <h4>Bereiche</h4>
+        <ul>
+          <li><a href="biergarten.html">Biergarten</a></li>
+          <li><a href="catering.html">Catering</a></li>
+          <li><a href="backstube.html">Backstube</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Mühlweg 12, 72074 Musterstadt</li>
+          <li>07071 / 12 34 56</li>
+          <li><a href="#">hallo@kurvenbeck.de</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Öffnungszeiten</h4>
+        <ul>
+          <li>Biergarten: Di–So 11–23 Uhr</li>
+          <li>Backstube: Mo–Sa 6–13 Uhr</li>
+          <li>Catering: nach Vereinbarung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 Kurvenbeck Familienbetrieb</span>
+      <span>Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

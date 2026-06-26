@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurvenbeck — Biergarten · Catering · Backstube</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  /* Header dunkel-transparent über Hero */
+  .site-header.on-dark { background: rgba(86,86,85,0.6); backdrop-filter: blur(8px); border-bottom-color: rgba(255,255,255,0.12); }
+  .site-header.on-dark .kb-logo, .site-header.on-dark .kb-logo .kb-mark { color: #fff; }
+  .site-header.on-dark .kb-logo small { color: rgba(255,255,255,0.55); }
+  .site-header.on-dark .site-nav a { color: rgba(255,255,255,0.75); }
+  .site-header.on-dark .site-nav a:hover { color: #fff; }
+
+  /* Hero — dunkel, bold */
+  .hero-b {
+    background: var(--color-dark-bg);
+    color: #fff;
+    padding-block: var(--space-24) var(--space-20);
+    position: relative;
+    overflow: hidden;
+  }
+  .hero-b .container { position: relative; z-index: 1; }
+  .hero-b .rule { width: 56px; height: 3px; background: var(--color-accent); margin-bottom: var(--space-8); }
+  .hero-b h1 {
+    color: #fff;
+    font-size: clamp(3rem, 7vw, 5.5rem);
+    max-width: 16ch;
+    letter-spacing: -0.035em;
+  }
+  .hero-b h1 .accent { color: var(--color-accent); }
+  .hero-b .lede { color: #fff; font-size: var(--text-xl); max-width: 46ch; margin-top: var(--space-8); line-height: var(--leading-snug); }
+  .hero-b .cta-row { display: flex; gap: var(--space-4); margin-top: var(--space-10); flex-wrap: wrap; }
+  .hero-b .meta { display: flex; gap: var(--space-10); margin-top: var(--space-16); flex-wrap: wrap; }
+  .hero-b .meta .m { }
+  .hero-b .meta .m b { display: block; font-family: var(--font-display); font-weight: 800; font-size: var(--text-3xl); color: #fff; }
+  .hero-b .meta .m span { font-size: var(--text-sm); color: rgba(255,255,255,0.6); letter-spacing: 0.02em; }
+
+  /* Drei Split-Kacheln — edge to edge */
+  .split { display: grid; grid-template-columns: repeat(3, 1fr); }
+  @media (max-width: 860px) { .split { grid-template-columns: 1fr; } }
+  .tile {
+    position: relative; min-height: 560px;
+    display: flex; flex-direction: column; justify-content: flex-end;
+    padding: var(--space-12);
+    color: #fff; overflow: hidden;
+    border-right: 1px solid rgba(255,255,255,0.12);
+    text-decoration: none;
+  }
+  .tile:last-child { border-right: none; }
+  @media (max-width: 860px) { .tile { min-height: 420px; border-right: none; border-bottom: 1px solid rgba(255,255,255,0.12); } }
+  .tile .tile-bg {
+    position: absolute; inset: 0; z-index: 0;
+    background-color: #4a4a49;
+    background-image: repeating-linear-gradient(135deg, rgba(255,255,255,0.05) 0, rgba(255,255,255,0.05) 1px, transparent 1px, transparent 12px);
+    transition: transform var(--transition-slow);
+  }
+  .tile .tile-bg::after {
+    content: attr(data-label);
+    position: absolute; bottom: 10px; left: 10px;
+    font-family: ui-monospace, Menlo, monospace; font-size: 10px;
+    color: rgba(255,255,255,0.4); background: rgba(0,0,0,0.25); padding: 3px 6px; border-radius: 3px;
+  }
+  .tile .scrim { position: absolute; inset: 0; z-index: 1; background: linear-gradient(to top, rgba(40,40,39,0.92) 0%, rgba(40,40,39,0.35) 55%, rgba(40,40,39,0.15) 100%); transition: background var(--transition-normal); }
+  .tile .tile-body { position: relative; z-index: 2; }
+  .tile .idx { font-family: var(--font-display); font-weight: 800; font-size: var(--text-xl); color: var(--color-accent); }
+  .tile h3 { color: #fff; font-size: var(--text-4xl); margin: var(--space-2) 0 var(--space-3); }
+  .tile .swab { font-style: italic; color: rgba(255,255,255,0.85); font-family: var(--font-display); }
+  .tile p { color: rgba(255,255,255,0.85); font-size: var(--text-base); line-height: var(--leading-snug); margin-top: var(--space-3); max-width: 34ch; }
+  .tile .go {
+    display: inline-flex; align-items: center; gap: var(--space-2);
+    margin-top: var(--space-6); font-weight: 500; font-size: var(--text-sm);
+    color: #fff; letter-spacing: 0.02em;
+  }
+  .tile .go .arrow { transition: transform var(--transition-fast); }
+  .tile:hover .tile-bg { transform: scale(1.06); }
+  .tile:hover .scrim { background: linear-gradient(to top, rgba(40,40,39,0.92) 0%, rgba(40,40,39,0.45) 60%, rgba(171,13,14,0.25) 100%); }
+  .tile:hover .go { color: var(--color-accent); }
+  .tile:hover .go .arrow { transform: translateX(4px); }
+
+  /* Info-Band */
+  .band { background: var(--color-surface); }
+  .band .container { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: var(--space-12); padding-block: var(--space-16); }
+  @media (max-width: 860px) { .band .container { grid-template-columns: 1fr; gap: var(--space-8); } }
+  .band .b-item h4 { font-family: var(--font-body); font-weight: 500; font-size: var(--text-base); color: var(--color-primary); margin-bottom: var(--space-2); }
+  .band .b-item p { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+  .band .b-item .accent-line { width: 32px; height: 2px; background: var(--color-accent); margin-bottom: var(--space-4); }
+</style>
+</head>
+<body>
+
+<header class="site-header on-dark">
+  <div class="container">
+    <a href="home-split.html" class="kb-logo">Kurven<span class="kb-mark">beck</span><small>seit 1978</small></a>
+    <nav class="site-nav">
+      <a href="biergarten.html">Biergarten</a>
+      <a href="catering.html">Catering</a>
+      <a href="backstube.html">Backstube</a>
+    </nav>
+    <div class="header-actions">
+      <a href="catering.html" class="btn btn-primary">Catering anfragen</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero-b" data-screen-label="Home B · Hero">
+  <div class="container">
+    <div class="rule"></div>
+    <h1>Drei Handwerke. <span class="accent">Ein</span> Name.</h1>
+    <p class="lede">Biergarten, Catering und Backstube — der Familienbetrieb Kurvenbeck bewirtet, beliefert und backt. Alles selbst gemacht, seit 1978.</p>
+    <div class="cta-row">
+      <a href="biergarten.html" class="btn btn-primary">Biergarten entdecken</a>
+      <a href="backstube.html" class="btn btn-ghost--inverted">Online vorbestellen</a>
+    </div>
+    <div class="meta">
+      <div class="m"><b>1978</b><span>gegründet</span></div>
+      <div class="m"><b>3</b><span>Handwerke</span></div>
+      <div class="m"><b>220</b><span>Plätze im Garten</span></div>
+    </div>
+  </div>
+</section>
+
+<section class="split" data-screen-label="Home B · Bereiche">
+  <a class="tile" href="biergarten.html">
+    <div class="tile-bg" data-label="Foto: Biergarten"></div>
+    <div class="scrim"></div>
+    <div class="tile-body">
+      <span class="idx">01</span>
+      <h3>Biergarten</h3>
+      <span class="swab">„Hock di na.“</span>
+      <p>Schattige Plätze, kühles Bier und ehrliche schwäbische Küche.</p>
+      <span class="go">Zur Speisekarte <span class="arrow">→</span></span>
+    </div>
+  </a>
+  <a class="tile" href="catering.html">
+    <div class="tile-bg" data-label="Foto: Catering"></div>
+    <div class="scrim"></div>
+    <div class="tile-body">
+      <span class="idx">02</span>
+      <h3>Catering</h3>
+      <span class="swab">„Ihr Fest, unser Handwerk.“</span>
+      <p>Von der kleinen Feier bis zum großen Event — alles aus einer Hand.</p>
+      <span class="go">Catering ansehen <span class="arrow">→</span></span>
+    </div>
+  </a>
+  <a class="tile" href="backstube.html">
+    <div class="tile-bg" data-label="Foto: Backstube"></div>
+    <div class="scrim"></div>
+    <div class="tile-body">
+      <span class="idx">03</span>
+      <h3>Backstube</h3>
+      <span class="swab">„Schnell sei, sonst isch's weg.“</span>
+      <p>Brezel, Briegl und Körnerwecken — frisch aus dem Steinofen.</p>
+      <span class="go">Online vorbestellen <span class="arrow">→</span></span>
+    </div>
+  </a>
+</section>
+
+<section class="band">
+  <div class="container">
+    <div class="b-item">
+      <div class="accent-line"></div>
+      <h4>Alles selbst gemacht</h4>
+      <p>Was im Biergarten auf den Tisch kommt, backen und kochen wir selbst. Kein Zukauf, keine Fertigware.</p>
+    </div>
+    <div class="b-item">
+      <div class="accent-line"></div>
+      <h4>Aus einer Hand</h4>
+      <p>Biergarten, Catering und Backstube greifen ineinander — ein Anruf genügt für Ihr ganzes Fest.</p>
+    </div>
+    <div class="b-item">
+      <div class="accent-line"></div>
+      <h4>Schwäbisch &amp; ehrlich</h4>
+      <p>Regionale Zutaten, faire Preise und Rezepte, die seit drei Generationen weitergegeben werden.</p>
+    </div>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="kb-logo">Kurven<span class="kb-mark">beck</span></span>
+        <p>Biergarten, Catering und Backstube — drei Handwerke, ein Familienbetrieb. Seit 1978.</p>
+      </div>
+      <div>
+        <h4>Bereiche</h4>
+        <ul>
+          <li><a href="biergarten.html">Biergarten</a></li>
+          <li><a href="catering.html">Catering</a></li>
+          <li><a href="backstube.html">Backstube</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Mühlweg 12, 72074 Musterstadt</li>
+          <li>07071 / 12 34 56</li>
+          <li><a href="#">hallo@kurvenbeck.de</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Öffnungszeiten</h4>
+        <ul>
+          <li>Biergarten: Di–So 11–23 Uhr</li>
+          <li>Backstube: Mo–Sa 6–13 Uhr</li>
+          <li>Catering: nach Vereinbarung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 Kurvenbeck Familienbetrieb</span>
+      <span>Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>

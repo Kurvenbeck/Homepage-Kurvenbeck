@@ -1,0 +1,18 @@
+# macOS
+.DS_Store
+
+# Office lock-/temp-Dateien
+~$*
+
+# Node / Next.js (web/ hat zusätzlich eine eigene .gitignore)
+node_modules/
+.next/
+out/
+build/
+*.tsbuildinfo
+
+# Env / Secrets
+.env*
+
+# Lokale Claude-Konfiguration
+.claude/

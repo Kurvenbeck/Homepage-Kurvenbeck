@@ -1,0 +1,238 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurvenbeck — Entwickler-Handoff</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700;800&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --primary:#565655; --accent:#ab0d0e; --surface:#f7f4f0;
+    --text:#3a3a39; --muted:#7a7a79; --faint:#a0a09f;
+    --border:rgba(86,86,85,0.18);
+    --display:'Playfair Display',Georgia,serif;
+    --body:'DM Sans',system-ui,sans-serif;
+  }
+  *{box-sizing:border-box;}
+  html{-webkit-text-size-adjust:100%;}
+  body{
+    margin:0; font-family:var(--body); color:var(--text);
+    font-size:10.5pt; line-height:1.5; background:#e9e4dd;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{
+    background:#fff; width:210mm; min-height:297mm;
+    margin:14px auto; padding:22mm 20mm;
+    box-shadow:0 6px 24px rgba(86,86,85,0.14);
+  }
+  h1,h2,h3,h4{font-family:var(--display); color:var(--primary); line-height:1.15; margin:0;}
+  h1{font-size:30pt; font-weight:800; letter-spacing:-0.02em;}
+  h2{font-size:17pt; font-weight:700; margin:24px 0 8px; padding-top:14px; border-top:2px solid var(--accent);}
+  h3{font-size:12.5pt; font-weight:700; margin:16px 0 4px; color:var(--text);}
+  h4{font-family:var(--body); font-weight:500; font-size:10.5pt; color:var(--primary); margin:10px 0 2px;}
+  p{margin:6px 0; text-wrap:pretty;}
+  ul,ol{margin:6px 0 6px 0; padding-left:18px;}
+  li{margin:3px 0;}
+  strong{color:var(--primary); font-weight:500;}
+  code{font-family:ui-monospace,Menlo,monospace; font-size:9pt; background:var(--surface); padding:1px 5px; border-radius:4px; color:#7a2a2a;}
+  a{color:var(--accent); text-decoration:none;}
+  blockquote{margin:8px 0; padding:8px 14px; background:var(--surface); border-left:3px solid var(--accent); color:var(--muted); font-size:9.8pt;}
+
+  .eyebrow{font-size:8.5pt; font-weight:500; letter-spacing:0.1em; text-transform:uppercase; color:var(--accent);}
+  .lede{font-size:11pt; color:var(--muted); max-width:60ch; margin-top:6px;}
+  .meta-line{font-size:8.5pt; color:var(--faint); letter-spacing:0.04em; margin-top:14px; text-transform:uppercase;}
+  .logo{font-family:var(--display); font-weight:800; font-size:13pt; letter-spacing:-0.01em; color:var(--primary);}
+  .logo .m{color:var(--accent);}
+
+  table{width:100%; border-collapse:collapse; margin:10px 0; font-size:9.3pt;}
+  th,td{text-align:left; padding:6px 8px; border-bottom:1px solid var(--border); vertical-align:top;}
+  th{font-weight:500; color:var(--muted); font-size:8pt; letter-spacing:0.05em; text-transform:uppercase; background:var(--surface);}
+  td code{font-size:8.4pt;}
+
+  .swatches{display:flex; gap:8px; flex-wrap:wrap; margin:10px 0;}
+  .sw{display:flex; align-items:center; gap:7px; border:1px solid var(--border); border-radius:6px; padding:5px 9px; font-size:8.6pt;}
+  .sw .chip{width:15px; height:15px; border-radius:4px; border:1px solid var(--border);}
+
+  .pill{display:inline-block; font-size:8pt; font-weight:500; letter-spacing:0.04em; text-transform:uppercase; color:var(--accent); border:1px solid rgba(171,13,14,0.35); border-radius:4px; padding:1px 7px;}
+  .two{display:grid; grid-template-columns:1fr 1fr; gap:0 28px;}
+  .keep{break-inside:avoid;}
+  .divider{height:1px; background:var(--border); margin:18px 0;}
+  .foot{margin-top:18px; padding-top:8px; border-top:1px solid var(--border); font-size:8pt; color:var(--faint); display:flex; justify-content:space-between;}
+
+  @media print{
+    body{background:#fff;}
+    .page{box-shadow:none; margin:0; width:auto; min-height:auto; padding:16mm 15mm;}
+    h2{break-after:avoid;} h3,h4{break-after:avoid;}
+    table,ul,ol,blockquote,.keep{break-inside:avoid;}
+  }
+  @page{size:A4; margin:0;}
+</style>
+</head>
+<body>
+<div class="page">
+
+  <header class="keep">
+    <span class="logo">Kurven<span class="m">beck</span></span>
+    <p class="eyebrow" style="margin-top:18px;">Entwickler-Handoff · Claude Code</p>
+    <h1>Startseite &amp; Bereichsseiten</h1>
+    <p class="lede">Verbindliches Umsetzungs-Briefing für die neue Web-Präsenz des Familienbetriebs Kurvenbeck — drei Bereiche (Biergarten, Catering, Backstube) unter einer Marke.</p>
+    <p class="meta-line">Stand Juni 2026 · Sprache der Website: Deutsch · Fidelity: High</p>
+  </header>
+
+  <h2>1 · Überblick</h2>
+  <p>Drei eigenständige Geschäftsbereiche unter einer Marke, auf der Startseite klar getrennt, jeder mit eigener Unterseite. Gewählte visuelle Richtung: <strong>Option C — „Warm &amp; Handwerklich“</strong> (bildgeführter Hero, schwäbische Taglines, warme Karten). Optionen A/B liegen nur als Referenz bei.</p>
+  <table>
+    <tr><th>Bereich</th><th>Inhalt</th><th>Besonderheit</th></tr>
+    <tr><td><strong>Biergarten</strong></td><td>Speisekarte (Speisen + Getränke), Öffnungszeiten, Anfahrt</td><td>reine Info-/Menüseite</td></tr>
+    <tr><td><strong>Catering</strong></td><td>Beispiel-Menüs, Ablauf, Anfrageformular</td><td>Lead-Formular</td></tr>
+    <tr><td><strong>Backstube</strong></td><td>Backwaren-Shop (Brezel, Briegl, Körnerwecken …)</td><td>Warenkorb (Vorbestellung)</td></tr>
+  </table>
+
+  <h2>2 · Über die Design-Dateien &amp; Fidelity</h2>
+  <p>Die beigelegten Dateien sind <strong>Design-Referenzen in HTML/CSS/JS</strong> — Prototypen für Aussehen und Verhalten, <strong>kein</strong> produktiv auszuliefernder Code. Aufgabe: die Designs in der Ziel-Umgebung nachbauen. Laut Design-Guide ist ein <strong>Next.js</strong>-Setup vorgesehen (`apps/web`, `apps/admin`, `next/image`); existiert ein Repo, dessen Patterns nutzen, sonst Next.js App Router + CSS-Variablen/Tailwind wählen.</p>
+  <p><strong>High-Fidelity:</strong> Farben, Typografie, Abstände und Interaktionen sind verbindlich und pixelgenau mit den Komponenten des Ziel-Codebases umzusetzen.</p>
+
+  <h2>3 · Design-Tokens</h2>
+  <p>Quelle: <code>kurvenbeck-design-guide.md</code>. Vollständige CSS-Variablen in <code>assets/tokens.css</code>.</p>
+  <h3>Farben</h3>
+  <div class="swatches">
+    <span class="sw"><span class="chip" style="background:#565655;"></span> primary · #565655</span>
+    <span class="sw"><span class="chip" style="background:#ab0d0e;"></span> accent · #ab0d0e</span>
+    <span class="sw"><span class="chip" style="background:#ffffff;"></span> background · #ffffff</span>
+    <span class="sw"><span class="chip" style="background:#f7f4f0;"></span> surface · #f7f4f0</span>
+    <span class="sw"><span class="chip" style="background:#7a7a79;"></span> text-secondary · #7a7a79</span>
+    <span class="sw"><span class="chip" style="background:#a0a09f;"></span> text-muted · #a0a09f</span>
+  </div>
+  <table>
+    <tr><th>Token</th><th>Verwendung</th></tr>
+    <tr><td><code>--color-primary #565655</code></td><td>Headlines, sekundäre Buttons, Struktur, Fließtext</td></tr>
+    <tr><td><code>--color-accent #ab0d0e</code></td><td>Primäre CTAs, Hover, aktive States, Akzentlinien</td></tr>
+    <tr><td><code>--color-surface #f7f4f0</code></td><td>Cards &amp; Section-Flächen (warmes Creme)</td></tr>
+    <tr><td><code>--color-dark-bg #565655</code></td><td>Hero/Statement (Text immer #ffffff)</td></tr>
+    <tr><td><code>--color-border rgba(86,86,85,.15)</code></td><td>Trennlinien, Card-Border</td></tr>
+  </table>
+  <blockquote>Kontrast-Regel: Weiß auf #565655 ≈ 4.5:1. Body-Text in dunklen Sections immer #ffffff, nie halbtransparent.</blockquote>
+
+  <div class="two">
+    <div>
+      <h3>Typografie</h3>
+      <ul>
+        <li><strong>Display:</strong> Playfair Display 700/800 (Georgia, serif)</li>
+        <li><strong>Body:</strong> DM Sans 300/400/500 (system-ui)</li>
+        <li><strong>Schwäb. Taglines:</strong> Playfair Display kursiv 700</li>
+      </ul>
+      <p style="font-size:9pt;"><strong>Scale (rem):</strong> xs .75 · sm .875 · base 1 · lg 1.125 · xl 1.25 · 2xl 1.5 · 3xl 1.875 · 4xl 2.25 · 5xl 3 · 6xl 3.75</p>
+      <p style="font-size:9pt;"><strong>Line-height:</strong> tight 1.1 · snug 1.3 · normal 1.5 · relaxed 1.7. <strong>Tracking:</strong> -.03em Display · .08em Caps/Nav</p>
+    </div>
+    <div>
+      <h3>Maße &amp; System</h3>
+      <ul>
+        <li><strong>Spacing (8px-Grid, rem):</strong> 1 .25 · 2 .5 · 3 .75 · 4 1 · 6 1.5 · 8 2 · 10 2.5 · 12 3 · 16 4 · 20 5 · 24 6</li>
+        <li><strong>Radius:</strong> sm .25 · md .5 (Standard) · lg .75 · xl 1rem</li>
+        <li><strong>Transitions:</strong> .2s (Hover) · .3s (Panels) · .5s (Page)</li>
+        <li><strong>Container:</strong> max 1280px · Padding 80/48/16px</li>
+        <li><strong>Breakpoints:</strong> 640 · 768 · 1024 · 1280</li>
+        <li><strong>Section-Padding:</strong> 80/96px Desktop · 64px Mobile</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>4 · Globale Komponenten</h2>
+  <h3>Header <code>.site-header</code></h3>
+  <p>Sticky, Höhe <strong>72px</strong>, BG <code>rgba(255,255,255,.88)</code> + <code>blur(10px)</code>, untere Border. Logo links · Nav Mitte · CTA rechts. Nav-Links DM Sans 500 sm, <strong>Hover → accent</strong>; aktiv = primary + 2px roter Unterstrich. Variante <code>on-dark</code> (Option B) transparent über dunklem Hero. <strong>≤ 860px:</strong> Nav ausgeblendet → Hamburger noch zu bauen.</p>
+  <h3>Logo <code>.kb-logo</code></h3>
+  <p>Schriftzug-Fallback: „Kurven“ (primary) + „beck“ (accent), Playfair 800, optionales Caps-Suffix. <strong>Echtes WebP/SVG ausstehend → bei Lieferung global ersetzen.</strong></p>
+  <h3>Buttons <code>.btn</code> — Hover = nur Schatten</h3>
+  <table>
+    <tr><th>Variante</th><th>Stil</th><th>Hover-Shadow</th></tr>
+    <tr><td>primary</td><td>BG #ab0d0e, weiß</td><td>0 6px 16px rgba(171,13,14,.35)</td></tr>
+    <tr><td>secondary</td><td>BG #565655, weiß</td><td>0 6px 16px rgba(86,86,85,.35)</td></tr>
+    <tr><td>ghost</td><td>weiß, Border rgba(86,86,85,.25)</td><td>0 6px 16px rgba(86,86,85,.20)</td></tr>
+    <tr><td>ghost--inverted</td><td>transparent, weiß (auf dunkel)</td><td>0 6px 16px rgba(255,255,255,.15)</td></tr>
+  </table>
+  <h3>Footer &amp; Bild-Platzhalter</h3>
+  <p><strong>Footer:</strong> BG surface, 4-Spalten-Grid (Brand · Bereiche · Kontakt · Öffnungszeiten) + Legal-Zeile; 2 Spalten ≤ 860, 1 ≤ 480. <strong>Platzhalter <code>.ph</code>:</strong> diagonal gestreift mit Foto-Label; beim Umbau durch <code>next/image</code> ersetzen (Hero <code>priority</code>, Filter <code>saturate(1.1) brightness(.95)</code>).</p>
+
+  <h2>5 · Screens</h2>
+
+  <h3>5.1 Startseite — <code>index.html</code> (Option C)</h3>
+  <ol>
+    <li><strong>Hero:</strong> vollbreites Bild, Höhe 88vh (min 600 / max 820px), dunkler Verlaufs-Scrim. Unten links: Eyebrow „Familienbetrieb seit 1978“, H1 „Drei Handwerke, ein Name.“ <code>clamp(2.75rem,6.5vw,5rem)</code> weiß, Tagline kursiv, 2 CTAs (primary → Biergarten, ghost-inverted → Backstube).</li>
+    <li><strong>Intro:</strong> zentriert, H2 „Bewirten, beliefern, backen“.</li>
+    <li><strong>Drei Karten <code>.hcard</code>:</strong> Foto + Text, abwechselnde Spaltenverteilung (even gespiegelt), BG surface, Radius xl, Shadow 0 10px 30px rgba(86,86,85,.07). Hover: translateY(-3px) + Shadow .13, Link → accent. Je Karte: runde rote Nummer 40px, Caps-Label, H3-Tagline, Text, Link. Ganze Karte = <code>&lt;a&gt;</code>. (1 Biergarten · 2 Catering · 3 Backstube)</li>
+    <li><strong>Schluss-Band:</strong> dunkel, H2 „Ein Anruf, ein ganzes Fest“, 2 CTAs.</li>
+    <li><strong>Footer.</strong> ≤ 860px: Karten einspaltig, Foto oben.</li>
+  </ol>
+
+  <h3>5.2 Biergarten — <code>biergarten.html</code></h3>
+  <p>Page-Hero „Hock di na.“ · Intro (Text + Foto 4:5) · <strong>Speisekarte</strong> (BG surface): Blöcke „Vesper &amp; Warmes“ + „Getränke“, H3 mit rotem Unterstrich, Positionsliste mit Name/Beschreibung links + Preis rechts (Playfair 700), gepunktete Trenner, Tags als rote Outline-Chips · Info-Cards (Öffnungszeiten · Anfahrt/Parken · Größere Runden) · Footer.</p>
+
+  <h3>5.3 Catering — <code>catering.html</code></h3>
+  <p>Page-Hero „Ihr Fest, unser Handwerk.“ · <strong>Beispiel-Menüs</strong> (3→2→1 Grid): Cards mit Foto 3:2, H3, Text, Meta (Preis/Mindestgäste), „Menü ansehen →“, Hover-Shadow + Link accent (6 Beispiele) · <strong>Ablauf</strong> (4 Schritte, große rote Nummern) · <strong>Anfrageformular</strong> (zweispaltig; Felder Name, E-Mail, Anlass, Gäste, Datum, Nachricht; Focus rote Outline). <span class="pill">Demo</span> <code>onsubmit=return false</code> → Backend/E-Mail anbinden.</p>
+
+  <h3>5.4 Backstube — <code>backstube.html</code> (Warenkorb)</h3>
+  <p>Header mit <strong>Warenkorb-Button</strong> + roter Count-Badge. Page-Hero „Schnell sei, sonst isch's weg.“ · Info-Banner · <strong>Produktraster</strong> (3→2→1, aus <code>products[]</code>): Card mit Foto 4:3, optionalem Badge, H3, Text, Preis (Playfair 700) + „+ In den Korb“. 6 Produkte: Brezel 1,20 · Briegl 0,95 · Körnerwecken 1,10 · Laugenstange 1,40 · Bauernbrot 4,80 · Sonntagszopf 3,60 €. · <strong>Drawer</strong> (380px, von rechts, Scrim): Zeilen mit Name, Summe, Mengen-Stepper (–/+); Fuß mit Gesamtsumme + „Zur Abholung bestellen“. Esc/Scrim/× schließt. <span class="pill">Demo</span> keine echte Bestellung.</p>
+
+  <h2>6 · Interaktionen &amp; State</h2>
+  <ul>
+    <li><strong>Navigation:</strong> Logo → index.html; Nav/CTAs/Cards → jeweilige Unterseite; Biergarten-Anker <code>#speisekarte</code>.</li>
+    <li><strong>Hover-System:</strong> Cards heben per Shadow; Link-/Icon-Text → accent; Buttons nur Schatten; Transition .2s.</li>
+    <li><strong>Scroll-Reveal</strong> (optional): <code>.scroll-reveal</code> opacity 0 + translateY 20px → IntersectionObserver (.12) setzt <code>.is-visible</code>; Flag <code>enable-scroll-animations</code> am body; <code>prefers-reduced-motion</code> respektieren.</li>
+    <li><strong>Backstube-Drawer:</strong> öffnet bei Add, schließt per ×/Scrim/Esc, Transition .3s.</li>
+  </ul>
+  <h3>State (nur Backstube)</h3>
+  <p><code>cart: { [id]: qty }</code> · <code>addToCart(id)</code> (+1, Drawer auf) · <code>changeQty(id, ±1)</code> (0 = entfernen). Abgeleitet: Badge-Count, Summe = Σ(preis×menge), Format de-DE €. <strong>Persistenz empfohlen</strong> (localStorage); Produktdaten später aus CMS/Backend.</p>
+
+  <h2>7 · Responsive &amp; Assets</h2>
+  <div class="two">
+    <div>
+      <h4>Responsive</h4>
+      <ul>
+        <li>Nav verschwindet ≤ 860px → Hamburger nachrüsten</li>
+        <li>Karten/Grids/Footer kollabieren wie in §5</li>
+        <li>Heros nutzen <code>clamp()</code>; Container-Padding skaliert</li>
+        <li>Touch-Ziele ≥ 44px; dunkler Text immer voll weiß</li>
+      </ul>
+    </div>
+    <div>
+      <h4>Assets</h4>
+      <ul>
+        <li><strong>Logo:</strong> echtes WebP/SVG ausstehend (Fallback aktiv)</li>
+        <li><strong>Fotos:</strong> alle Platzhalter; benötigt Hero 1920×1080, je Bereich 1, Catering 6× 3:2, Backwaren 6× 4:3, Biergarten-Intro 4:5</li>
+        <li>Stil warm/authentisch, <code>next/image</code> + Hero <code>priority</code></li>
+        <li>Keine Marken-/Drittanbieter-Assets im Prototyp</li>
+      </ul>
+    </div>
+  </div>
+
+  <h2>8 · Dateien im Bundle</h2>
+  <table>
+    <tr><th>Datei</th><th>Inhalt</th></tr>
+    <tr><td><code>index.html</code></td><td>Finale Startseite (Option C)</td></tr>
+    <tr><td><code>biergarten.html</code> · <code>catering.html</code> · <code>backstube.html</code></td><td>Bereichsseiten (Backstube mit Warenkorb)</td></tr>
+    <tr><td><code>assets/tokens.css</code></td><td>Tokens, Buttons, Logo, Platzhalter, Helpers</td></tr>
+    <tr><td><code>assets/site.css</code></td><td>Header, Page-Hero, Sections, Footer</td></tr>
+    <tr><td><code>kurvenbeck-design-guide.md</code></td><td>Original-Design-Guide (Referenz)</td></tr>
+    <tr><td><code>home-klassisch.html</code> · <code>home-split.html</code></td><td>Optionen A/B — Referenz, out of scope</td></tr>
+  </table>
+
+  <h2>9 · Offene Punkte / To-do</h2>
+  <ol>
+    <li><strong>Mobile-Navigation</strong> (Hamburger/Off-Canvas) bauen.</li>
+    <li><strong>Catering-Formular</strong> an Backend/E-Mail anbinden inkl. Validierung &amp; Erfolgs-/Fehlerzustand.</li>
+    <li><strong>Warenkorb</strong> produktiv: Persistenz, Abhol-Slot, Zusammenfassung, Checkout.</li>
+    <li><strong>Echte Fotos + Logo</strong> einsetzen.</li>
+    <li><strong>Standardseiten:</strong> Impressum, Datenschutz, AGB, Kontakt/Anfahrt (Karte).</li>
+    <li><strong>Produktdaten/Speisekarte</strong> aus CMS/Backend statt statisch.</li>
+    <li><strong>A11y/SEO:</strong> Landmarks, Alt-Texte, Fokus-Styles, Meta/OG.</li>
+    <li>Inhalte (Adresse, Telefon, Preise, Zeiten) sind Platzhalter — final einpflegen.</li>
+  </ol>
+
+  <div class="foot">
+    <span>Kurvenbeck · Entwickler-Handoff</span>
+    <span>Begleitend: README.md (identischer Inhalt in Markdown)</span>
+  </div>
+
+</div>
+</body>
+</html>

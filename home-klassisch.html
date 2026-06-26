@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Kurvenbeck — Biergarten · Catering · Backstube</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  body { background: var(--color-background); }
+
+  /* Hero — editorial, textgeführt */
+  .hero-a { background: var(--color-surface); border-bottom: 1px solid var(--color-border); }
+  .hero-a .container {
+    display: grid; grid-template-columns: 1.05fr 0.95fr; gap: var(--space-20);
+    align-items: center; padding-block: var(--space-24);
+  }
+  .hero-a h1 { font-size: clamp(2.75rem, 5.5vw, 4.25rem); margin-top: var(--space-5); }
+  .hero-a h1 .accent { color: var(--color-accent); font-style: italic; }
+  .hero-a .lede { font-size: var(--text-xl); color: var(--color-text-secondary); margin-top: var(--space-6); max-width: 42ch; line-height: var(--leading-snug); }
+  .hero-a .cta-row { display: flex; gap: var(--space-4); margin-top: var(--space-10); flex-wrap: wrap; }
+  .hero-a .hero-photo { aspect-ratio: 4/5; border-radius: var(--radius-lg); }
+  @media (max-width: 980px) {
+    .hero-a .container { grid-template-columns: 1fr; gap: var(--space-12); padding-block: var(--space-16); }
+    .hero-a .hero-photo { aspect-ratio: 16/10; order: -1; }
+  }
+
+  /* Editorial Zigzag-Reihen */
+  .bereiche { padding-block: var(--space-24) var(--space-12); }
+  .bereiche-intro { text-align: center; max-width: 56ch; margin: 0 auto var(--space-20); }
+  .bereiche-intro h2 { font-size: var(--text-4xl); margin-top: var(--space-3); }
+  .bereiche-intro p { color: var(--color-text-secondary); font-size: var(--text-lg); margin-top: var(--space-4); }
+
+  .row {
+    display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-20);
+    align-items: center; padding-block: var(--space-16);
+    border-top: 1px solid var(--color-border);
+  }
+  .row:last-child { border-bottom: 1px solid var(--color-border); }
+  .row .ph { aspect-ratio: 5/4; border-radius: var(--radius-lg); }
+  .row .row-text .idx {
+    font-family: var(--font-display); font-weight: 800; font-size: var(--text-2xl);
+    color: var(--color-accent);
+  }
+  .row .row-text h3 { font-size: clamp(2rem, 3.4vw, 2.75rem); margin: var(--space-2) 0 var(--space-4); }
+  .row .row-text .swab { font-style: italic; color: var(--color-text-secondary); }
+  .row .row-text p { color: var(--color-text-secondary); font-size: var(--text-lg); line-height: var(--leading-relaxed); max-width: 44ch; }
+  .row .row-text .more { display: inline-flex; align-items: center; gap: var(--space-2); margin-top: var(--space-6); font-weight: 500; color: var(--color-primary); transition: color var(--transition-fast); }
+  .row .row-text .more:hover { color: var(--color-accent); }
+  .row.reverse .ph { order: 2; }
+  @media (max-width: 980px) {
+    .row, .row.reverse { grid-template-columns: 1fr; gap: var(--space-8); }
+    .row .ph, .row.reverse .ph { order: -1; aspect-ratio: 16/10; }
+  }
+
+  /* Statement */
+  .statement { background: var(--color-dark-bg); color: #fff; padding-block: var(--space-24); }
+  .statement .container { text-align: center; max-width: 60ch; }
+  .statement p.quote { font-family: var(--font-display); font-weight: 700; font-style: italic; font-size: clamp(1.75rem, 3.4vw, 2.75rem); line-height: var(--leading-snug); color: #fff; }
+  .statement .sig { margin-top: var(--space-8); font-size: var(--text-sm); letter-spacing: var(--tracking-wide); text-transform: uppercase; color: rgba(255,255,255,0.6); }
+</style>
+</head>
+<body class="enable-scroll-animations">
+
+<header class="site-header">
+  <div class="container">
+    <a href="home-klassisch.html" class="kb-logo">Kurven<span class="kb-mark">beck</span><small>seit 1978</small></a>
+    <nav class="site-nav">
+      <a href="biergarten.html">Biergarten</a>
+      <a href="catering.html">Catering</a>
+      <a href="backstube.html">Backstube</a>
+    </nav>
+    <div class="header-actions">
+      <a href="catering.html" class="btn btn-primary">Catering anfragen</a>
+    </div>
+  </div>
+</header>
+
+<section class="hero-a" data-screen-label="Home A · Hero">
+  <div class="container">
+    <div>
+      <p class="eyebrow">Familienbetrieb · Biergarten · Catering · Backstube</p>
+      <h1>Drei Handwerke,<br><span class="accent">ein</span> Name.</h1>
+      <p class="lede">Seit 1978 macht die Familie Kurvenbeck, was sie am besten kann: bewirten, beliefern und backen. Alles aus einer Hand — frisch, ehrlich und mit Liebe zum Schwäbischen.</p>
+      <div class="cta-row">
+        <a href="biergarten.html" class="btn btn-primary">Biergarten entdecken</a>
+        <a href="backstube.html" class="btn btn-ghost">Zur Backstube</a>
+      </div>
+    </div>
+    <div class="ph hero-photo" data-label="Foto: Familie im Biergarten, warmes Abendlicht — 4:5"></div>
+  </div>
+</section>
+
+<section class="bereiche">
+  <div class="container">
+    <div class="bereiche-intro scroll-reveal">
+      <p class="eyebrow">Unsere drei Bereiche</p>
+      <h2>Für jeden Anlass das Richtige</h2>
+      <p>Jeder Bereich steht für sich — und doch hängt alles zusammen. Was im Biergarten auf den Tisch kommt, backen wir selbst und liefern es zu Ihrem Fest.</p>
+    </div>
+
+    <div class="row scroll-reveal">
+      <div class="ph" data-label="Foto: Biergarten unter Kastanien — 5:4"></div>
+      <div class="row-text">
+        <span class="idx">01</span>
+        <h3>Biergarten</h3>
+        <p><span class="swab">„Hock di na.“</span> Schattige Plätze, kühles Bier und ehrliche schwäbische Küche. Der Ort, an dem der Feierabend anfängt und man gern länger sitzt.</p>
+        <a href="biergarten.html" class="more">Zur Speisekarte →</a>
+      </div>
+    </div>
+
+    <div class="row reverse scroll-reveal">
+      <div class="ph" data-label="Foto: Catering-Buffet, festlich — 5:4"></div>
+      <div class="row-text">
+        <span class="idx">02</span>
+        <h3>Catering</h3>
+        <p><span class="swab">„Ihr Fest, unser Handwerk.“</span> Von der kleinen Feier bis zum großen Event — wir kochen, liefern und kümmern uns um alles, was schmeckt.</p>
+        <a href="catering.html" class="more">Catering ansehen →</a>
+      </div>
+    </div>
+
+    <div class="row scroll-reveal">
+      <div class="ph" data-label="Foto: Frische Brezeln &amp; Brot — 5:4"></div>
+      <div class="row-text">
+        <span class="idx">03</span>
+        <h3>Backstube</h3>
+        <p><span class="swab">„Schnell sei, sonst isch's weg.“</span> Brezel, Briegl und Körnerwecken — in der Nacht von Hand geschlungen, am Morgen frisch aus dem Steinofen.</p>
+        <a href="backstube.html" class="more">Online vorbestellen →</a>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="statement">
+  <div class="container">
+    <p class="quote">„Bei uns kommt nichts auf den Tisch, was wir nicht auch selber essen würden.“</p>
+    <p class="sig">— Familie Kurvenbeck</p>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="kb-logo">Kurven<span class="kb-mark">beck</span></span>
+        <p>Biergarten, Catering und Backstube — drei Handwerke, ein Familienbetrieb. Seit 1978.</p>
+      </div>
+      <div>
+        <h4>Bereiche</h4>
+        <ul>
+          <li><a href="biergarten.html">Biergarten</a></li>
+          <li><a href="catering.html">Catering</a></li>
+          <li><a href="backstube.html">Backstube</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Mühlweg 12, 72074 Musterstadt</li>
+          <li>07071 / 12 34 56</li>
+          <li><a href="#">hallo@kurvenbeck.de</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Öffnungszeiten</h4>
+        <ul>
+          <li>Biergarten: Di–So 11–23 Uhr</li>
+          <li>Backstube: Mo–Sa 6–13 Uhr</li>
+          <li>Catering: nach Vereinbarung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 Kurvenbeck Familienbetrieb</span>
+      <span>Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+<script>
+  // Scroll-Reveal (Design Guide)
+  const io = new IntersectionObserver((entries) => {
+    entries.forEach(e => { if (e.isIntersecting) { e.target.classList.add('is-visible'); io.unobserve(e.target); } });
+  }, { threshold: 0.12 });
+  document.querySelectorAll('.scroll-reveal').forEach(el => io.observe(el));
+</script>
+
+</body>
+</html>

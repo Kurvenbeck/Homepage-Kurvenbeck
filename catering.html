@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Catering — Kurvenbeck</title>
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,700;0,800;1,700&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="assets/tokens.css">
+<link rel="stylesheet" href="assets/site.css">
+<style>
+  .cat-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-8); }
+  @media (max-width: 980px) { .cat-grid { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 640px)  { .cat-grid { grid-template-columns: 1fr; } }
+  .cat-card {
+    background: #fff; border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); overflow: hidden;
+    transition: box-shadow var(--transition-fast);
+    display: flex; flex-direction: column;
+  }
+  .cat-card:hover { box-shadow: 0 8px 24px rgba(86,86,85,0.10); }
+  .cat-card:hover .cat-more { color: var(--color-accent); }
+  .cat-card .ph { aspect-ratio: 3/2; border: none; border-bottom: 1px solid var(--color-border); }
+  .cat-body { padding: var(--space-8); display: flex; flex-direction: column; gap: var(--space-3); flex: 1; }
+  .cat-body h3 { font-size: var(--text-2xl); }
+  .cat-body p { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+  .cat-meta { font-size: var(--text-xs); color: var(--color-text-muted); letter-spacing: 0.02em; }
+  .cat-more { margin-top: auto; font-weight: 500; font-size: var(--text-sm); color: var(--color-primary); transition: color var(--transition-fast); }
+
+  /* Ablauf / Prozess */
+  .process-wrap { background: var(--color-surface); }
+  .process { display: grid; grid-template-columns: repeat(4,1fr); gap: var(--space-6); counter-reset: step; }
+  @media (max-width: 860px) { .process { grid-template-columns: 1fr 1fr; } }
+  @media (max-width: 480px) { .process { grid-template-columns: 1fr; } }
+  .step { counter-increment: step; }
+  .step .num {
+    font-family: var(--font-display); font-weight: 800; font-size: var(--text-4xl);
+    color: var(--color-accent); line-height: 1;
+  }
+  .step h4 { font-family: var(--font-body); font-weight: 500; font-size: var(--text-lg); color: var(--color-primary); margin: var(--space-3) 0 var(--space-2); }
+  .step p { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+
+  /* Anfrage */
+  .anfrage { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-16); align-items: start; }
+  @media (max-width: 860px) { .anfrage { grid-template-columns: 1fr; gap: var(--space-10); } }
+  .form-card { background: #fff; border: 1px solid var(--color-border); border-radius: var(--radius-lg); padding: var(--space-10); }
+  .field { margin-bottom: var(--space-5); }
+  .field label { display: block; font-size: var(--text-sm); font-weight: 500; color: var(--color-primary); margin-bottom: var(--space-2); }
+  .field input, .field select, .field textarea {
+    width: 100%; font-family: var(--font-body); font-size: var(--text-base);
+    padding: var(--space-3) var(--space-4); border: 1px solid var(--color-border);
+    border-radius: var(--radius-md); background: var(--color-surface); color: var(--color-text-primary);
+  }
+  .field input:focus, .field select:focus, .field textarea:focus { outline: 2px solid rgba(171,13,14,0.3); outline-offset: 1px; border-color: var(--color-accent); }
+  .field-row { display: grid; grid-template-columns: 1fr 1fr; gap: var(--space-4); }
+  @media (max-width: 480px) { .field-row { grid-template-columns: 1fr; } }
+  .quote-list { list-style: none; margin: var(--space-6) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-4); }
+  .quote-list li { display: flex; gap: var(--space-3); color: var(--color-text-secondary); font-size: var(--text-base); }
+  .quote-list .dot { width: 8px; height: 8px; border-radius: 50%; background: var(--color-accent); margin-top: 8px; flex: none; }
+</style>
+</head>
+<body>
+
+<header class="site-header">
+  <div class="container">
+    <a href="index.html" class="kb-logo">Kurven<span class="kb-mark">beck</span><small>Tradition</small></a>
+    <nav class="site-nav">
+      <a href="biergarten.html">Biergarten</a>
+      <a href="catering.html" class="active">Catering</a>
+      <a href="backstube.html">Backstube</a>
+    </nav>
+    <div class="header-actions">
+      <a href="#anfrage" class="btn btn-primary">Anfrage senden</a>
+    </div>
+  </div>
+</header>
+
+<section class="page-hero" data-screen-label="Catering Hero">
+  <div class="container">
+    <p class="eyebrow">Catering</p>
+    <h1>Ihr Fest, unser Handwerk.</h1>
+    <p class="lede">Von der kleinen Familienfeier bis zum Firmenevent mit 300 Gästen — wir kochen, liefern und kümmern uns um alles, was schmeckt.</p>
+  </div>
+</section>
+
+<section class="section">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">Beispiele aus unserer Küche</p>
+      <h2>Was wir für Sie zaubern</h2>
+      <p>Jedes Menü stellen wir individuell zusammen. Hier ein paar Lieblinge unserer Kunden als Inspiration.</p>
+    </div>
+    <div class="cat-grid">
+
+      <div class="cat-card">
+        <div class="ph" data-label="Foto: Fingerfood-Platte, Häppchen — 3:2"></div>
+        <div class="cat-body">
+          <h3>Fingerfood &amp; Flying Buffet</h3>
+          <p>Bunte Häppchen, die durch den Raum getragen werden — von Lachs-Praline bis Mini-Maultasche. Perfekt für Empfänge &amp; Vernissagen.</p>
+          <span class="cat-meta">ab 18 € pro Person · ab 20 Gäste</span>
+          <span class="cat-more">Menü ansehen →</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="ph" data-label="Foto: Schwäbisches Buffet, Spätzle — 3:2"></div>
+        <div class="cat-body">
+          <h3>Schwäbisches Buffet</h3>
+          <p>Maultaschen, Käsespätzle, Linsen mit Saitenwürstle, Kartoffelsalat &amp; Zwiebelrostbraten. Heimat zum Sattessen.</p>
+          <span class="cat-meta">ab 26 € pro Person · ab 30 Gäste</span>
+          <span class="cat-more">Menü ansehen →</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="ph" data-label="Foto: BBQ Grillstation, Glut — 3:2"></div>
+        <div class="cat-body">
+          <h3>BBQ &amp; Grillstation</h3>
+          <p>Live-Grill mit Steaks, Maiskolben und gegrilltem Gemüse. Unser Grillmeister steht bei Ihnen am Feuer.</p>
+          <span class="cat-meta">ab 32 € pro Person · ab 25 Gäste</span>
+          <span class="cat-more">Menü ansehen →</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="ph" data-label="Foto: Hochzeitstafel, festlich gedeckt — 3:2"></div>
+        <div class="cat-body">
+          <h3>Hochzeits-Menü</h3>
+          <p>Mehrgängig serviert, mit Service-Team und passendem Geschirr. Der schönste Tag — kulinarisch begleitet.</p>
+          <span class="cat-meta">individuelles Angebot</span>
+          <span class="cat-more">Menü ansehen →</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="ph" data-label="Foto: Frühstücks-Catering, Körbe — 3:2"></div>
+        <div class="cat-body">
+          <h3>Frühstück &amp; Brunch</h3>
+          <p>Frische Backwaren aus eigener Backstube, Aufschnitt, Marmeladen und warme Eierspeisen — direkt ins Büro geliefert.</p>
+          <span class="cat-meta">ab 14 € pro Person · ab 10 Gäste</span>
+          <span class="cat-more">Menü ansehen →</span>
+        </div>
+      </div>
+
+      <div class="cat-card">
+        <div class="ph" data-label="Foto: Suppen- &amp; Eintopf-Station — 3:2"></div>
+        <div class="cat-body">
+          <h3>Suppenküche to go</h3>
+          <p>Deftige Eintöpfe in der Thermo-Kanne für Betriebsfeste im Winter — Gulasch, Linseneintopf, Kürbissuppe.</p>
+          <span class="cat-meta">ab 11 € pro Person · ab 15 Gäste</span>
+          <span class="cat-more">Menü ansehen →</span>
+        </div>
+      </div>
+
+    </div>
+  </div>
+</section>
+
+<section class="section process-wrap">
+  <div class="container">
+    <div class="section-head">
+      <p class="eyebrow">So einfach geht's</p>
+      <h2>In vier Schritten zum Fest</h2>
+    </div>
+    <div class="process">
+      <div class="step">
+        <div class="num">01</div>
+        <h4>Anfragen</h4>
+        <p>Erzählen Sie uns von Anlass, Datum und Gästezahl — unverbindlich über das Formular.</p>
+      </div>
+      <div class="step">
+        <div class="num">02</div>
+        <h4>Beraten</h4>
+        <p>Wir melden uns binnen 48 Stunden und stellen ein Menü ganz nach Ihrem Geschmack zusammen.</p>
+      </div>
+      <div class="step">
+        <div class="num">03</div>
+        <h4>Genießen</h4>
+        <p>Wir liefern, bauen auf und kümmern uns auf Wunsch um den kompletten Service vor Ort.</p>
+      </div>
+      <div class="step">
+        <div class="num">04</div>
+        <h4>Abräumen</h4>
+        <p>Geschirr, Reste, Aufbau — alles nehmen wir wieder mit. Sie feiern, wir machen sauber.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="section" id="anfrage">
+  <div class="container anfrage">
+    <div>
+      <p class="eyebrow">Unverbindlich anfragen</p>
+      <h2 style="font-size:var(--text-4xl); margin-top:var(--space-3);">Lassen Sie uns Ihr Fest planen</h2>
+      <p style="color:var(--color-text-secondary); font-size:var(--text-lg); margin-top:var(--space-4); line-height:var(--leading-relaxed);">
+        Sagen Sie uns kurz, was Sie vorhaben. Wir erstellen ein passendes Angebot — kostenlos und ohne Verpflichtung.
+      </p>
+      <ul class="quote-list">
+        <li><span class="dot"></span> Antwort innerhalb von 48 Stunden</li>
+        <li><span class="dot"></span> Lieferung im Umkreis von 40 km</li>
+        <li><span class="dot"></span> Vegetarische &amp; vegane Optionen für jedes Menü</li>
+        <li><span class="dot"></span> Geschirr, Besteck &amp; Service auf Wunsch</li>
+      </ul>
+    </div>
+    <form class="form-card" onsubmit="return false;">
+      <div class="field-row">
+        <div class="field">
+          <label for="name">Name</label>
+          <input id="name" type="text" placeholder="Vor- und Nachname">
+        </div>
+        <div class="field">
+          <label for="mail">E-Mail</label>
+          <input id="mail" type="email" placeholder="name@email.de">
+        </div>
+      </div>
+      <div class="field-row">
+        <div class="field">
+          <label for="anlass">Anlass</label>
+          <select id="anlass">
+            <option>Geburtstag</option>
+            <option>Hochzeit</option>
+            <option>Firmenfeier</option>
+            <option>Vereinsfest</option>
+            <option>Sonstiges</option>
+          </select>
+        </div>
+        <div class="field">
+          <label for="gaeste">Gäste (ca.)</label>
+          <input id="gaeste" type="number" placeholder="z. B. 40">
+        </div>
+      </div>
+      <div class="field">
+        <label for="datum">Wunschdatum</label>
+        <input id="datum" type="date">
+      </div>
+      <div class="field">
+        <label for="nachricht">Ihre Nachricht</label>
+        <textarea id="nachricht" rows="3" placeholder="Worauf dürfen wir uns einstellen?"></textarea>
+      </div>
+      <button class="btn btn-primary" style="width:100%; justify-content:center;">Anfrage senden</button>
+      <p style="font-size:var(--text-xs); color:var(--color-text-muted); margin-top:var(--space-3); text-align:center;">Demo-Formular — keine echte Übermittlung.</p>
+    </form>
+  </div>
+</section>
+
+<footer class="site-footer">
+  <div class="container">
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <span class="kb-logo">Kurven<span class="kb-mark">beck</span></span>
+        <p>Biergarten, Catering und Backstube — drei Handwerke, ein Familienbetrieb. Seit 1978.</p>
+      </div>
+      <div>
+        <h4>Bereiche</h4>
+        <ul>
+          <li><a href="biergarten.html">Biergarten</a></li>
+          <li><a href="catering.html">Catering</a></li>
+          <li><a href="backstube.html">Backstube</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Kontakt</h4>
+        <ul>
+          <li>Mühlweg 12, 72074 Musterstadt</li>
+          <li>07071 / 12 34 56</li>
+          <li><a href="#">hallo@kurvenbeck.de</a></li>
+        </ul>
+      </div>
+      <div>
+        <h4>Öffnungszeiten</h4>
+        <ul>
+          <li>Biergarten: Di–So 11–23 Uhr</li>
+          <li>Backstube: Mo–Sa 6–13 Uhr</li>
+          <li>Catering: nach Vereinbarung</li>
+        </ul>
+      </div>
+    </div>
+    <div class="footer-legal">
+      <span>© 2026 Kurvenbeck Familienbetrieb</span>
+      <span>Impressum · Datenschutz · AGB</span>
+    </div>
+  </div>
+</footer>
+
+</body>
+</html>
