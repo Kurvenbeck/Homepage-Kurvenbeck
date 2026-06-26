@@ -3,6 +3,9 @@
 > Entwickler-Briefing für die Umsetzung mit Claude Code.
 > Stand: Juni 2026 · Sprache der Website: **Deutsch**
 
+> 📋 **Übergabe & Einstieg:** [`HANDOFF.md`](./HANDOFF.md) — Setup, Struktur,
+> aktueller Stand und nächste Schritte auf einen Blick.
+
 ---
 
 ## 0. Umsetzungsstand
