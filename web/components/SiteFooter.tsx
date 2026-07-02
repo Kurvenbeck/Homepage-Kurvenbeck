@@ -11,7 +11,7 @@ export function SiteFooter() {
             <Logo asLink={false} />
             <p>
               Biergarten, Catering und Backstube — drei Handwerke, ein
-              Familienbetrieb. Seit 1978.
+              Familienbetrieb.
             </p>
           </div>
           <div>
@@ -38,14 +38,6 @@ export function SiteFooter() {
               <li>
                 <a href="mailto:hallo@kurvenbeck.de">hallo@kurvenbeck.de</a>
               </li>
-            </ul>
-          </div>
-          <div>
-            <h4>Öffnungszeiten</h4>
-            <ul>
-              <li>Biergarten: Di–So 11–23 Uhr</li>
-              <li>Backstube: Mo–Sa 6–13 Uhr</li>
-              <li>Catering: nach Vereinbarung</li>
             </ul>
           </div>
         </div>

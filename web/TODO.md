@@ -58,6 +58,12 @@ getauscht werden.
 ## 5. Inhalte & Recht finalisieren
 
 - [ ] Speisekarte/Preise/Öffnungszeiten/Adresse final einpflegen (z. B. via CMS).
+- [ ] **Öffnungszeiten ans Backend binden (eine Quelle pro Bereich).** Aktuell hart
+      im Code: Biergarten `Sa & So · Feiertage, 11–22 Uhr` in `app/biergarten/page.tsx`.
+      Ziel: pro Bereich (Biergarten, Backstube, Catering) genau eine Quelle
+      (z. B. `site_settings`/CMS), aus der die jeweilige Leistungsseite liest.
+      Der Footer zeigt bewusst **keine** Öffnungszeiten mehr, sondern verlinkt nur
+      auf die Bereiche — Doppelpflege vermeiden.
 - [ ] Impressum, Datenschutz, AGB mit echten Texten füllen
       (`app/impressum`, `app/datenschutz`, `app/agb` sind Platzhalter).
 
