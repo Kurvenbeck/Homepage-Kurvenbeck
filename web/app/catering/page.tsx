@@ -98,19 +98,18 @@ export default function CateringPage() {
 
             <div className="cat-card">
               <Photo
-                img={photos.cateringBbq}
-                label="Foto: BBQ Grillstation, Glut — 3:2"
+                img={null}
+                label="Foto: Geburtstagstafel, festlich — 3:2"
                 sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 33vw"
               />
               <div className="cat-body">
-                <h3>BBQ & Grillstation</h3>
+                <h3>Geburtstage & Jubiläen</h3>
                 <p>
-                  Live-Grill mit Steaks, Maiskolben und gegrilltem Gemüse.
-                  Unser Grillmeister steht bei dir am Feuer.
+                  Ob runder Geburtstag oder besonderes Jubiläum — wir
+                  gestalten dein Fest mit Herz, gutem Essen und dem richtigen
+                  Rahmen.
                 </p>
-                <span className="cat-meta">
-                  ab 32 € pro Person · ab 25 Gäste
-                </span>
+                <span className="cat-meta">individuelles Angebot</span>
                 <span className="cat-more">Menü ansehen →</span>
               </div>
             </div>
@@ -128,44 +127,6 @@ export default function CateringPage() {
                   Der schönste Tag — kulinarisch begleitet.
                 </p>
                 <span className="cat-meta">individuelles Angebot</span>
-                <span className="cat-more">Menü ansehen →</span>
-              </div>
-            </div>
-
-            <div className="cat-card">
-              <Photo
-                img={photos.cateringFruehstueck}
-                label="Foto: Frühstücks-Catering, Körbe — 3:2"
-                sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 33vw"
-              />
-              <div className="cat-body">
-                <h3>Frühstück & Brunch</h3>
-                <p>
-                  Frische Backwaren aus eigener Backstube, Aufschnitt, Marmeladen
-                  und warme Eierspeisen — direkt ins Büro geliefert.
-                </p>
-                <span className="cat-meta">
-                  ab 14 € pro Person · ab 10 Gäste
-                </span>
-                <span className="cat-more">Menü ansehen →</span>
-              </div>
-            </div>
-
-            <div className="cat-card">
-              <Photo
-                img={photos.cateringSuppenkueche}
-                label="Foto: Suppen- & Eintopf-Station — 3:2"
-                sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 33vw"
-              />
-              <div className="cat-body">
-                <h3>Suppenküche to go</h3>
-                <p>
-                  Deftige Eintöpfe in der Thermo-Kanne für Betriebsfeste im
-                  Winter — Gulasch, Linseneintopf, Kürbissuppe.
-                </p>
-                <span className="cat-meta">
-                  ab 11 € pro Person · ab 15 Gäste
-                </span>
                 <span className="cat-more">Menü ansehen →</span>
               </div>
             </div>
