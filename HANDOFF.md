@@ -62,7 +62,7 @@ web/
 ├─ components/
 │  ├─ SiteHeader.tsx      # Sticky-Header + mobile Off-Canvas-Nav (client)
 │  ├─ SiteFooter.tsx
-│  ├─ Logo.tsx            # Wortmarke-Fallback (echtes Logo ausstehend)
+│  ├─ Logo.tsx            # Echtes Logo (public/images/logo/) in Header/Footer/Hero
 │  ├─ Photo.tsx           # next/image-Slot mit Platzhalter-Fallback
 │  ├─ Placeholder.tsx     # gestreifter Platzhalter
 │  ├─ CateringForm.tsx    # Formular mit Validierung + Erfolgszustand (client)
@@ -95,13 +95,16 @@ web/
 
 **Fertig:** alle vier Seiten + Rechts-Platzhalter, mobile Navigation, Sticky-Header,
 Footer, A11y/SEO-Basis (Landmarks, aria, Fokus-Styles, `prefers-reduced-motion`,
-Metadata/OG), Bild-System, zentrale Kontaktdaten.
+Metadata/OG), Bild-System, zentrale Kontaktdaten, **echtes Logo** (Header, Footer,
+großes Badge im Startseiten-Hero, Favicon/Apple-Touch-Icon), **Catering-Fotos**
+(alle vier Menü-Kacheln befüllt).
 
 **Demos (noch ohne Backend):**
 - **Catering-Formular** — Client-Validierung + Erfolgszustand, aber kein echter Versand.
 - **Backstube-Warenkorb** — voll bedienbar inkl. Persistenz, aber kein echter Checkout.
 
-**Platzhalter:** echte Fotos, echtes Logo, Inhalte (Adresse/Preise/Öffnungszeiten),
+**Platzhalter:** noch fehlende Fotos (Biergarten/Backstube/Home-Karten teils offen,
+siehe `web/public/images/README.md`), Inhalte (Adresse/Preise/Öffnungszeiten),
 Rechtstexte.
 
 ## 8. Nächste Schritte
@@ -109,12 +112,12 @@ Rechtstexte.
 Priorisiert in **`web/TODO.md`** — kompakt:
 
 1. Telefonnummer aus Supabase `site_settings` laden (Quelle: `siteSettings.ts`).
-2. Echte Fotos einsetzen + Slots freischalten (+ `alt`-Texte).
-3. Echtes Logo einsetzen.
-4. Catering-Formular an Backend/E-Mail anbinden.
-5. Backstube-Checkout + Produktdaten aus CMS.
-6. Inhalte & Rechtstexte finalisieren.
-7. Repo in Org `Kurvenbeck` umziehen.
+2. Restliche echte Fotos einsetzen + Slots freischalten (+ `alt`-Texte) — Logo und
+   Catering-Fotos sind bereits erledigt.
+3. Catering-Formular an Backend/E-Mail anbinden.
+4. Backstube-Checkout + Produktdaten aus CMS.
+5. Inhalte & Rechtstexte finalisieren.
+6. Repo in Org `Kurvenbeck` umziehen.
 
 ## 9. Deployment (noch offen)
 

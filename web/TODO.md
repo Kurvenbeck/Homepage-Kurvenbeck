@@ -31,37 +31,37 @@ getauscht werden.
 
 **Hinweis:** Das `supabase`-Skill kann für Schema, RLS und SSR-Integration genutzt werden.
 
-## 2. Echte Fotos einsetzen
+## 2. Restliche echte Fotos einsetzen
 
-- [ ] WebP-Dateien gemäß `public/images/README.md` ablegen.
+**Erledigt:** Logo (Header/Footer/Hero-Badge + Favicon), alle vier Catering-Kacheln
+(Fingerfood, Schwäbisches Buffet, Geburtstage & Jubiläen, Hochzeits-Menü).
+
+- [ ] Verbleibende WebP-Dateien gemäß `public/images/README.md` ablegen
+      (Biergarten-Intro, Backstube-Produkte, Home-Bereichskarten — prüfen, welche
+      Slots in `web/lib/images.ts` noch `null` sind).
 - [ ] Slots in `web/lib/images.ts` freischalten (von `null` auf `{ src, alt }`).
 - [ ] Aussagekräftige `alt`-Texte je Bild (A11y/SEO).
 - [ ] Hero-Bild bleibt `priority`.
 
-## 3. Echtes Logo
-
-- [ ] Logo als WebP/SVG einsetzen statt Wortmarke-Fallback (`components/Logo.tsx`),
-      sobald das Asset vorliegt.
-
-## 4. Catering-Formular an Backend anbinden
+## 3. Catering-Formular an Backend anbinden
 
 - [ ] `components/CateringForm.tsx` aktuell Demo (kein echter Versand).
       An E-Mail/Backend anbinden inkl. serverseitiger Validierung, Erfolgs-/Fehlerzustand,
       Spam-Schutz.
 
-## 5. Backstube-Bestellung produktiv machen
+## 4. Backstube-Bestellung produktiv machen
 
 - [ ] Checkout-Flow statt Demo-Warenkorb: Abhol-Termin/Slot-Auswahl,
       Zusammenfassung, Bestellübermittlung.
 - [ ] Produktdaten aus CMS/Backend statt `web/lib/products.ts`.
 
-## 6. Inhalte & Recht finalisieren
+## 5. Inhalte & Recht finalisieren
 
 - [ ] Speisekarte/Preise/Öffnungszeiten/Adresse final einpflegen (z. B. via CMS).
 - [ ] Impressum, Datenschutz, AGB mit echten Texten füllen
       (`app/impressum`, `app/datenschutz`, `app/agb` sind Platzhalter).
 
-## 7. Repo auf Kurvenbeck-Org umziehen
+## 6. Repo auf Kurvenbeck-Org umziehen
 
 **Stand:** Code liegt vorerst im privaten Repo
 `ihringmichael-max/Homepage-Kurvenbeck` (Account `ihringmichael-max` ist kein
@@ -76,7 +76,7 @@ Mitglied der Org `Kurvenbeck`, daher konnte nicht direkt nach
     `git remote set-url origin https://github.com/Kurvenbeck/Homepage-Kurvenbeck.git && git push -u origin main`
 - [ ] Danach ggf. lokale Klone/Links aktualisieren.
 
-## 8. Feinschliff (optional)
+## 7. Feinschliff (optional)
 
 - [ ] `aria-label` für Telefon-/WhatsApp-CTAs (z. B. „Per WhatsApp schreiben").
 - [ ] Scroll-Reveal selektiv aktivieren (`enable-scroll-animations` am `<body>`),
