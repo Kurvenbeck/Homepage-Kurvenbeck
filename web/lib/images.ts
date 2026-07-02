@@ -9,17 +9,17 @@ export type Img = { src: string; alt: string };
 
 export const photos = {
   // Startseite
-  homeHero: null as Img | null, // /images/hero/startseite-hero.webp (1920×1080)
-  homeBiergarten: null as Img | null, // /images/home/biergarten.webp (4:3)
-  homeCatering: null as Img | null, // /images/home/catering.webp (4:3)
-  homeBackstube: null as Img | null, // /images/home/backstube.webp (4:3)
+  homeHero: { src: "/images/hero/startseite-hero.webp", alt: "Kurvenbeck – Gasthaus und Biergarten im Abendlicht" },
+  homeBiergarten: { src: "/images/home/startseite-hero.webp", alt: "Biergarten am Kurvenbeck – gemütliche Terrasse im Freien" },
+  homeCatering: { src: "/images/catering/catering.webp", alt: "Schwäbisches Buffet mit Spätzle, Schnitzel und Braten – Kurvenbeck Catering" },
+  homeBackstube: { src: "/images/backstube/backstube.webp", alt: "Frische Laugenbrezel und Körnerwecken aus der Kurvenbeck-Backstube" },
 
   // Biergarten
-  biergartenGarten: null as Img | null, // /images/biergarten/garten.webp (4:5)
+  biergartenGarten: { src: "/images/biergarten/garten.webp", alt: "Biergarten Kurvenbeck – Außenbereich mit Bäumen und Abendsonne" },
 
   // Catering (3:2)
   cateringFingerfood: null as Img | null, // /images/catering/fingerfood.webp
-  cateringBuffet: null as Img | null, // /images/catering/schwaebisches-buffet.webp
+  cateringBuffet: { src: "/images/catering/catering.webp", alt: "Schwäbisches Buffet mit Spätzle, Schnitzel, Braten und Gemüse" },
   cateringBbq: null as Img | null, // /images/catering/bbq.webp
   cateringHochzeit: null as Img | null, // /images/catering/hochzeit.webp
   cateringFruehstueck: null as Img | null, // /images/catering/fruehstueck.webp
@@ -31,9 +31,9 @@ export const photos = {
  * Beispiel: für die Brezel `brezel: { src: "/images/backstube/brezel.webp", alt: "…" }`.
  */
 export const backstubePhotos: Record<string, Img | null> = {
-  brezel: null,
+  brezel: { src: "/images/backstube/backstube.webp", alt: "Frische Laugenbrezel aus der Kurvenbeck-Backstube" },
   briegl: null,
-  koerner: null,
+  koerner: { src: "/images/backstube/backstube.webp", alt: "Körnerwecken aus der Kurvenbeck-Backstube" },
   laugen: null,
   bauernbrot: null,
   zopf: null,

@@ -34,9 +34,9 @@ export default function HomePage() {
           <p className="eyebrow">Willkommen bei Kurvenbeck</p>
           <h2>Bewirten, beliefern, backen</h2>
           <p>
-            Seit drei Generationen führen wir unseren Familienbetrieb mit dem
-            gleichen Versprechen: ehrliches Handwerk, regionale Zutaten und
-            schwäbische Gastfreundschaft. Drei Bereiche, ein Anspruch.
+            Hinter Kurvenbeck steckt eine junge Familie mit echter Leidenschaft
+            fürs Handwerk. Selbstgemachtes aus der Backstube, persönliches
+            Catering und ein Biergarten zum Wohlfühlen — alles aus einer Hand.
           </p>
         </div>
       </section>
@@ -57,9 +57,8 @@ export default function HomePage() {
               </span>
               <h3>Hock di na.</h3>
               <p>
-                Schattige Plätze unter alten Kastanien, frisch gezapftes Bier
-                und ehrliche schwäbische Küche. Der Ort, an dem der Feierabend
-                anfängt — und an dem man gern länger bleibt.
+                Ein kühles Glas in der Sonne, ein lauschiges Eck im Schatten
+                und schwäbische Küche, die noch von Hand entsteht.
               </p>
               <span className="hc-more">Zur Speisekarte →</span>
             </div>
@@ -80,8 +79,8 @@ export default function HomePage() {
               <h3>Dein Fest, unser Handwerk.</h3>
               <p>
                 Von der kleinen Familienfeier bis zum Firmenevent mit 300
-                Gästen. Wir kochen, liefern und kümmern uns um alles, was
-                schmeckt — du feierst einfach mit.
+                Gästen — wir kochen, liefern und kümmern uns um alles, was
+                schmeckt.
               </p>
               <span className="hc-more">Catering ansehen →</span>
             </div>
@@ -99,10 +98,10 @@ export default function HomePage() {
                 <span className="num">3</span>
                 <span className="lbl">Backstube</span>
               </span>
-              <h3>Schnell sei, sonst isch&apos;s weg.</h3>
+              <h3>Sei schnell, sonst isch&apos;s weg.</h3>
               <p>
-                Brezel, Briegl und Körnerwecken — in der Nacht von Hand
-                geschlungen, am Morgen frisch aus dem Steinofen. Heute online
+                Brezel, Briegl, Körnerwecken und mehr — in der Nacht von Hand
+                geformt, am Morgen frisch aus dem Holzbackofen. Heute online
                 vorbestellen, morgen früh abholen.
               </p>
               <span className="hc-more">Online vorbestellen →</span>
