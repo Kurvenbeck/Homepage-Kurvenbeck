@@ -10,7 +10,7 @@ import { telHref, whatsappHref } from "@/lib/siteSettings";
 export const metadata: Metadata = {
   title: "Biergarten",
   description:
-    "Schwäbische Küche, kühle Getränke und schattige Plätze unter alten Kastanien.",
+    "Schwäbische Küche, kühle Getränke und schattige Plätze — nur am Wochenende und an Feiertagen.",
 };
 
 export default function BiergartenPage() {
@@ -26,15 +26,26 @@ export default function BiergartenPage() {
         }
       />
 
-      <section className="page-hero" data-screen-label="Biergarten Hero">
-        <div className="container">
-          <p className="eyebrow">Biergarten</p>
-          <h1>Hock di na.</h1>
-          <p className="lede">
-            Ein kühles Glas in der Sonne, ein lauschiges Eck im Schatten und
-            schwäbische Küche, die noch von Hand entsteht.
-          </p>
-        </div>
+      <section className="page-hero page-hero--photo" data-screen-label="Biergarten Hero">
+        <Photo
+          img={photos.biergartenGarten}
+          label="Foto: Biergarten – Außenbereich mit Abendsonne"
+          baseClass="subpage-hero-img"
+          priority
+          sizes="100vw"
+        >
+          <div className="scrim" />
+          <div className="subpage-hero-inner">
+            <div className="container">
+              <p className="eyebrow">Biergarten</p>
+              <h1>Hock di na.</h1>
+              <p className="lede">
+                Ein kühles Glas in der Sonne, ein lauschiges Eck im Schatten und
+                schwäbische Küche, die noch von Hand entsteht.
+              </p>
+            </div>
+          </div>
+        </Photo>
       </section>
 
       <section className="section">
@@ -86,6 +97,16 @@ export default function BiergartenPage() {
                 <IconBrandWhatsapp size={18} stroke={1.75} aria-hidden />
                 WhatsApp
               </a>
+            </div>
+
+            <div className="opening-hours" style={{ marginTop: "var(--space-8)" }}>
+              <p className="eyebrow" style={{ marginBottom: "var(--space-2)" }}>Öffnungszeiten</p>
+              <p style={{ fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--color-text-primary)" }}>
+                Sa &amp; So · Feiertage
+              </p>
+              <p style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-1)", color: "var(--color-text-secondary)" }}>
+                11 – 22 Uhr
+              </p>
             </div>
           </div>
           <Photo
@@ -223,28 +244,6 @@ export default function BiergartenPage() {
       <section className="section">
         <div className="container">
           <div className="info-cards">
-            <div className="info-card">
-              <h4>Öffnungszeiten</h4>
-              <p className="big">11 – 23 Uhr</p>
-              <p style={{ marginTop: "var(--space-2)" }}>
-                Di – So &amp; an Feiertagen.
-                <br />
-                Montag Ruhetag.
-                <br />
-                Bei schönem Wetter durchgehend warme Küche.
-              </p>
-            </div>
-            <div className="info-card">
-              <h4>Finden &amp; Parken</h4>
-              <p>
-                Mühlweg 12
-                <br />
-                72074 Musterstadt
-              </p>
-              <p style={{ marginTop: "var(--space-3)" }}>
-                Kostenlose Parkplätze direkt am Garten, 6 Min. vom Bahnhof.
-              </p>
-            </div>
             <div className="info-card">
               <h4>Größere Runden</h4>
               <p>

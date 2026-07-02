@@ -350,6 +350,28 @@ a.text-link:hover { color: var(--color-accent); }
   .page-hero h1 { font-size: var(--text-5xl); }
 }
 
+/* Page hero mit Foto-Hintergrund */
+.page-hero--photo { padding-block: 0; background: transparent; }
+.subpage-hero-img {
+  position: relative;
+  height: 55vh; min-height: 480px; max-height: 600px;
+  display: flex; align-items: flex-end;
+  background-color: var(--color-dark-bg);
+}
+.page-hero--photo .scrim {
+  position: absolute; inset: 0;
+  background: linear-gradient(to top, rgba(40,40,39,0.88) 0%, rgba(40,40,39,0.25) 50%, rgba(40,40,39,0.45) 100%);
+}
+.page-hero--photo .subpage-hero-inner {
+  position: relative; z-index: 1;
+  padding-block: var(--space-16) var(--space-20); width: 100%;
+}
+@media (max-width: 640px) {
+  .subpage-hero-img { min-height: 360px; height: 50vh; }
+  .page-hero--photo .subpage-hero-inner { padding-block: var(--space-12) var(--space-16); }
+  .page-hero--photo h1 { font-size: var(--text-5xl); }
+}
+
 .section { padding-block: var(--space-20); }
 @media (max-width: 640px) { .section { padding-block: var(--space-16); } }
 

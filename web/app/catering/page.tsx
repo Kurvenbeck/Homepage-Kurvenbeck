@@ -24,15 +24,26 @@ export default function CateringPage() {
         }
       />
 
-      <section className="page-hero" data-screen-label="Catering Hero">
-        <div className="container">
-          <p className="eyebrow">Catering</p>
-          <h1>Dein Fest, unser Handwerk.</h1>
-          <p className="lede">
-            Von der kleinen Familienfeier bis zum Firmenevent mit 300 Gästen —
-            wir kochen, liefern und kümmern uns um alles, was schmeckt.
-          </p>
-        </div>
+      <section className="page-hero page-hero--photo" data-screen-label="Catering Hero">
+        <Photo
+          img={photos.cateringBuffet}
+          label="Foto: Schwäbisches Buffet – Catering Kurvenbeck"
+          baseClass="subpage-hero-img"
+          priority
+          sizes="100vw"
+        >
+          <div className="scrim" />
+          <div className="subpage-hero-inner">
+            <div className="container">
+              <p className="eyebrow">Catering</p>
+              <h1>Dein Fest, unser Handwerk.</h1>
+              <p className="lede">
+                Von der kleinen Familienfeier bis zum Firmenevent mit 300 Gästen —
+                wir kochen, liefern und kümmern uns um alles, was schmeckt.
+              </p>
+            </div>
+          </div>
+        </Photo>
       </section>
 
       <section className="section">

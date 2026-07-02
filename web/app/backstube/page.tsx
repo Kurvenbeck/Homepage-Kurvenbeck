@@ -1,5 +1,7 @@
 import type { Metadata } from "next";
 import { whatsappHref } from "@/lib/siteSettings";
+import { Photo } from "@/components/Photo";
+import { backstubePhotos } from "@/lib/images";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { CartProvider } from "@/components/cart/CartContext";
@@ -22,17 +24,28 @@ export default function BackstubePage() {
         action={<CartButton />}
       />
 
-      <section className="page-hero">
-        <div className="container">
-          <p className="eyebrow">Backstube</p>
-          <h1>Sei schnell, sonst isch&apos;s weg</h1>
-          <p className="lede">
-            Brezel, Briegl, Körnerwecken und mehr — in der Nacht von Hand
-            geformt, am Morgen frisch aus dem Holzbackofen. Wähle deine
-            Backwaren, bestelle bis 18 Uhr am Vortag und hole sie am nächsten
-            Abholtag ab.
-          </p>
-        </div>
+      <section className="page-hero page-hero--photo" data-screen-label="Backstube Hero">
+        <Photo
+          img={backstubePhotos.brezel}
+          label="Foto: Frische Laugenbrezel aus der Kurvenbeck-Backstube"
+          baseClass="subpage-hero-img"
+          priority
+          sizes="100vw"
+        >
+          <div className="scrim" />
+          <div className="subpage-hero-inner">
+            <div className="container">
+              <p className="eyebrow">Backstube</p>
+              <h1>Sei schnell, sonst isch&apos;s weg</h1>
+              <p className="lede">
+                Brezel, Briegl, Körnerwecken und mehr — in der Nacht von Hand
+                geformt, am Morgen frisch aus dem Holzbackofen. Wähle deine
+                Backwaren, bestelle bis 18 Uhr am Vortag und hole sie am nächsten
+                Abholtag ab.
+              </p>
+            </div>
+          </div>
+        </Photo>
       </section>
 
       <div className="info-banner">
