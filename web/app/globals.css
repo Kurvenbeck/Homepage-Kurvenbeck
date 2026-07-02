@@ -450,10 +450,10 @@ a.text-link:hover { color: var(--color-accent); }
 .hero-c .scrim { position: absolute; inset: 0; background: linear-gradient(to top, rgba(40,40,39,0.85) 0%, rgba(40,40,39,0.25) 45%, rgba(40,40,39,0.45) 100%); }
 .hero-c .hero-logo {
   position: absolute;
-  top: var(--space-8);
-  right: var(--space-8);
+  top: var(--space-2);
+  right: var(--space-4);
   z-index: 1;
-  width: clamp(150px, 18.85vw, 274px);
+  width: clamp(96px, 14.5vw, 210px);
   height: auto;
   filter: drop-shadow(0 6px 20px rgba(0,0,0,0.35));
 }

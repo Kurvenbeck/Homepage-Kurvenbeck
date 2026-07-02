@@ -8,7 +8,7 @@ import { photos } from "@/lib/images";
 export default function HomePage() {
   return (
     <div className="home-bg">
-      <SiteHeader />
+      <SiteHeader action={null} />
 
       <section className="hero-c" data-screen-label="Home C · Hero">
         <Photo

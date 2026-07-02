@@ -19,7 +19,7 @@ const NAV: { key: NavKey; href: string; label: string }[] = [
  */
 export function SiteHeader({
   active,
-  logoSuffix = "seit 1978",
+  logoSuffix,
   action = (
     <Link href="/catering" className="btn btn-primary">
       Catering anfragen
@@ -46,40 +46,44 @@ export function SiteHeader({
   }, [open]);
 
   return (
-    <header className="site-header">
-      <div className="container">
-        <Logo suffix={logoSuffix} />
+    <>
+      <header className="site-header">
+        <div className="container">
+          <Logo suffix={logoSuffix} />
 
-        <nav className="site-nav" aria-label="Hauptnavigation">
-          {NAV.map((item) => (
-            <Link
-              key={item.key}
-              href={item.href}
-              className={active === item.key ? "active" : undefined}
-              aria-current={active === item.key ? "page" : undefined}
+          <nav className="site-nav" aria-label="Hauptnavigation">
+            {NAV.map((item) => (
+              <Link
+                key={item.key}
+                href={item.href}
+                className={active === item.key ? "active" : undefined}
+                aria-current={active === item.key ? "page" : undefined}
+              >
+                {item.label}
+              </Link>
+            ))}
+          </nav>
+
+          <div className="header-actions">
+            {action}
+            <button
+              type="button"
+              className="nav-toggle"
+              aria-label="Menü öffnen"
+              aria-expanded={open}
+              aria-controls="mobile-nav"
+              onClick={() => setOpen(true)}
             >
-              {item.label}
-            </Link>
-          ))}
-        </nav>
-
-        <div className="header-actions">
-          {action}
-          <button
-            type="button"
-            className="nav-toggle"
-            aria-label="Menü öffnen"
-            aria-expanded={open}
-            aria-controls="mobile-nav"
-            onClick={() => setOpen(true)}
-          >
-            <span />
-            <span />
-            <span />
-          </button>
+              <span />
+              <span />
+              <span />
+            </button>
+          </div>
         </div>
-      </div>
+      </header>
 
+      {/* Außerhalb des Headers: dessen backdrop-filter würde sonst zum
+          Containing-Block für position:fixed und den Panel-Hintergrund kappen. */}
       <div
         className={`mobile-nav-scrim${open ? " open" : ""}`}
         onClick={() => setOpen(false)}
@@ -108,8 +112,7 @@ export function SiteHeader({
             {item.label}
           </Link>
         ))}
-        <div onClick={() => setOpen(false)}>{action}</div>
       </div>
-    </header>
+    </>
   );
 }
