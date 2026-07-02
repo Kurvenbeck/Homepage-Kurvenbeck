@@ -15,9 +15,9 @@ Rechtstexten. Details: `../CLAUDE.md`.
 
 ```bash
 npm install
-npm run dev      # http://localhost:3000
+npm run dev      # http://localhost:3003 — Port ist fest verdrahtet (siehe CLAUDE.md)
 npm run build    # Production-Build
-npm start        # Production-Server
+npm start        # Production-Server (ebenfalls Port 3003)
 ```
 
 ## Struktur

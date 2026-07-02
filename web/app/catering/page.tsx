@@ -98,7 +98,7 @@ export default function CateringPage() {
 
             <div className="cat-card">
               <Photo
-                img={null}
+                img={photos.cateringGeburtstag}
                 label="Foto: Geburtstagstafel, festlich — 3:2"
                 sizes="(max-width: 640px) 100vw, (max-width: 980px) 50vw, 33vw"
               />

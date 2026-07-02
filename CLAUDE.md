@@ -72,10 +72,15 @@ Backend usw.).
 ## Befehle (im Ordner `web/`)
 
 ```bash
-npm run dev      # Dev-Server (http://localhost:3000)
+npm run dev      # Dev-Server (http://localhost:3003)
 npm run build    # Production-Build inkl. Typecheck + Lint
-npm start        # Production-Server
+npm start        # Production-Server (http://localhost:3003)
 ```
+
+**Port verbindlich: 3003.** Die Kurvenbeck-Seite läuft lokal immer über
+`http://localhost:3003` (in `web/package.json` per `-p 3003` fest verdrahtet,
+nicht der Next.js-Default 3000) — Screenshots, Tests und Browser-Checks immer
+gegen diesen Port fahren.
 
 ## Konventionen
 

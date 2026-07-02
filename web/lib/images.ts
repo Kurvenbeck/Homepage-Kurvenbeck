@@ -18,12 +18,10 @@ export const photos = {
   biergartenGarten: { src: "/images/biergarten/garten.webp", alt: "Biergarten Kurvenbeck – Außenbereich mit Bäumen und Abendsonne" },
 
   // Catering (3:2)
-  cateringFingerfood: null as Img | null, // /images/catering/fingerfood.webp
+  cateringFingerfood: { src: "/images/catering/fingerfood.webp", alt: "Fingerfood-Platte mit bunten Häppchen für Empfänge und Vernissagen" },
   cateringBuffet: { src: "/images/catering/catering.webp", alt: "Schwäbisches Buffet mit Spätzle, Schnitzel, Braten und Gemüse" },
-  cateringBbq: null as Img | null, // /images/catering/bbq.webp
-  cateringHochzeit: null as Img | null, // /images/catering/hochzeit.webp
-  cateringFruehstueck: null as Img | null, // /images/catering/fruehstueck.webp
-  cateringSuppenkueche: null as Img | null, // /images/catering/suppenkueche.webp
+  cateringGeburtstag: { src: "/images/catering/geburtstag.webp", alt: "Festlich gedeckte Geburtstagstafel für Feiern und Jubiläen" },
+  cateringHochzeit: { src: "/images/catering/hochzeit.webp", alt: "Festlich gedeckte Hochzeitstafel für das Hochzeits-Menü" },
 } satisfies Record<string, Img | null>;
 
 /**

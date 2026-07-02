@@ -34,9 +34,9 @@ werden **nicht** ausgeliefert — die produktive App liegt unter **`web/`**.
 ```bash
 cd web
 npm install
-npm run dev      # http://localhost:3000
+npm run dev      # http://localhost:3003 — Port fest verdrahtet, siehe CLAUDE.md
 npm run build    # Production-Build inkl. Typecheck + Lint (muss grün sein)
-npm start        # Production-Server
+npm start        # Production-Server (ebenfalls Port 3003)
 ```
 
 Node ≥ 18 (entwickelt unter Node 24). Build ist aktuell grün, alle Seiten werden

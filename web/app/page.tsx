@@ -1,4 +1,5 @@
 import Link from "next/link";
+import Image from "next/image";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Photo } from "@/components/Photo";
@@ -18,6 +19,14 @@ export default function HomePage() {
           sizes="100vw"
         >
           <div className="scrim"></div>
+          <Image
+            src="/images/logo/Logo Kurvenbeck.webp"
+            alt="Kurvenbeck — Biergarten, Catering, Backstube"
+            width={559}
+            height={557}
+            className="hero-logo"
+            priority
+          />
           <div className="hero-inner">
             <div className="container">
               <p className="eyebrow">Aus dem Herzen der Schwäbischen Alb</p>

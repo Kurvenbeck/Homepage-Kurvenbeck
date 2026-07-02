@@ -32,15 +32,13 @@ Atmosphäre). Die Web-Einbindung legt automatisch einen leichten Filter darüber
 |---|---|---|---|
 | `garten.webp` | 4:5 (hoch) | 1000×1250 | Biergarten unter Kastanien, Abendsonne |
 
-### `catering/` — die sechs Beispiel-Menüs
+### `catering/` — die vier Beispiel-Menüs
 | Datei | Seitenverhältnis | Zielmaß | Motiv |
 |---|---|---|---|
 | `fingerfood.webp` | 3:2 | 1500×1000 | Fingerfood-Platte, Häppchen |
-| `schwaebisches-buffet.webp` | 3:2 | 1500×1000 | Schwäbisches Buffet, Spätzle |
-| `bbq.webp` | 3:2 | 1500×1000 | BBQ-Grillstation, Glut |
+| `catering.webp` | 3:2 | 1500×1000 | Schwäbisches Buffet, Spätzle (bereits vorhanden) |
+| `geburtstag.webp` | 3:2 | 1500×1000 | Geburtstagstafel, festlich gedeckt |
 | `hochzeit.webp` | 3:2 | 1500×1000 | Hochzeitstafel, festlich gedeckt |
-| `fruehstueck.webp` | 3:2 | 1500×1000 | Frühstücks-Catering, Körbe |
-| `suppenkueche.webp` | 3:2 | 1500×1000 | Suppen- & Eintopf-Station |
 
 ### `backstube/` — die sechs Backwaren (Dateiname = Produkt-ID)
 | Datei | Seitenverhältnis | Zielmaß | Motiv |

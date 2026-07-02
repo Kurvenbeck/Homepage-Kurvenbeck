@@ -1,9 +1,6 @@
 import Link from "next/link";
+import Image from "next/image";
 
-/**
- * Wortmarke-Fallback laut Design-Guide (echtes Logo-Asset noch ausstehend).
- * „Kurven" in --color-primary + „beck" in --color-accent.
- */
 export function Logo({
   suffix,
   asLink = true,
@@ -13,7 +10,14 @@ export function Logo({
 }) {
   const inner = (
     <>
-      Kurven<span className="kb-mark">beck</span>
+      <Image
+        src="/images/logo/Logo Kurvenbeck.webp"
+        alt="Kurvenbeck — Biergarten, Catering, Backstube"
+        width={559}
+        height={557}
+        className="kb-logo-img"
+        priority
+      />
       {suffix ? <small>{suffix}</small> : null}
     </>
   );
