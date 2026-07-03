@@ -161,10 +161,22 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   CSS-Klassen → optisch identisch. Allergen-Codes `(A, G)` am Gericht + dezente Legende
   (`.menu-legend`, aktuell leer, da noch keine Allergene gepflegt). Build grün, live gegen DB
   verifiziert (12 Einträge, Reihenfolge/Preise/Tags korrekt).
+- ✅ **Phase 4 (Code)** — Magic-Link-Auth + Route-Schutz. Login `app/admin/login/page.tsx`
+  (`signInWithOtp`, `shouldCreateUser:false`), Confirm-Route `app/auth/confirm/route.ts`
+  (`verifyOtp` **und** `exchangeCodeForSession`-Fallback), Route-Schutz in
+  `utils/supabase/middleware.ts` (`/admin/*` → Login), `app/admin/page.tsx` als Landing mit
+  Admin-Allowlist-Check (Defense-in-Depth) + Logout (Server Action). Build grün; Redirects
+  live getestet (`/admin`→Login 307, `/admin/login` offen, ungültiger Confirm-Link→Login).
+  ⚠️ **Offene Dashboard-Schritte** (manuell, nicht im Code): (a) Auth → Providers → Email:
+  öffentliche Registrierung deaktivieren; (b) Auth → URL Configuration → Redirect URLs:
+  `http://localhost:3003/auth/confirm` (+ spätere Prod-Domain); (c) optional für
+  geräteübergreifende Magic-Links das E-Mail-Template auf
+  `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email` umstellen (sonst
+  greift der PKCE-code-Flow auf demselben Gerät). Voller Login-Durchlauf erst nach (a)+(b).
 
-**Nächster Schritt — Phase 4:** Magic-Link-Auth + `/admin`-Schutz (Login-Seite
-`app/admin/login`, Confirm-Route `app/auth/confirm`, Route-Schutz in `middleware.ts`).
-Danach Phase 5 (Admin-Oberfläche), Phase 6 (Abschluss). Details: `web/plans/biergarten-menu-backend.md`.
+**Nächster Schritt — Phase 5:** Admin-Oberfläche (`app/admin/page.tsx` ausbauen: Bereichs-
+Umschalter, Kategorien/Gerichte anlegen/bearbeiten/löschen via Server Actions, Allergen-
+Checkboxen). Danach Phase 6 (Abschluss). Details: `web/plans/biergarten-menu-backend.md`.
 
 **Hinweis für neue Session:** Schema-Änderungen laufen über den **Supabase-MCP** (muss neu
 autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —
