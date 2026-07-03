@@ -1,6 +1,8 @@
 import { redirect } from "next/navigation";
 import { IconLogout } from "@tabler/icons-react";
 import { createClient } from "@/utils/supabase/server";
+import { getMenuForAdmin } from "@/lib/menu";
+import { MenuAdmin } from "@/components/admin/MenuAdmin";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 
@@ -33,50 +35,53 @@ export default async function AdminPage() {
     .maybeSingle();
 
   const isAdmin = Boolean(adminRow);
+  const menu = isAdmin ? await getMenuForAdmin("biergarten") : null;
 
   return (
     <>
       <SiteHeader logoSuffix="Admin" />
 
       <section className="section">
-        <div className="container" style={{ maxWidth: "48rem" }}>
-          <p className="eyebrow">Verwaltung</p>
-          <h1 style={{ fontSize: "var(--text-4xl)", marginTop: "var(--space-3)" }}>
-            {isAdmin ? "Angemeldet" : "Kein Zugriff"}
-          </h1>
+        <div className="container" style={{ maxWidth: "56rem" }}>
+          <div className="admin-header">
+            <div>
+              <p className="eyebrow">Verwaltung</p>
+              <h1 style={{ fontSize: "var(--text-4xl)", marginTop: "var(--space-3)" }}>
+                {isAdmin ? "Speisekarte" : "Kein Zugriff"}
+              </h1>
+              <p
+                style={{
+                  marginTop: "var(--space-2)",
+                  color: "var(--color-text-secondary)",
+                  fontSize: "var(--text-sm)",
+                }}
+              >
+                Angemeldet als {user.email}
+              </p>
+            </div>
+            <form action={signOut}>
+              <button type="submit" className="btn btn-ghost">
+                <IconLogout size={18} stroke={1.75} aria-hidden />
+                Abmelden
+              </button>
+            </form>
+          </div>
 
-          {isAdmin ? (
-            <p
-              style={{
-                marginTop: "var(--space-4)",
-                color: "var(--color-text-secondary)",
-                fontSize: "var(--text-lg)",
-                lineHeight: "var(--leading-relaxed)",
-              }}
-            >
-              Du bist als <strong>{user.email}</strong> angemeldet. Die
-              Speisekarten-Verwaltung kommt im nächsten Schritt hierher.
-            </p>
+          {isAdmin && menu ? (
+            <MenuAdmin menu={menu} />
           ) : (
             <p
               style={{
-                marginTop: "var(--space-4)",
+                marginTop: "var(--space-6)",
                 color: "var(--color-text-secondary)",
                 fontSize: "var(--text-lg)",
                 lineHeight: "var(--leading-relaxed)",
               }}
             >
-              Dein Konto <strong>{user.email}</strong> ist nicht zur Verwaltung
-              berechtigt. Wende dich an den Betreiber, wenn das ein Fehler ist.
+              Dein Konto ist nicht zur Verwaltung berechtigt. Wende dich an den
+              Betreiber, wenn das ein Fehler ist.
             </p>
           )}
-
-          <form action={signOut} style={{ marginTop: "var(--space-8)" }}>
-            <button type="submit" className="btn btn-ghost">
-              <IconLogout size={18} stroke={1.75} aria-hidden />
-              Abmelden
-            </button>
-          </form>
         </div>
       </section>
 

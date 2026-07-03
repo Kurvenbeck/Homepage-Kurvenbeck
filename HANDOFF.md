@@ -174,9 +174,21 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email` umstellen (sonst
   greift der PKCE-code-Flow auf demselben Gerät). Voller Login-Durchlauf erst nach (a)+(b).
 
-**Nächster Schritt — Phase 5:** Admin-Oberfläche (`app/admin/page.tsx` ausbauen: Bereichs-
-Umschalter, Kategorien/Gerichte anlegen/bearbeiten/löschen via Server Actions, Allergen-
-Checkboxen). Danach Phase 6 (Abschluss). Details: `web/plans/biergarten-menu-backend.md`.
+- ✅ **Phase 5 (Code)** — Admin-Oberfläche unter `/admin`. Loader `getMenuForAdmin(area)`
+  (`lib/menu.ts`) lädt alle Gerichte inkl. nicht-verfügbarer + Allergen-Stammdaten. Server
+  Actions `app/admin/actions.ts` (create/rename/delete/move Kategorie; create/update/delete/
+  move Gericht; Preis-Normalisierung „12,90"→numeric; Allergen-Verknüpfungen neu setzen;
+  `revalidatePath('/biergarten'|'/admin')`). Client-UI `components/admin/MenuAdmin.tsx`
+  (Bereichs-Umschalter — nur Biergarten aktiv; Kategorien mit Inline-Rename + Hoch/Runter +
+  Löschen-mit-Rückfrage; Gericht-Editor mit Name/Preis/Beschreibung, Tag- & Allergen-
+  Checkboxen im Klartext, „Verfügbar"-Schalter, Speichern-Feedback). Styles in `globals.css`
+  (`.admin-*`, token-konform). Build grün. ⚠️ **Noch nicht end-to-end getestet** — braucht
+  echte Admin-Session (Dashboard-Schritte aus Phase 4 + Magic-Link).
+
+**Nächster Schritt — Phase 6 (Abschluss):** echten Durchlauf testen (Login → Gericht mit
+Allergenen anlegen → auf `/biergarten` prüfen), Security-Checks (`grep -r service_role` leer,
+Advisors clean), `web/TODO.md`/`HANDOFF.md` final. Danach optionale Folgeschritte
+(Backstube-Andockung, Catering, SMTP). Details: `web/plans/biergarten-menu-backend.md`.
 
 **Hinweis für neue Session:** Schema-Änderungen laufen über den **Supabase-MCP** (muss neu
 autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —
