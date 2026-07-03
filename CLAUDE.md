@@ -78,6 +78,14 @@ Dauerhafte Konventionen:
   Codes am Gericht + Legende der verwendeten Allergene. Tags nur
   `vegetarisch` / `vegan` / `alkoholfrei`.
 - **Rendering:** dynamisch (SSR), damit Änderungen des Kunden sofort live sind.
+- **Admin & Auth:** Verwaltung unter `/admin` (passwortloser Magic-Link-Login über
+  `/admin/login`, Confirm-Route `/auth/confirm`). Route-Schutz in
+  `utils/supabase/middleware.ts`. `@supabase/ssr` nutzt den **PKCE-Flow** → das
+  Supabase-Magic-Link-Template muss den token_hash-Link verwenden
+  (`{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email`).
+  Auth-Konten **nie** manuell per SQL in `auth.users` anlegen (GoTrue braucht leere
+  Strings statt NULL in den Token-Spalten) — Dashboard → Authentication → Users nutzen.
+  Details/Stand: `kurvenbeck-admin-auth`-Memory + `HANDOFF.md` §10.
 
 ## Icons
 

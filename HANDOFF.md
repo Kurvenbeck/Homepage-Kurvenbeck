@@ -161,20 +161,22 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   CSS-Klassen → optisch identisch. Allergen-Codes `(A, G)` am Gericht + dezente Legende
   (`.menu-legend`, aktuell leer, da noch keine Allergene gepflegt). Build grün, live gegen DB
   verifiziert (12 Einträge, Reihenfolge/Preise/Tags korrekt).
-- ✅ **Phase 4 (Code)** — Magic-Link-Auth + Route-Schutz. Login `app/admin/login/page.tsx`
+- ✅ **Phase 4 — verifiziert** — Magic-Link-Auth + Route-Schutz. Login `app/admin/login/page.tsx`
   (`signInWithOtp`, `shouldCreateUser:false`), Confirm-Route `app/auth/confirm/route.ts`
   (`verifyOtp` **und** `exchangeCodeForSession`-Fallback), Route-Schutz in
   `utils/supabase/middleware.ts` (`/admin/*` → Login), `app/admin/page.tsx` als Landing mit
-  Admin-Allowlist-Check (Defense-in-Depth) + Logout (Server Action). Build grün; Redirects
-  live getestet (`/admin`→Login 307, `/admin/login` offen, ungültiger Confirm-Link→Login).
-  ⚠️ **Offene Dashboard-Schritte** (manuell, nicht im Code): (a) Auth → Providers → Email:
-  öffentliche Registrierung deaktivieren; (b) Auth → URL Configuration → Redirect URLs:
-  `http://localhost:3003/auth/confirm` (+ spätere Prod-Domain); (c) optional für
-  geräteübergreifende Magic-Links das E-Mail-Template auf
-  `{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email` umstellen (sonst
-  greift der PKCE-code-Flow auf demselben Gerät). Voller Login-Durchlauf erst nach (a)+(b).
+  Admin-Allowlist-Check (Defense-in-Depth) + Logout (Server Action). **Login läuft
+  end-to-end** (getestet 2026-07-03 mit `ihringmichael@gmail.com`).
+  Dashboard-Config erledigt: Site URL `http://localhost:3003`, Redirect URLs
+  `http://localhost:3003/**`, Magic-Link-Template auf token_hash umgestellt
+  (`{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email` — nötig, weil
+  `@supabase/ssr` PKCE nutzt), öffentliche Registrierung aus. **Auth-User:** genau ein Konto
+  (`ihringmichael@gmail.com`); `kontakt@kurvenbeck.com` ist in `admins`, hat aber noch kein
+  Auth-Konto. Detail-Fallstrick in Projekt-Memory `kurvenbeck-admin-auth`: Auth-User **nie**
+  manuell per SQL in `auth.users` anlegen (GoTrue braucht leere Strings statt NULL in den
+  Token-Spalten → sonst „500: Database error finding user"); nutze Dashboard → Auth → Users.
 
-- ✅ **Phase 5 (Code)** — Admin-Oberfläche unter `/admin`. Loader `getMenuForAdmin(area)`
+- ✅ **Phase 5 — verifiziert** — Admin-Oberfläche unter `/admin`. Loader `getMenuForAdmin(area)`
   (`lib/menu.ts`) lädt alle Gerichte inkl. nicht-verfügbarer + Allergen-Stammdaten. Server
   Actions `app/admin/actions.ts` (create/rename/delete/move Kategorie; create/update/delete/
   move Gericht; Preis-Normalisierung „12,90"→numeric; Allergen-Verknüpfungen neu setzen;
@@ -182,13 +184,25 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   (Bereichs-Umschalter — nur Biergarten aktiv; Kategorien mit Inline-Rename + Hoch/Runter +
   Löschen-mit-Rückfrage; Gericht-Editor mit Name/Preis/Beschreibung, Tag- & Allergen-
   Checkboxen im Klartext, „Verfügbar"-Schalter, Speichern-Feedback). Styles in `globals.css`
-  (`.admin-*`, token-konform). Build grün. ⚠️ **Noch nicht end-to-end getestet** — braucht
-  echte Admin-Session (Dashboard-Schritte aus Phase 4 + Magic-Link).
+  (`.admin-*`, token-konform). **End-to-end vom Nutzer bestätigt** (2026-07-03): Allergen
+  setzen → `(A, G)` + Legende auf `/biergarten`; „Verfügbar" aus → Gericht öffentlich weg,
+  im Admin sichtbar; anlegen/bearbeiten/verschieben/löschen funktionieren.
 
-**Nächster Schritt — Phase 6 (Abschluss):** echten Durchlauf testen (Login → Gericht mit
-Allergenen anlegen → auf `/biergarten` prüfen), Security-Checks (`grep -r service_role` leer,
-Advisors clean), `web/TODO.md`/`HANDOFF.md` final. Danach optionale Folgeschritte
-(Backstube-Andockung, Catering, SMTP). Details: `web/plans/biergarten-menu-backend.md`.
+**Nächster Schritt — Phase 6 (Abschluss & Doku), sofort startbar:**
+1. Security-Checks: `grep -rn "service_role" web/` muss **leer** sein · Supabase-Advisors clean
+   (MCP `get_advisors` bzw. `supabase db advisors`) · `admins` anonym nicht lesbar · RLS auf
+   allen Tabellen (schon in Phase 2 bestätigt, gegenprüfen).
+2. `web/TODO.md` pflegen: Menü-Backend als erledigt markieren; Punkt #1 (Telefonnummer aus
+   `site_settings`) und #5 (Öffnungszeiten/Backstube) sind **nicht** Teil davon → offen lassen.
+3. `npm run build` grün halten (Typecheck + Lint). ⚠️ **Nie `npm run build` parallel zu einem
+   laufenden `next dev` fahren** — beide teilen `.next`, das zerschießt den Dev-Cache
+   (`__webpack_modules__[moduleId] is not a function`); dev vorher stoppen, sequenziell bauen.
+4. Optionales Folge-TODO notieren: eigener SMTP-Absender über `kurvenbeck.com` (Supabase-
+   Standard-Mailversand hat niedriges Limit).
+
+**Danach — Folgeschritte (nicht Phase 6):** Backstube an dasselbe Backend andocken
+(`area='backstube'`, ohne Fotos, gleiche Admin-UI), Catering, Drag&Drop-Sortierung, SMTP.
+Details/Spezifikation: `web/plans/biergarten-menu-backend.md`.
 
 **Hinweis für neue Session:** Schema-Änderungen laufen über den **Supabase-MCP** (muss neu
 autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —
