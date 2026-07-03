@@ -6,6 +6,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { telHref, whatsappHref } from "@/lib/siteSettings";
+import { getMenu } from "@/lib/menu";
 
 export const metadata: Metadata = {
   title: "Biergarten",
@@ -13,7 +14,11 @@ export const metadata: Metadata = {
     "Schwäbische Küche, kühle Getränke und schattige Plätze — nur am Wochenende und an Feiertagen.",
 };
 
-export default function BiergartenPage() {
+// Dynamisch rendern, damit Änderungen des Kunden an der Karte sofort live sind.
+export const dynamic = "force-dynamic";
+
+export default async function BiergartenPage() {
+  const menu = await getMenu("biergarten");
   return (
     <>
       <SiteHeader
@@ -124,120 +129,49 @@ export default function BiergartenPage() {
             <p>Täglich frisch, regional eingekauft. Preise inkl. MwSt.</p>
           </div>
           <div className="menu-grid">
-            <div className="menu-block">
-              <h3>Vesper &amp; Warmes</h3>
-              <div className="menu-list">
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Original Kurvenbeck-Brezel{" "}
-                    <span className="mi-desc">
-                      mit guter Butter, frisch aus der eigenen Backstube
-                    </span>
-                  </span>
-                  <span className="mi-price">3,80</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Schwäbischer Wurstsalat{" "}
-                    <span className="mi-desc">
-                      mit Bauernbrot &amp; Röstzwiebeln
-                    </span>
-                  </span>
-                  <span className="mi-price">9,50</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Maultaschen in der Brühe{" "}
-                    <span className="mi-desc">
-                      hausgemacht, mit Schnittlauch
-                    </span>
-                  </span>
-                  <span className="mi-price">11,80</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Käsespätzle{" "}
-                    <span className="menu-tag">vegetarisch</span>
-                    <span className="mi-desc">
-                      mit Bergkäse &amp; gerösteten Zwiebeln
-                    </span>
-                  </span>
-                  <span className="mi-price">12,90</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Schnitzel mit Pommes{" "}
-                    <span className="mi-desc">
-                      vom Schwein, mit Zitrone &amp; Preiselbeeren
-                    </span>
-                  </span>
-                  <span className="mi-price">15,80</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Große Vesperplatte{" "}
-                    <span className="mi-desc">
-                      Wurst, Käse, Brezel, Gewürzgurke — zum Teilen
-                    </span>
-                  </span>
-                  <span className="mi-price">16,50</span>
+            {menu.categories.map((category) => (
+              <div className="menu-block" key={category.id}>
+                <h3>{category.title}</h3>
+                <div className="menu-list">
+                  {category.items.map((item) => (
+                    <div className="menu-item" key={item.id}>
+                      <span className="mi-name">
+                        {item.name}
+                        {item.allergens.length > 0 && (
+                          <span className="mi-allergens">
+                            ({item.allergens.join(", ")})
+                          </span>
+                        )}
+                        {item.tags.map((tag) => (
+                          <span className="menu-tag" key={tag}>
+                            {tag}
+                          </span>
+                        ))}
+                        {item.description && (
+                          <span className="mi-desc">{item.description}</span>
+                        )}
+                      </span>
+                      <span className="mi-price">{item.price}</span>
+                    </div>
+                  ))}
                 </div>
               </div>
-            </div>
-
-            <div className="menu-block">
-              <h3>Getränke</h3>
-              <div className="menu-list">
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Helles vom Fass{" "}
-                    <span className="mi-desc">0,5 l, frisch gezapft</span>
-                  </span>
-                  <span className="mi-price">4,40</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Naturtrübes Radler{" "}
-                    <span className="mi-desc">0,5 l</span>
-                  </span>
-                  <span className="mi-price">4,20</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Weizenbier{" "}
-                    <span className="mi-desc">hell oder dunkel, 0,5 l</span>
-                  </span>
-                  <span className="mi-price">4,60</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Apfelschorle{" "}
-                    <span className="mi-desc">vom Streuobst, 0,4 l</span>
-                  </span>
-                  <span className="mi-price">3,60</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Trollinger im Viertele{" "}
-                    <span className="mi-desc">
-                      0,25 l, vom Weingut nebenan
-                    </span>
-                  </span>
-                  <span className="mi-price">5,20</span>
-                </div>
-                <div className="menu-item">
-                  <span className="mi-name">
-                    Hausgemachte Limonade{" "}
-                    <span className="menu-tag">alkoholfrei</span>
-                    <span className="mi-desc">
-                      Holunder oder Zitrone, 0,4 l
-                    </span>
-                  </span>
-                  <span className="mi-price">3,80</span>
-                </div>
-              </div>
-            </div>
+            ))}
           </div>
+
+          {menu.legend.length > 0 && (
+            <div className="menu-legend">
+              <p className="eyebrow">Allergene</p>
+              <dl>
+                {menu.legend.map((entry) => (
+                  <div key={entry.code}>
+                    <dt>{entry.code}</dt>
+                    <dd>{entry.label}</dd>
+                  </div>
+                ))}
+              </dl>
+            </div>
+          )}
         </div>
       </section>
 

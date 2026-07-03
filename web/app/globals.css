@@ -581,6 +581,24 @@ a.text-link:hover { color: var(--color-accent); }
   padding: 1px 6px; border-radius: var(--radius-sm); margin-left: var(--space-2);
   vertical-align: middle;
 }
+.mi-allergens {
+  font-weight: 400; font-size: var(--text-sm);
+  color: var(--color-text-secondary); margin-left: var(--space-1);
+}
+.menu-legend {
+  margin-top: var(--space-12);
+  padding-top: var(--space-6);
+  border-top: 1px dotted var(--color-border);
+}
+.menu-legend .eyebrow { margin-bottom: var(--space-3); }
+.menu-legend dl {
+  display: flex; flex-wrap: wrap;
+  gap: var(--space-2) var(--space-6);
+  font-size: var(--text-sm); color: var(--color-text-secondary);
+}
+.menu-legend div { display: flex; gap: var(--space-2); align-items: baseline; }
+.menu-legend dt { font-weight: 600; color: var(--color-text-primary); }
+.menu-legend dd { margin: 0; }
 
 .info-cards { display: grid; grid-template-columns: repeat(3,1fr); gap: var(--space-6); }
 @media (max-width: 860px) { .info-cards { grid-template-columns: 1fr; } }

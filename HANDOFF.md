@@ -156,10 +156,15 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
 - ✅ **Phase 2** — Schema + RLS + Seed (2 Migrationen in `supabase/migrations/`); DB enthält
   die heutige Biergarten-Karte 1:1 (12 Einträge), 14 Allergene, `admins`-Allowlist. Security-
   Advisors sauber; `anon` kann lesen, aber nicht schreiben und `admins` nicht sehen (getestet).
+- ✅ **Phase 3** — Biergarten-Seite liest aus DB. Loader `lib/menu.ts` (`getMenu(area)`,
+  `formatPrice`), `app/biergarten/page.tsx` ist `async` + `force-dynamic` (SSR), gleiche
+  CSS-Klassen → optisch identisch. Allergen-Codes `(A, G)` am Gericht + dezente Legende
+  (`.menu-legend`, aktuell leer, da noch keine Allergene gepflegt). Build grün, live gegen DB
+  verifiziert (12 Einträge, Reihenfolge/Preise/Tags korrekt).
 
-**Nächster Schritt — Phase 3:** Biergarten-Seite (`app/biergarten/page.tsx`) auf DB umstellen
-(Loader `lib/menu.ts`, gleiche CSS-Klassen, Allergen-Legende), Optik muss identisch bleiben.
-Danach Phase 4 (Magic-Link-Auth + `/admin`-Schutz), Phase 5 (Admin-Oberfläche), Phase 6 (Abschluss).
+**Nächster Schritt — Phase 4:** Magic-Link-Auth + `/admin`-Schutz (Login-Seite
+`app/admin/login`, Confirm-Route `app/auth/confirm`, Route-Schutz in `middleware.ts`).
+Danach Phase 5 (Admin-Oberfläche), Phase 6 (Abschluss). Details: `web/plans/biergarten-menu-backend.md`.
 
 **Hinweis für neue Session:** Schema-Änderungen laufen über den **Supabase-MCP** (muss neu
 autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —
