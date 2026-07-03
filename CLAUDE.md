@@ -57,6 +57,28 @@ nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen
 - `wa.me`-Nummern brauchen internationales Format ohne führende Null; der
   Helfer leitet das aus `e164` ab.
 
+## Supabase & Menü-Backend
+
+Das Speise-/Getränke-Menü liegt in **Supabase** (Projekt `dbzxowlgmwnytanfnzdb`).
+Verbindliche Spezifikation + Stand: `HANDOFF.md` §10 und `web/plans/biergarten-menu-backend.md`.
+Dauerhafte Konventionen:
+
+- **Clients:** `@supabase/ssr` in `web/utils/supabase/` (`client.ts` Browser,
+  `server.ts` async `cookies()`, `middleware.ts` Session-Refresh). Env in
+  `web/.env.local` (git-ignoriert): `NEXT_PUBLIC_SUPABASE_URL`,
+  `NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`.
+- **Sicherheit:** öffentliches Lesen über Publishable-Key + RLS; Schreiben **nur**
+  über Server Actions mit eingeloggter Sitzung (RLS-Check `auth.email()` in Tabelle
+  `admins`). **Nie** den `service_role`/Secret-Key in die App legen.
+- **Schema-Änderungen:** immer als SQL-Migration in `web/supabase/migrations/`
+  ablegen (versioniert), nie nur direkt auf der DB.
+- **Menüs ohne Produktfotos** — Biergarten **und** Backstube: reines Text-Format
+  (`.menu-item`). Kein `photo`-Feld im Menü-Schema.
+- **Allergene:** deutsches LMIV-Buchstaben-Schema (A–R) als Stammdaten; Anzeige als
+  Codes am Gericht + Legende der verwendeten Allergene. Tags nur
+  `vegetarisch` / `vegan` / `alkoholfrei`.
+- **Rendering:** dynamisch (SSR), damit Änderungen des Kunden sofort live sind.
+
 ## Icons
 
 - Icon-Set: **`@tabler/icons-react`** (tree-shakeable). Beispiel:
