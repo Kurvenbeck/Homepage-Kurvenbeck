@@ -27,7 +27,8 @@ werden **nicht** ausgeliefert — die produktive App liegt unter **`web/`**.
   kein Tailwind, keine CSS-in-JS.
 - Fonts via `next/font`: **Playfair Display** (Display) + **DM Sans** (Body).
 - Icons: **`@tabler/icons-react`**.
-- Kein Backend/DB angebunden (Formular & Warenkorb sind funktionsfähige Demos).
+- **Supabase** (Postgres 17) für das Menü-Backend angebunden via `@supabase/ssr` —
+  siehe §10. Catering-Formular & Backstube-Warenkorb sind weiterhin Demos.
 
 ## 3. Schnellstart
 
@@ -72,6 +73,10 @@ web/
 │  ├─ products.ts         # Backstube-Sortiment + formatEUR
 │  ├─ images.ts           # Foto-Registry (Slots null → Platzhalter)
 │  └─ siteSettings.ts     # zentrale Kontaktdaten (Telefon, tel:, wa.me)
+├─ utils/supabase/        # Supabase-Clients: client.ts (Browser), server.ts, middleware.ts
+├─ middleware.ts          # Session-Refresh (Route-Schutz /admin folgt in Phase 4)
+├─ supabase/migrations/   # SQL-Migrationen (Menü-Schema + Seed)
+├─ plans/                 # Umsetzungspläne (biergarten-menu-backend.md)
 └─ public/images/         # WebP-Upload-Ordner (hero/home/biergarten/catering/backstube)
 ```
 
@@ -122,5 +127,43 @@ Priorisiert in **`web/TODO.md`** — kompakt:
 ## 9. Deployment (noch offen)
 
 Empfehlung: **Vercel** (nahtlos für Next.js) oder beliebiger Node-Host. Vor dem
-ersten Deploy: ENV für künftige Supabase-Anbindung vorsehen; `.env*` ist bereits
+ersten Deploy: die Supabase-ENV (siehe §10) im Host hinterlegen; `.env.local` ist
 git-ignoriert — Keys niemals committen.
+
+## 10. Menü-Backend (in Arbeit)
+
+Ziel: Der nicht-technische Kunde pflegt Speise-/Getränkekarte inkl. Allergene selbst
+über eine eigene Admin-Seite. **Verbindliche Spezifikation:** der Umsetzungsplan
+`web/plans/biergarten-menu-backend.md` + die Projekt-Memories `biergarten-menu-backend`
+und `menu-no-images`. Alle Architektur-Entscheidungen wurden per Grill-me festgezurrt.
+
+**Kernentscheidungen:** dynamisches SSR (Änderungen sofort live) · öffentliches Lesen
+via Publishable-Key + RLS · Admin-Schreiben nur über Server Actions mit eingeloggter
+Sitzung (RLS: `auth.email()` in `admins`), **kein `service_role` in der App** ·
+Menüs **ohne Fotos** (auch Backstube später) · Allergene als deutsches Buchstaben-Schema
+(A–R), Tags nur vegetarisch/vegan/alkoholfrei.
+
+**Supabase-Projekt:** „Kurvenbeck's Project" (`dbzxowlgmwnytanfnzdb`, EU-Frankfurt).
+
+**ENV (in `web/.env.local`, git-ignoriert — beim Klonen neu anlegen):**
+```
+NEXT_PUBLIC_SUPABASE_URL=https://dbzxowlgmwnytanfnzdb.supabase.co
+NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settings → API
+```
+
+**Stand:**
+- ✅ **Phase 1** — Supabase-Clients (`utils/supabase/`), `middleware.ts`, Packages, `.env.local`.
+- ✅ **Phase 2** — Schema + RLS + Seed (2 Migrationen in `supabase/migrations/`); DB enthält
+  die heutige Biergarten-Karte 1:1 (12 Einträge), 14 Allergene, `admins`-Allowlist. Security-
+  Advisors sauber; `anon` kann lesen, aber nicht schreiben und `admins` nicht sehen (getestet).
+
+**Nächster Schritt — Phase 3:** Biergarten-Seite (`app/biergarten/page.tsx`) auf DB umstellen
+(Loader `lib/menu.ts`, gleiche CSS-Klassen, Allergen-Legende), Optik muss identisch bleiben.
+Danach Phase 4 (Magic-Link-Auth + `/admin`-Schutz), Phase 5 (Admin-Oberfläche), Phase 6 (Abschluss).
+
+**Hinweis für neue Session:** Schema-Änderungen laufen über den **Supabase-MCP** (muss neu
+autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —
+nur die App liest über den Publishable-Key.
+
+**Offen (nicht Menü-Backend):** `npm audit` meldet Schwachstellen in **Next.js 15.1.6**
+(u. a. Middleware-SSRF) → separates Update auf Next 15.5.x empfohlen, siehe `web/TODO.md`.

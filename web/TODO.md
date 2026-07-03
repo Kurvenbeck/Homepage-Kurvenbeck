@@ -2,6 +2,16 @@
 
 Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 
+> **In Arbeit — Menü-Backend:** Supabase ist angebunden (Clients, Middleware, Schema,
+> RLS, Seed stehen). Verbindlicher Plan: `plans/biergarten-menu-backend.md`. Nächster
+> Schritt: Phase 3 (Biergarten-Seite liest aus DB). Deckt Teile von #1 mit ab.
+
+## 0. Next.js-Sicherheitsupdate (separat, vorziehen erwägen)
+
+- [ ] `npm audit` meldet Schwachstellen in **Next.js 15.1.6** (u. a. Middleware-SSRF,
+      Cache-Poisoning). Update auf **Next 15.5.x** und danach `npm run build` grün halten.
+      Getrennt vom Menü-Backend-Plan durchführen.
+
 ## 1. Telefonnummer aus Supabase (`site_settings`) lesen
 
 **Ziel:** Die Kontakt-Telefonnummer nicht mehr statisch in `web/lib/siteSettings.ts`
