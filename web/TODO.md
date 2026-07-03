@@ -2,9 +2,14 @@
 
 Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 
-> **In Arbeit — Menü-Backend:** Supabase ist angebunden (Clients, Middleware, Schema,
-> RLS, Seed stehen). Verbindlicher Plan: `plans/biergarten-menu-backend.md`. Nächster
-> Schritt: Phase 3 (Biergarten-Seite liest aus DB). Deckt Teile von #1 mit ab.
+> **✅ Erledigt — Menü-Backend (Biergarten):** Supabase komplett angebunden
+> (Clients, Middleware, Schema, RLS, Seed), Biergarten-Karte liest live aus der DB,
+> Magic-Link-Admin unter `/admin` pflegt Kategorien/Gerichte/Allergene selbst.
+> Phasen 1–6 abgeschlossen und end-to-end verifiziert (2026-07-03). Details:
+> `plans/biergarten-menu-backend.md` + HANDOFF.md §10.
+> Offene Folgeschritte (nicht mehr Teil dieses Backends): Backstube ans selbe Backend
+> andocken (`area='backstube'`), Drag&Drop-Sortierung, eigener SMTP-Absender über
+> `kurvenbeck.com` (Supabase-Standard-Mailversand hat niedriges Limit).
 
 ## 0. Next.js-Sicherheitsupdate (separat, vorziehen erwägen)
 

@@ -74,7 +74,7 @@ web/
 │  ├─ images.ts           # Foto-Registry (Slots null → Platzhalter)
 │  └─ siteSettings.ts     # zentrale Kontaktdaten (Telefon, tel:, wa.me)
 ├─ utils/supabase/        # Supabase-Clients: client.ts (Browser), server.ts, middleware.ts
-├─ middleware.ts          # Session-Refresh (Route-Schutz /admin folgt in Phase 4)
+├─ middleware.ts          # Session-Refresh + Route-Schutz /admin/* → Login
 ├─ supabase/migrations/   # SQL-Migrationen (Menü-Schema + Seed)
 ├─ plans/                 # Umsetzungspläne (biergarten-menu-backend.md)
 └─ public/images/         # WebP-Upload-Ordner (hero/home/biergarten/catering/backstube)
@@ -188,17 +188,18 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   setzen → `(A, G)` + Legende auf `/biergarten`; „Verfügbar" aus → Gericht öffentlich weg,
   im Admin sichtbar; anlegen/bearbeiten/verschieben/löschen funktionieren.
 
-**Nächster Schritt — Phase 6 (Abschluss & Doku), sofort startbar:**
-1. Security-Checks: `grep -rn "service_role" web/` muss **leer** sein · Supabase-Advisors clean
-   (MCP `get_advisors` bzw. `supabase db advisors`) · `admins` anonym nicht lesbar · RLS auf
-   allen Tabellen (schon in Phase 2 bestätigt, gegenprüfen).
-2. `web/TODO.md` pflegen: Menü-Backend als erledigt markieren; Punkt #1 (Telefonnummer aus
-   `site_settings`) und #5 (Öffnungszeiten/Backstube) sind **nicht** Teil davon → offen lassen.
-3. `npm run build` grün halten (Typecheck + Lint). ⚠️ **Nie `npm run build` parallel zu einem
-   laufenden `next dev` fahren** — beide teilen `.next`, das zerschießt den Dev-Cache
-   (`__webpack_modules__[moduleId] is not a function`); dev vorher stoppen, sequenziell bauen.
-4. Optionales Folge-TODO notieren: eigener SMTP-Absender über `kurvenbeck.com` (Supabase-
-   Standard-Mailversand hat niedriges Limit).
+- ✅ **Phase 6 — verifiziert** — Abschluss & Doku (2026-07-03).
+  - **Security-Checks sauber:** `grep -rn "service_role" web/` (ohne node_modules) liefert nur
+    zwei erklärende Kommentare („kein service_role in der App") — **kein echter Key im Code**.
+    RLS auf **allen** 5 Tabellen aktiv (`admins`, `menu_categories`, `menu_items`, `allergens`,
+    `menu_item_allergens`). Supabase Security-Advisors: nur **eine** Warnung
+    „Leaked Password Protection Disabled" — **irrelevant**, da passwortloser Magic-Link-Login
+    (keine Passwörter im Spiel). `admins` anonym nicht lesbar (Phase 2 getestet).
+  - `web/TODO.md` gepflegt: Menü-Backend als erledigt markiert; #1 (Telefon aus `site_settings`)
+    und #5 (Öffnungszeiten/Backstube) bleiben offen.
+  - `npm run build` grün (13 Seiten, `/admin`+`/auth/confirm`+`/biergarten` korrekt dynamisch).
+  - **Offenes Folge-TODO:** eigener SMTP-Absender über `kurvenbeck.com` (Supabase-
+    Standard-Mailversand hat niedriges Limit) — in `web/TODO.md` notiert.
 
 **Danach — Folgeschritte (nicht Phase 6):** Backstube an dasselbe Backend andocken
 (`area='backstube'`, ohne Fotos, gleiche Admin-UI), Catering, Drag&Drop-Sortierung, SMTP.
