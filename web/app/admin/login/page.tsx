@@ -41,7 +41,7 @@ export default function AdminLoginPage() {
     if (error) {
       setStatus("error");
       setMessage(
-        "Das hat leider nicht geklappt. Prüf deine E-Mail-Adresse und versuch es nochmal.",
+        "Das hat leider nicht geklappt. Prüf deine E-Mail-Adresse und versuch es gleich nochmal.",
       );
       return;
     }
