@@ -2,14 +2,14 @@
 
 Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 
-> **✅ Erledigt — Menü-Backend (Biergarten):** Supabase komplett angebunden
-> (Clients, Middleware, Schema, RLS, Seed), Biergarten-Karte liest live aus der DB,
-> Magic-Link-Admin unter `/admin` pflegt Kategorien/Gerichte/Allergene selbst.
-> Phasen 1–6 abgeschlossen und end-to-end verifiziert (2026-07-03). Details:
-> `plans/biergarten-menu-backend.md` + HANDOFF.md §10.
-> Offene Folgeschritte (nicht mehr Teil dieses Backends): Backstube ans selbe Backend
-> andocken (`area='backstube'`), Drag&Drop-Sortierung, eigener SMTP-Absender über
-> `kurvenbeck.com` (Supabase-Standard-Mailversand hat niedriges Limit).
+> **✅ Erledigt — Menü-Backend (Biergarten + Backstube):** Supabase komplett angebunden
+> (Clients, Middleware, Schema, RLS, Seed). **Biergarten und Backstube** lesen ihre Karte
+> live aus der DB (Text-Format ohne Fotos); Magic-Link-Admin unter `/admin` pflegt beide
+> Bereiche über Tabs (Kategorien/Einträge/Allergene). Phasen 1–6 + Backstube-Andockung
+> end-to-end verifiziert (2026-07-03). Details: `plans/biergarten-menu-backend.md` +
+> HANDOFF.md §10.
+> Offene Folgeschritte: Catering ans Backend andocken, Drag&Drop-Sortierung, eigener
+> SMTP-Absender über `kurvenbeck.com` (Supabase-Standard-Mailversand hat niedriges Limit).
 
 ## 0. Next.js-Sicherheitsupdate (separat, vorziehen erwägen)
 
@@ -66,9 +66,15 @@ getauscht werden.
 
 ## 4. Backstube-Bestellung produktiv machen
 
-- [ ] Checkout-Flow statt Demo-Warenkorb: Abhol-Termin/Slot-Auswahl,
-      Zusammenfassung, Bestellübermittlung.
-- [ ] Produktdaten aus CMS/Backend statt `web/lib/products.ts`.
+**Stand:** Das Backstube-**Sortiment** wird jetzt als Text-Menü aus Supabase gelesen und im
+Admin gepflegt (siehe Menü-Backend oben). Vorbestellung läuft aktuell über WhatsApp. Der
+frühere Demo-Warenkorb ist von der Seite entfernt; die Komponenten (`components/cart/*`,
+`lib/products.ts`) bleiben für einen echten Checkout aufbewahrt.
+
+- [ ] Echter Checkout-Flow (statt WhatsApp): Abhol-Termin/Slot-Auswahl, Zusammenfassung,
+      Bestellübermittlung — kann die vorhandenen Warenkorb-Komponenten wiederverwenden.
+- [ ] Falls Checkout kommt: Produktdaten/Preise aus dem Menü-Backend statt `lib/products.ts`
+      beziehen (eine Quelle).
 
 ## 5. Inhalte & Recht finalisieren
 

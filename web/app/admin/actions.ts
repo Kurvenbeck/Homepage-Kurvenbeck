@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { assertArea, type MenuArea } from "@/lib/menuAreas";
 
 /**
  * Schreib-Aktionen für die Menü-Verwaltung. Alle laufen serverseitig mit der
@@ -10,8 +11,6 @@ import { createClient } from "@/utils/supabase/server";
  */
 
 export type ActionResult = { ok: true } | { ok: false; error: string };
-
-const AREA = "biergarten";
 
 /** "12,90" / "12.90" / " 12 " → 12.9 (oder null bei ungültig/negativ). */
 function parsePrice(input: string): number | null {
@@ -30,8 +29,8 @@ async function getSupabase() {
   return supabase;
 }
 
-function revalidate() {
-  revalidatePath("/biergarten");
+function revalidate(area: MenuArea) {
+  revalidatePath(`/${area}`);
   revalidatePath("/admin");
 }
 
@@ -43,8 +42,12 @@ function fail(error: unknown): ActionResult {
 
 // --- Kategorien ------------------------------------------------------------
 
-export async function createCategory(title: string): Promise<ActionResult> {
+export async function createCategory(
+  area: string,
+  title: string,
+): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     const clean = title.trim();
     if (!clean) return { ok: false, error: "Bitte einen Titel eingeben." };
@@ -52,17 +55,17 @@ export async function createCategory(title: string): Promise<ActionResult> {
     const { data: rows } = await supabase
       .from("menu_categories")
       .select("sort_order")
-      .eq("area", AREA)
+      .eq("area", menuArea)
       .order("sort_order", { ascending: false })
       .limit(1);
     const nextOrder = (rows?.[0]?.sort_order ?? -1) + 1;
 
     const { error } = await supabase
       .from("menu_categories")
-      .insert({ area: AREA, title: clean, sort_order: nextOrder });
+      .insert({ area: menuArea, title: clean, sort_order: nextOrder });
     if (error) throw error;
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
@@ -70,10 +73,12 @@ export async function createCategory(title: string): Promise<ActionResult> {
 }
 
 export async function renameCategory(
+  area: string,
   id: string,
   title: string,
 ): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     const clean = title.trim();
     if (!clean) return { ok: false, error: "Bitte einen Titel eingeben." };
@@ -84,15 +89,19 @@ export async function renameCategory(
       .eq("id", id);
     if (error) throw error;
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function deleteCategory(id: string): Promise<ActionResult> {
+export async function deleteCategory(
+  area: string,
+  id: string,
+): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     // Gerichte hängen per ON DELETE CASCADE dran.
     const { error } = await supabase
@@ -101,7 +110,7 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
       .eq("id", id);
     if (error) throw error;
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
@@ -109,22 +118,24 @@ export async function deleteCategory(id: string): Promise<ActionResult> {
 }
 
 export async function moveCategory(
+  area: string,
   id: string,
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     const { data: cats, error } = await supabase
       .from("menu_categories")
       .select("id, sort_order")
-      .eq("area", AREA)
+      .eq("area", menuArea)
       .order("sort_order");
     if (error) throw error;
 
     const swapped = await swapNeighbor(supabase, "menu_categories", cats ?? [], id, direction);
     if (!swapped) return { ok: true };
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
@@ -133,8 +144,12 @@ export async function moveCategory(
 
 // --- Gerichte --------------------------------------------------------------
 
-export async function createItem(categoryId: string): Promise<ActionResult> {
+export async function createItem(
+  area: string,
+  categoryId: string,
+): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     const { data: rows } = await supabase
       .from("menu_items")
@@ -146,13 +161,13 @@ export async function createItem(categoryId: string): Promise<ActionResult> {
 
     const { error } = await supabase.from("menu_items").insert({
       category_id: categoryId,
-      name: "Neues Gericht",
+      name: "Neuer Eintrag",
       price: 0,
       sort_order: nextOrder,
     });
     if (error) throw error;
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
@@ -169,10 +184,12 @@ export type ItemInput = {
 };
 
 export async function updateItem(
+  area: string,
   id: string,
   input: ItemInput,
 ): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
 
     const name = input.name.trim();
@@ -213,20 +230,24 @@ export async function updateItem(
       if (insError) throw insError;
     }
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
   }
 }
 
-export async function deleteItem(id: string): Promise<ActionResult> {
+export async function deleteItem(
+  area: string,
+  id: string,
+): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     const { error } = await supabase.from("menu_items").delete().eq("id", id);
     if (error) throw error;
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);
@@ -234,11 +255,13 @@ export async function deleteItem(id: string): Promise<ActionResult> {
 }
 
 export async function moveItem(
+  area: string,
   id: string,
   categoryId: string,
   direction: "up" | "down",
 ): Promise<ActionResult> {
   try {
+    const menuArea = assertArea(area);
     const supabase = await getSupabase();
     const { data: items, error } = await supabase
       .from("menu_items")
@@ -250,7 +273,7 @@ export async function moveItem(
     const swapped = await swapNeighbor(supabase, "menu_items", items ?? [], id, direction);
     if (!swapped) return { ok: true };
 
-    revalidate();
+    revalidate(menuArea);
     return { ok: true };
   } catch (e) {
     return fail(e);

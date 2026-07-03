@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useTransition } from "react";
+import Link from "next/link";
 import {
   IconArrowUp,
   IconArrowDown,
@@ -22,15 +23,22 @@ import {
   type ActionResult,
   type ItemInput,
 } from "@/app/admin/actions";
+import type { MenuArea } from "@/lib/menuAreas";
 
 type Allergen = { code: string; label: string };
 
 const ITEM_TAGS = ["vegetarisch", "vegan", "alkoholfrei"] as const;
 
-export function MenuAdmin({ menu }: { menu: AdminMenu }) {
+/** Bezeichnung eines Eintrags je Bereich (nur Copy — Datenmodell ist identisch). */
+function itemNoun(area: MenuArea): string {
+  return area === "backstube" ? "Backware" : "Gericht";
+}
+
+export function MenuAdmin({ menu, area }: { menu: AdminMenu; area: MenuArea }) {
   const [newCategory, setNewCategory] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
+  const noun = itemNoun(area);
 
   function run(action: () => Promise<ActionResult>) {
     setError("");
@@ -43,12 +51,20 @@ export function MenuAdmin({ menu }: { menu: AdminMenu }) {
   return (
     <div className="admin">
       <div className="admin-areas">
-        <button className="admin-tab is-active" type="button" aria-current="true">
+        <Link
+          href="/admin?area=biergarten"
+          className={`admin-tab${area === "biergarten" ? " is-active" : ""}`}
+          aria-current={area === "biergarten" ? "true" : undefined}
+        >
           Biergarten
-        </button>
-        <button className="admin-tab" type="button" disabled>
+        </Link>
+        <Link
+          href="/admin?area=backstube"
+          className={`admin-tab${area === "backstube" ? " is-active" : ""}`}
+          aria-current={area === "backstube" ? "true" : undefined}
+        >
           Backstube
-        </button>
+        </Link>
         <button className="admin-tab" type="button" disabled>
           Catering
         </button>
@@ -60,6 +76,8 @@ export function MenuAdmin({ menu }: { menu: AdminMenu }) {
         <CategoryBlock
           key={category.id}
           category={category}
+          area={area}
+          noun={noun}
           allergens={menu.allergens}
           isFirst={index === 0}
           isLast={index === menu.categories.length - 1}
@@ -74,7 +92,7 @@ export function MenuAdmin({ menu }: { menu: AdminMenu }) {
           e.preventDefault();
           const title = newCategory;
           run(async () => {
-            const r = await createCategory(title);
+            const r = await createCategory(area, title);
             if (r.ok) setNewCategory("");
             return r;
           });
@@ -98,6 +116,8 @@ export function MenuAdmin({ menu }: { menu: AdminMenu }) {
 
 function CategoryBlock({
   category,
+  area,
+  noun,
   allergens,
   isFirst,
   isLast,
@@ -105,6 +125,8 @@ function CategoryBlock({
   onRun,
 }: {
   category: AdminMenuCategory;
+  area: MenuArea;
+  noun: string;
   allergens: Allergen[];
   isFirst: boolean;
   isLast: boolean;
@@ -122,7 +144,7 @@ function CategoryBlock({
           onChange={(e) => setTitle(e.target.value)}
           onBlur={() => {
             if (title.trim() && title !== category.title) {
-              onRun(() => renameCategory(category.id, title));
+              onRun(() => renameCategory(area, category.id, title));
             }
           }}
           aria-label="Kategorie-Titel"
@@ -133,7 +155,7 @@ function CategoryBlock({
             className="admin-icon-btn"
             title="Nach oben"
             disabled={disabled || isFirst}
-            onClick={() => onRun(() => moveCategory(category.id, "up"))}
+            onClick={() => onRun(() => moveCategory(area, category.id, "up"))}
           >
             <IconArrowUp size={18} stroke={1.75} aria-hidden />
           </button>
@@ -142,7 +164,7 @@ function CategoryBlock({
             className="admin-icon-btn"
             title="Nach unten"
             disabled={disabled || isLast}
-            onClick={() => onRun(() => moveCategory(category.id, "down"))}
+            onClick={() => onRun(() => moveCategory(area, category.id, "down"))}
           >
             <IconArrowDown size={18} stroke={1.75} aria-hidden />
           </button>
@@ -154,10 +176,10 @@ function CategoryBlock({
             onClick={() => {
               if (
                 window.confirm(
-                  `Kategorie „${category.title}" mit allen Gerichten löschen?`,
+                  `Kategorie „${category.title}" mit allen Einträgen löschen?`,
                 )
               ) {
-                onRun(() => deleteCategory(category.id));
+                onRun(() => deleteCategory(area, category.id));
               }
             }}
           >
@@ -171,6 +193,8 @@ function CategoryBlock({
           <ItemEditor
             key={item.id}
             item={item}
+            area={area}
+            noun={noun}
             categoryId={category.id}
             allergens={allergens}
             isFirst={index === 0}
@@ -180,7 +204,7 @@ function CategoryBlock({
           />
         ))}
         {category.items.length === 0 && (
-          <p className="admin-empty">Noch keine Gerichte in dieser Kategorie.</p>
+          <p className="admin-empty">Noch keine Einträge in dieser Kategorie.</p>
         )}
       </div>
 
@@ -188,10 +212,10 @@ function CategoryBlock({
         type="button"
         className="btn btn-ghost admin-add-item"
         disabled={disabled}
-        onClick={() => onRun(() => createItem(category.id))}
+        onClick={() => onRun(() => createItem(area, category.id))}
       >
         <IconPlus size={18} stroke={1.75} aria-hidden />
-        Gericht
+        {noun}
       </button>
     </section>
   );
@@ -199,6 +223,8 @@ function CategoryBlock({
 
 function ItemEditor({
   item,
+  area,
+  noun,
   categoryId,
   allergens,
   isFirst,
@@ -207,6 +233,8 @@ function ItemEditor({
   onRun,
 }: {
   item: AdminMenuItem;
+  area: MenuArea;
+  noun: string;
   categoryId: string;
   allergens: Allergen[];
   isFirst: boolean;
@@ -236,7 +264,7 @@ function ItemEditor({
     setError("");
     setSaved(false);
     startTransition(async () => {
-      const r = await updateItem(item.id, form);
+      const r = await updateItem(area, item.id, form);
       if (r.ok) {
         setSaved(true);
         setTimeout(() => setSaved(false), 2000);
@@ -326,7 +354,7 @@ function ItemEditor({
             className="admin-icon-btn"
             title="Nach oben"
             disabled={parentDisabled || pending || isFirst}
-            onClick={() => onRun(() => moveItem(item.id, categoryId, "up"))}
+            onClick={() => onRun(() => moveItem(area, item.id, categoryId, "up"))}
           >
             <IconArrowUp size={18} stroke={1.75} aria-hidden />
           </button>
@@ -335,18 +363,18 @@ function ItemEditor({
             className="admin-icon-btn"
             title="Nach unten"
             disabled={parentDisabled || pending || isLast}
-            onClick={() => onRun(() => moveItem(item.id, categoryId, "down"))}
+            onClick={() => onRun(() => moveItem(area, item.id, categoryId, "down"))}
           >
             <IconArrowDown size={18} stroke={1.75} aria-hidden />
           </button>
           <button
             type="button"
             className="admin-icon-btn admin-icon-btn--danger"
-            title="Gericht löschen"
+            title={`${noun} löschen`}
             disabled={parentDisabled || pending}
             onClick={() => {
-              if (window.confirm(`Gericht „${item.name}" löschen?`)) {
-                onRun(() => deleteItem(item.id));
+              if (window.confirm(`${noun} „${item.name}" löschen?`)) {
+                onRun(() => deleteItem(area, item.id));
               }
             }}
           >

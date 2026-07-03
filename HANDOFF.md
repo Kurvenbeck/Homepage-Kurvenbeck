@@ -28,7 +28,8 @@ werden **nicht** ausgeliefert — die produktive App liegt unter **`web/`**.
 - Fonts via `next/font`: **Playfair Display** (Display) + **DM Sans** (Body).
 - Icons: **`@tabler/icons-react`**.
 - **Supabase** (Postgres 17) für das Menü-Backend angebunden via `@supabase/ssr` —
-  siehe §10. Catering-Formular & Backstube-Warenkorb sind weiterhin Demos.
+  siehe §10. Biergarten **und Backstube** lesen ihre Karte live aus der DB und werden
+  im Admin gepflegt. Das Catering-Formular ist weiterhin eine Demo.
 
 ## 3. Schnellstart
 
@@ -104,9 +105,14 @@ Metadata/OG), Bild-System, zentrale Kontaktdaten, **echtes Logo** (Header, Foote
 großes Badge im Startseiten-Hero, Favicon/Apple-Touch-Icon), **Catering-Fotos**
 (alle vier Menü-Kacheln befüllt).
 
+**Menü-Backend (live):** Biergarten- **und Backstube**-Karte lesen dynamisch aus Supabase
+und werden unter `/admin` (Bereichs-Tabs) selbst gepflegt — siehe §10.
+
 **Demos (noch ohne Backend):**
 - **Catering-Formular** — Client-Validierung + Erfolgszustand, aber kein echter Versand.
-- **Backstube-Warenkorb** — voll bedienbar inkl. Persistenz, aber kein echter Checkout.
+- **Backstube-Warenkorb-Komponenten** (`components/cart/*`) — voll bedienbar inkl.
+  Persistenz, aber auf der Seite **nicht mehr eingebunden** (Backstube ist jetzt Text-Menü);
+  aufbewahrt für den späteren echten Checkout (TODO #4).
 
 **Platzhalter:** noch fehlende Fotos (Biergarten/Backstube/Home-Karten teils offen,
 siehe `web/public/images/README.md`), Inhalte (Adresse/Preise/Öffnungszeiten),
@@ -201,9 +207,30 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   - **Offenes Folge-TODO:** eigener SMTP-Absender über `kurvenbeck.com` (Supabase-
     Standard-Mailversand hat niedriges Limit) — in `web/TODO.md` notiert.
 
-**Danach — Folgeschritte (nicht Phase 6):** Backstube an dasselbe Backend andocken
-(`area='backstube'`, ohne Fotos, gleiche Admin-UI), Catering, Drag&Drop-Sortierung, SMTP.
-Details/Spezifikation: `web/plans/biergarten-menu-backend.md`.
+- ✅ **Backstube angedockt (2026-07-03)** — Die Backstube nutzt jetzt dasselbe Menü-Backend
+  (`area='backstube'`, Text-Format ohne Fotos). Konkret:
+  - **Seed** `supabase/migrations/20260703151500_backstube_seed.sql` — 2 Kategorien
+    („Laugengebäck & Brötchen", „Brot & Süßes"), 6 Backwaren 1:1 aus dem alten statischen
+    `lib/products.ts`. Bewusst **ohne** vorbelegte Tags/Allergene (rechtlich sensibel → pflegt
+    der Kunde selbst im Admin).
+  - **Server Actions** (`app/admin/actions.ts`) sind jetzt **area-parametrisiert**; neue
+    Whitelist `lib/menuAreas.ts` (`MENU_AREAS`, `assertArea`) begrenzt Schreibziel &
+    Revalidierung auf `biergarten` | `backstube` (getrennte Datei, weil `"use server"` nur
+    async Exports erlaubt).
+  - **Admin-UI** (`components/admin/MenuAdmin.tsx`): Bereichs-Tabs Biergarten/Backstube sind
+    jetzt aktive Links (`/admin?area=…`); `app/admin/page.tsx` liest & validiert `?area=`.
+    Copy je Bereich („Gericht" vs. „Backware").
+  - **Öffentliche Seite** `app/backstube/page.tsx` zeigt jetzt das Text-Menü aus Supabase
+    (async + `force-dynamic`, gleiche `.menu-*`-Markup wie Biergarten), Warenkorb-Demo
+    entfernt; Header-CTA → WhatsApp-Vorbestellung. **Hinweis:** Die Warenkorb-Komponenten
+    (`components/cart/*`, `lib/products.ts`) bleiben absichtlich im Repo (nicht mehr
+    importiert) — Wiederverwendung für den späteren echten Checkout (TODO #4).
+  - Build grün (12 Seiten, `/backstube` jetzt dynamisch), live gegen DB verifiziert
+    (6 Backwaren + Preise), `/admin` weiterhin auth-geschützt (307 → Login), Security-Advisors
+    unverändert sauber.
+
+**Danach — Folgeschritte:** Catering ans Backend andocken, Drag&Drop-Sortierung, eigener
+SMTP-Absender. Details/Spezifikation: `web/plans/biergarten-menu-backend.md`.
 
 **Hinweis für neue Session:** Schema-Änderungen laufen über den **Supabase-MCP** (muss neu
 autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —

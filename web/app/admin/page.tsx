@@ -3,10 +3,19 @@ import { IconLogout } from "@tabler/icons-react";
 import { createClient } from "@/utils/supabase/server";
 import { getMenuForAdmin } from "@/lib/menu";
 import { MenuAdmin } from "@/components/admin/MenuAdmin";
+import { MENU_AREAS, type MenuArea } from "@/lib/menuAreas";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 
 export const dynamic = "force-dynamic";
+
+/** Bereich aus `?area=` lesen; unbekannte/fehlende Werte → Biergarten. */
+function resolveArea(value: string | string[] | undefined): MenuArea {
+  const area = Array.isArray(value) ? value[0] : value;
+  return (MENU_AREAS as readonly string[]).includes(area ?? "")
+    ? (area as MenuArea)
+    : "biergarten";
+}
 
 /** Abmelden (Server Action) — verwirft die Sitzung und leitet zum Login. */
 async function signOut() {
@@ -16,7 +25,12 @@ async function signOut() {
   redirect("/admin/login");
 }
 
-export default async function AdminPage() {
+export default async function AdminPage({
+  searchParams,
+}: {
+  searchParams: Promise<{ area?: string | string[] }>;
+}) {
+  const area = resolveArea((await searchParams).area);
   const supabase = await createClient();
 
   // Middleware hat bereits auf eingeloggt geprüft; hier zusätzlich (Defense in
@@ -35,7 +49,7 @@ export default async function AdminPage() {
     .maybeSingle();
 
   const isAdmin = Boolean(adminRow);
-  const menu = isAdmin ? await getMenuForAdmin("biergarten") : null;
+  const menu = isAdmin ? await getMenuForAdmin(area) : null;
 
   return (
     <>
@@ -68,7 +82,7 @@ export default async function AdminPage() {
           </div>
 
           {isAdmin && menu ? (
-            <MenuAdmin menu={menu} />
+            <MenuAdmin menu={menu} area={area} />
           ) : (
             <p
               style={{
