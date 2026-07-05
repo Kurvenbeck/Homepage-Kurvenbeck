@@ -244,8 +244,15 @@ SMTP-Absender. Details/Spezifikation: `web/plans/biergarten-menu-backend.md`.
 autorisiert werden, falls die Verbindung getrennt wurde). Phase 3 selbst braucht keinen MCP —
 nur die App liest über den Publishable-Key.
 
-**Offen (nicht Menü-Backend):** `npm audit` meldet Schwachstellen in **Next.js 15.1.6**
-(u. a. Middleware-SSRF) → separates Update auf Next 15.5.x empfohlen, siehe `web/TODO.md`.
+**Erledigt (2026-07-05):**
+- **Kontaktdaten im Backend:** Tabelle `site_settings` (+ RLS), Loader `lib/getSiteSettings.ts`
+  (server) / `lib/siteSettings.ts` (client-sicher, Fallback), Admin-Tab „Einstellungen"
+  (`/admin/einstellungen`). Footer + Biergarten/Backstube-CTAs lesen live. Echte Nummer/Adresse
+  trägt der Betreiber selbst ein (Platzhalter bis dahin).
+- **Empfehlung des Hauses:** Flag `is_recommendation` am Menü-Eintrag, im Admin schaltbar;
+  hervorgehoben auf Biergarten/Backstube, aus der normalen Liste herausgelöst
+  (`components/MenuRecommendations.tsx`).
+- **Sicherheitsupdate:** **Next 15.1.6 → 15.5.20** + postcss-`overrides` → `npm audit` = 0.
 
 ---
 

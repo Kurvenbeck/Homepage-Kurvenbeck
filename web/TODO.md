@@ -24,13 +24,18 @@ Aktuell steht in `web/lib/siteSettings.ts` eine **Platzhalter-Telefonnummer**
 Adresse fehlt komplett. **Entscheidung: ja, Kontaktdaten kommen ins Backend** (der Betreiber
 soll sie selbst pflegen).
 
-- [ ] Tabelle `site_settings` (`key text primary key`, `value text not null`, `updated_at`).
-      Keys u. a. `contact_phone` (E.164, ohne führende Null → für `wa.me`), `address`.
-- [ ] RLS: öffentlich lesbar, Schreiben nur Admin (wie Menü-Tabellen, `is_admin()`).
-- [ ] `web/lib/siteSettings.ts` → async Loader (`getSiteSettings()`, gecacht); `telHref`/
-      `whatsappHref` daraus ableiten; Fallback, damit nie ein leerer `tel:`/`wa.me` entsteht.
-- [ ] Admin-UI: eigener Tab/Bereich „Einstellungen" zum Pflegen von Telefon & Adresse.
-- [ ] Verbraucher (Biergarten-CTAs, Footer) auf den Loader umstellen (sind Server-Components).
+- [x] Tabelle `site_settings` (`key`/`value`/`updated_at`) + RLS (public read, admin write via
+      `is_admin()`). Migration `20260705130000_site_settings_schema.sql`, Keys `contact_phone_display`,
+      `contact_phone_e164` (E.164, für `wa.me`), `contact_address`; Seed = bisherige Platzhalter.
+- [x] Loader getrennt: `lib/siteSettings.ts` (client-sicher: Typen, `FALLBACK_CONTACT`,
+      `buildContact` → `telHref`/`whatsappHref`) + `lib/getSiteSettings.ts` (server: `getSiteSettings()`,
+      `getSiteSettingsForAdmin()`). Fallback verhindert leere `tel:`/`wa.me`-Links.
+- [x] Admin-UI: Tab „Einstellungen" (`/admin/einstellungen`, `components/admin/SettingsAdmin.tsx`)
+      zum Pflegen von Telefon (Anzeige + international) & Adresse; grün/rot Save; `AdminNav` erweitert.
+- [x] Verbraucher umgestellt: `SiteFooter` (contact-Prop mit Fallback), Home/Biergarten/Backstube/
+      Catering laden `getSiteSettings()` und reichen es durch; Biergarten-/Backstube-CTAs nutzen es.
+      End-to-end verifiziert (DB-Wert → Footer + tel/wa.me). **⚠️ Echte Nummer + Adresse trägt der
+      Betreiber selbst im Admin ein** — Platzhalter bleibt bis dahin.
 
 ### 1b. Öffnungszeiten (Besenwirtschaft) — konkretes Modell
 Der Biergarten ist eine **Besenwirtschaft** mit **unregelmäßigen** Öffnungstagen (nicht „immer
@@ -92,12 +97,13 @@ Sortiment liegt bereits im Menü-Backend. **Abhängigkeit:** braucht ein „Back
 
 ## 4. „Empfehlung des Hauses" + Menü-Scanbarkeit
 
-- [ ] **Empfehlung des Hauses:** hervorgehobener Sonder-Eintrag (z. B. spontaner Schweinebraten),
-      der **sonst nicht auf der Karte** steht. Umsetzung: Flag/Feld am Menü-Eintrag
-      (`is_recommendation` o. ä.) + eigene Hervorhebung auf der Bereichsseite; im Admin ein-/
-      ausschaltbar. Gilt für Biergarten (und ggf. Backstube).
+- [x] **Empfehlung des Hauses:** Flag `is_recommendation` am Menü-Eintrag (Migration
+      `20260705133000_menu_recommendation.sql`), im Admin per Checkbox ein-/ausschaltbar. Markierte
+      Einträge werden auf der Bereichsseite oben als „Empfehlung des Hauses" hervorgehoben und aus
+      der normalen Kategorieliste **herausgelöst** (steht sonst nicht auf der Karte). Komponente
+      `components/MenuRecommendations.tsx`, gilt für Biergarten **und** Backstube. End-to-end verifiziert.
 - [ ] Kennzeichnungen (vegetarisch/vegan/alkoholfrei) als kleine **Icons** statt Text —
-      bessere Scanbarkeit der Karte.
+      bessere Scanbarkeit der Karte. *(noch offen)*
 
 ## 5. Recht, Begriffe & Metadaten
 
@@ -128,8 +134,10 @@ Sortiment liegt bereits im Menü-Backend. **Abhängigkeit:** braucht ein „Back
 
 ## 8. Next.js-Sicherheitsupdate (separat)
 
-- [ ] `npm audit`: Schwachstellen in **Next.js 15.1.6** (Middleware-SSRF, Cache-Poisoning).
-      Update auf **Next 15.5.x**, danach `npm run build` grün halten. Getrennt durchführen.
+- [x] **Erledigt (2026-07-05):** Update **Next 15.1.6 → 15.5.20** (behebt Middleware-SSRF,
+      Cache-Poisoning, RCE u. a.). Verbleibende moderate postcss-XSS (Build-Tool, kein Laufzeitrisiko)
+      per `overrides: { "postcss": "^8.5.10" }` gelöst → **`npm audit` = 0 vulnerabilities**.
+      `npm run build` grün, alle Routen im Dev-Smoke-Test 200 (bzw. 307 Login-Schutz).
 
 ## 9. Repo auf Kurvenbeck-Org umziehen
 
