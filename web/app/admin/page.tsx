@@ -1,5 +1,6 @@
+import Link from "next/link";
 import { redirect } from "next/navigation";
-import { IconLogout } from "@tabler/icons-react";
+import { IconLogout, IconPrinter } from "@tabler/icons-react";
 import { createClient } from "@/utils/supabase/server";
 import { getMenuForAdmin } from "@/lib/menu";
 import { MenuAdmin } from "@/components/admin/MenuAdmin";
@@ -85,6 +86,17 @@ export default async function AdminPage({
           {isAdmin && menu ? (
             <>
               <AdminNav active="menu" />
+              {area === "biergarten" && (
+                <div style={{ margin: "var(--space-6) 0 var(--space-2)" }}>
+                  <Link
+                    href="/admin/speisekarte/drucken"
+                    className="btn btn-ghost"
+                  >
+                    <IconPrinter size={18} stroke={1.75} aria-hidden />
+                    Speisekarte drucken (A4)
+                  </Link>
+                </div>
+              )}
               <MenuAdmin menu={menu} area={area} />
             </>
           ) : (
