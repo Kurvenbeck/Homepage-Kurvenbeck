@@ -40,10 +40,15 @@ von–bis** — und die Seite zeigt daraus klar verständlich:
 > „Heute, Sonntag 5. Juli, von 10–18 Uhr geöffnet." bzw. „Heute geschlossen — nächster
 > Öffnungstag: …"
 
-- [ ] Tabelle `opening_days` (`id`, `area`, `date`, `open_time`, `close_time`, `note`).
-- [ ] Admin-UI: Öffnungstage anlegen/bearbeiten/löschen (Datum + Uhrzeiten).
-- [ ] Frontend: dynamisches „Heute geöffnet/geschlossen"-Badge (Biergarten-Seite; evtl.
-      Startseite). Datum menschlich formatiert (de-DE), Zeitzone Europe/Berlin.
+- [x] Tabelle `opening_days` (`id`, `area`, `date`, `open_time`, `close_time`, `note`) + RLS
+      (public read, admin write via `is_admin()`). Migration `20260705080500_opening_days_schema.sql`.
+- [x] Admin-UI: Öffnungstage anlegen/bearbeiten/löschen unter **`/admin/oeffnungszeiten`**
+      (`components/admin/OpeningHoursAdmin.tsx`), Nav Speisekarte↔Öffnungszeiten (`AdminNav`).
+- [x] Frontend: dynamisches „Heute geöffnet/geschlossen"-Badge auf der Biergarten-Seite
+      (grüner Punkt = jetzt offen), de-DE-Datum, Zeitzone Europe/Berlin (`lib/openingHours.ts`).
+- [ ] **Beispiel-Öffnungstage** (Seed `..._opening_days_seed.sql`, 05./11./12. Juli) durch echte
+      Termine ersetzen — im Admin pflegbar.
+- [ ] Badge evtl. auch auf der Startseite zeigen.
 - [ ] Footer zeigt bewusst **keine** Öffnungszeiten (Doppelpflege vermeiden), nur Verlinkung.
 
 ## 2. Catering-Formular echt machen (Backend + E-Mail + Posteingang)  ⭐

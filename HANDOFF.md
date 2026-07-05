@@ -268,9 +268,15 @@ stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
   ist ein **Platzhalter** und darf nicht live gehen.
 - **Öffnungszeiten = Besenwirtschaft:** unregelmäßige Tage, **nicht** „immer Sa/So". Der
   Betreiber trägt konkrete Termine ein (**Wochentag + Datum + Uhrzeit von–bis**), die Seite
-  zeigt daraus verständlich z. B. „Heute, Sonntag 5. Juli, von 10–18 Uhr geöffnet" bzw.
-  „Heute geschlossen — nächster Öffnungstag …". Tabelle `opening_days`. **Dies ist der aktuell
-  begonnene Arbeitsschritt.**
+  zeigt daraus verständlich z. B. „Heute ab 11 Uhr geöffnet · Sonntag, 5. Juli · 11–22 Uhr"
+  bzw. „Heute geschlossen — nächster Öffnungstag …".
+  ✅ **Gebaut (2026-07-05):** Tabelle `opening_days` (+ RLS wie Menü-Tabellen), Loader
+  `lib/openingHours.ts` (Zeitzone Europe/Berlin, „jetzt geöffnet"-Logik), dynamischer Badge
+  auf `app/biergarten/page.tsx` (grüner Punkt = jetzt offen), Admin-Verwaltung unter
+  **`/admin/oeffnungszeiten`** (`OpeningHoursAdmin` + `AdminNav`-Umschalter). Server Actions
+  `app/admin/opening-actions.ts` (area-validiert, Datum/Zeit geprüft, open < close).
+  Aktuell **Beispieldaten** geseedet (05./11./12. Juli) — im Admin durch echte Termine ersetzen.
+  Offen: Badge evtl. auch auf der Startseite; Backstube-„Backtage" später separat.
 
 ### Catering-Formular echt machen (Prio 2)
 - Server Action + serverseitige Validierung; Anfrage in Supabase (`catering_requests`).

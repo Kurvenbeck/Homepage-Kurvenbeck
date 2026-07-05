@@ -7,6 +7,12 @@ import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { telHref, whatsappHref } from "@/lib/siteSettings";
 import { getMenu } from "@/lib/menu";
+import {
+  getOpeningStatus,
+  formatGermanDate,
+  formatTime,
+  formatRange,
+} from "@/lib/openingHours";
 
 export const metadata: Metadata = {
   title: "Biergarten",
@@ -18,7 +24,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function BiergartenPage() {
-  const menu = await getMenu("biergarten");
+  const [menu, opening] = await Promise.all([
+    getMenu("biergarten"),
+    getOpeningStatus("biergarten"),
+  ]);
   return (
     <>
       <SiteHeader
@@ -106,12 +115,35 @@ export default async function BiergartenPage() {
 
             <div className="opening-hours" style={{ marginTop: "var(--space-8)" }}>
               <p className="eyebrow" style={{ marginBottom: "var(--space-2)" }}>Öffnungszeiten</p>
-              <p style={{ fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--color-text-primary)" }}>
-                Sa &amp; So · Feiertage
-              </p>
-              <p style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-1)", color: "var(--color-text-secondary)" }}>
-                11 – 22 Uhr
-              </p>
+              {opening.today ? (
+                <>
+                  <p style={{ fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--color-text-primary)" }}>
+                    <span
+                      className={`open-dot${opening.openNow ? " is-open" : ""}`}
+                      aria-hidden
+                    />
+                    {opening.opensLaterToday
+                      ? `Heute ab ${formatTime(opening.today.openTime)} Uhr geöffnet`
+                      : "Heute geöffnet"}
+                  </p>
+                  <p style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-1)", color: "var(--color-text-secondary)" }}>
+                    {formatGermanDate(opening.today.date)} ·{" "}
+                    {formatRange(opening.today.openTime, opening.today.closeTime)}
+                  </p>
+                </>
+              ) : (
+                <>
+                  <p style={{ fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--color-text-primary)" }}>
+                    <span className="open-dot" aria-hidden />
+                    Heute geschlossen
+                  </p>
+                  <p style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-1)", color: "var(--color-text-secondary)" }}>
+                    {opening.next
+                      ? `Nächster Öffnungstag: ${formatGermanDate(opening.next.date)} · ${formatRange(opening.next.openTime, opening.next.closeTime)}`
+                      : "Die nächsten Öffnungstage geben wir in Kürze bekannt."}
+                  </p>
+                </>
+              )}
             </div>
           </div>
           <Photo

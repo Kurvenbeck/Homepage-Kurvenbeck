@@ -820,6 +820,39 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
 }
 .admin-tab:disabled { opacity: 0.5; cursor: not-allowed; }
 
+/* Verwaltungs-Navigation (Speisekarte ↔ Öffnungszeiten) */
+.admin-nav {
+  display: flex; gap: var(--space-2); flex-wrap: wrap;
+  border-bottom: 1px solid var(--color-border);
+  padding-bottom: var(--space-4); margin-bottom: var(--space-6);
+}
+.admin-nav-link {
+  font-family: var(--font-body); font-size: var(--text-sm); font-weight: 500;
+  padding: var(--space-2) var(--space-4); border-radius: var(--radius-md);
+  color: var(--color-text-secondary); text-decoration: none;
+}
+.admin-nav-link:hover { color: var(--color-primary); background: var(--color-surface); }
+.admin-nav-link.is-active { background: var(--color-primary); color: #fff; }
+
+.admin-intro { color: var(--color-text-secondary); font-size: var(--text-sm); line-height: var(--leading-relaxed); }
+
+/* Öffnungszeiten-Verwaltung: eine Zeile pro Öffnungstag */
+.admin-openingday {
+  display: grid; grid-template-columns: auto auto auto 1fr auto; gap: var(--space-4);
+  align-items: end; border: 1px solid var(--color-border); border-radius: var(--radius-lg);
+  background: #fff; padding: var(--space-5);
+}
+.admin-openingday--new { background: var(--color-surface); }
+.admin-openingday .field { margin-bottom: 0; }
+.admin-openingday-note { min-width: 8rem; }
+.admin-openingday-weekday {
+  font-size: var(--text-xs); color: var(--color-text-muted); margin-top: var(--space-1);
+}
+@media (max-width: 640px) {
+  .admin-openingday { grid-template-columns: 1fr 1fr; align-items: start; }
+  .admin-openingday-note { grid-column: 1 / -1; }
+}
+
 .admin-error {
   color: var(--color-accent); font-size: var(--text-sm);
   background: rgba(171,13,14,0.06); border: 1px solid rgba(171,13,14,0.3);
@@ -891,6 +924,14 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
 .admin-save--clean { background: var(--color-success); color: #fff; }
 .admin-save--clean:hover { background: var(--color-success); filter: brightness(0.95); }
 .admin-save--dirty { background: var(--color-accent); color: #fff; }
+
+/* Öffnungs-Status-Punkt auf der Bereichsseite: grün = jetzt geöffnet, sonst neutral. */
+.open-dot {
+  display: inline-block; width: 0.6em; height: 0.6em; border-radius: 50%;
+  margin-right: 0.5em; vertical-align: middle;
+  background: var(--color-text-muted);
+}
+.open-dot.is-open { background: var(--color-success); }
 .admin-add-item { align-self: flex-start; margin-top: var(--space-5); }
 
 .admin-add-category { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }
