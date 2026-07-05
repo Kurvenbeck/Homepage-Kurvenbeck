@@ -7,12 +7,8 @@ import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { telHref, whatsappHref } from "@/lib/siteSettings";
 import { getMenu } from "@/lib/menu";
-import {
-  getOpeningStatus,
-  formatGermanDate,
-  formatTime,
-  formatRange,
-} from "@/lib/openingHours";
+import { getOpeningStatus } from "@/lib/openingHours";
+import { OpeningStatusView } from "@/components/OpeningStatusView";
 
 export const metadata: Metadata = {
   title: "Biergarten",
@@ -113,38 +109,7 @@ export default async function BiergartenPage() {
               </a>
             </div>
 
-            <div className="opening-hours" style={{ marginTop: "var(--space-8)" }}>
-              <p className="eyebrow" style={{ marginBottom: "var(--space-2)" }}>Öffnungszeiten</p>
-              {opening.today ? (
-                <>
-                  <p style={{ fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--color-text-primary)" }}>
-                    <span
-                      className={`open-dot${opening.openNow ? " is-open" : ""}`}
-                      aria-hidden
-                    />
-                    {opening.opensLaterToday
-                      ? `Heute ab ${formatTime(opening.today.openTime)} Uhr geöffnet`
-                      : "Heute geöffnet"}
-                  </p>
-                  <p style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-1)", color: "var(--color-text-secondary)" }}>
-                    {formatGermanDate(opening.today.date)} ·{" "}
-                    {formatRange(opening.today.openTime, opening.today.closeTime)}
-                  </p>
-                </>
-              ) : (
-                <>
-                  <p style={{ fontSize: "var(--text-xl)", fontWeight: 600, color: "var(--color-text-primary)" }}>
-                    <span className="open-dot" aria-hidden />
-                    Heute geschlossen
-                  </p>
-                  <p style={{ fontSize: "var(--text-lg)", marginTop: "var(--space-1)", color: "var(--color-text-secondary)" }}>
-                    {opening.next
-                      ? `Nächster Öffnungstag: ${formatGermanDate(opening.next.date)} · ${formatRange(opening.next.openTime, opening.next.closeTime)}`
-                      : "Die nächsten Öffnungstage geben wir in Kürze bekannt."}
-                  </p>
-                </>
-              )}
-            </div>
+            <OpeningStatusView status={opening} />
           </div>
           <Photo
             img={photos.biergartenGarten}

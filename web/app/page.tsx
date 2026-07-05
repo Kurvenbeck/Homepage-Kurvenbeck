@@ -4,8 +4,14 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
+import { getOpeningStatus } from "@/lib/openingHours";
+import { OpeningStatusView } from "@/components/OpeningStatusView";
 
-export default function HomePage() {
+// Dynamisch rendern, damit der Öffnungs-Status auf der Startseite tagesaktuell ist.
+export const dynamic = "force-dynamic";
+
+export default async function HomePage() {
+  const opening = await getOpeningStatus("biergarten");
   return (
     <div className="home-bg">
       <SiteHeader action={null} />
@@ -65,6 +71,7 @@ export default function HomePage() {
                 <span className="lbl">Biergarten</span>
               </span>
               <h3>Hock di na.</h3>
+              <OpeningStatusView status={opening} variant="compact" />
               <p>
                 Ein kühles Glas in der Sonne, ein lauschiges Eck im Schatten
                 und schwäbische Küche, die noch von Hand entsteht.

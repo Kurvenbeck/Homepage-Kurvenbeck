@@ -48,7 +48,9 @@ von–bis** — und die Seite zeigt daraus klar verständlich:
       (grüner Punkt = jetzt offen), de-DE-Datum, Zeitzone Europe/Berlin (`lib/openingHours.ts`).
 - [ ] **Beispiel-Öffnungstage** (Seed `..._opening_days_seed.sql`, 05./11./12. Juli) durch echte
       Termine ersetzen — im Admin pflegbar.
-- [ ] Badge evtl. auch auf der Startseite zeigen.
+- [x] Badge auch auf der Startseite zeigen — kompakte Pille „Heute geöffnet · 11–22 Uhr"
+      in der Biergarten-Kachel (`components/OpeningStatusView.tsx`, Variante `compact`; Startseite
+      jetzt `force-dynamic`). Biergarten-Seite nutzt dieselbe Komponente (Variante `full`).
 - [ ] Footer zeigt bewusst **keine** Öffnungszeiten (Doppelpflege vermeiden), nur Verlinkung.
 
 ## 2. Catering-Formular echt machen (Backend + E-Mail + Posteingang)  ⭐
