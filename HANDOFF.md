@@ -106,7 +106,10 @@ großes Badge im Startseiten-Hero, Favicon/Apple-Touch-Icon), **Catering-Fotos**
 (alle vier Menü-Kacheln befüllt).
 
 **Menü-Backend (live):** Biergarten- **und Backstube**-Karte lesen dynamisch aus Supabase
-und werden unter `/admin` (Bereichs-Tabs) selbst gepflegt — siehe §10.
+und werden unter `/admin` (Bereichs-Tabs) selbst gepflegt — siehe §10. **Admin-Feinschliff
+(2026-07-05):** Save-Button je Eintrag zeigt **grün „Gespeichert" ↔ rot „Speichern"**
+(Dirty-Status gegen den Live-Stand); Kategorie-Löschen fragt mit Anzahl der betroffenen
+Einträge nach.
 
 **Demos (noch ohne Backend):**
 - **Catering-Formular** — Client-Validierung + Erfolgszustand, aber kein echter Versand.
@@ -114,21 +117,26 @@ und werden unter `/admin` (Bereichs-Tabs) selbst gepflegt — siehe §10.
   Persistenz, aber auf der Seite **nicht mehr eingebunden** (Backstube ist jetzt Text-Menü);
   aufbewahrt für den späteren echten Checkout (TODO #4).
 
-**Platzhalter:** noch fehlende Fotos (Biergarten/Backstube/Home-Karten teils offen,
-siehe `web/public/images/README.md`), Inhalte (Adresse/Preise/Öffnungszeiten),
-Rechtstexte.
+**Platzhalter:** noch fehlende Fotos (Biergarten/Home-Karten teils offen, siehe
+`web/public/images/README.md`), Inhalte (Adresse/Öffnungszeiten), Rechtstexte.
+⚠️ **Telefonnummer in `web/lib/siteSettings.ts` ist ein Platzhalter (`07071 / 12 34 56`)
+und darf nicht live gehen** — echte Nummer bzw. Backend-Anbindung zuerst (§11, TODO #1).
 
 ## 8. Nächste Schritte
 
-Priorisiert in **`web/TODO.md`** — kompakt:
+Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen Entscheidungen stehen
+in **§11**. Kompakt (Stand 2026-07-05):
 
-1. Telefonnummer aus Supabase `site_settings` laden (Quelle: `siteSettings.ts`).
-2. Restliche echte Fotos einsetzen + Slots freischalten (+ `alt`-Texte) — Logo und
-   Catering-Fotos sind bereits erledigt.
-3. Catering-Formular an Backend/E-Mail anbinden.
-4. Backstube-Checkout + Produktdaten aus CMS.
-5. Inhalte & Rechtstexte finalisieren.
-6. Repo in Org `Kurvenbeck` umziehen.
+1. **Kontaktdaten & Öffnungszeiten ins Backend** (höchste Prio): Telefon/Adresse aus
+   `site_settings`, Öffnungszeiten als Besenwirtschaft-Termine (`opening_days`) + „Heute
+   geöffnet/geschlossen"-Badge. ⚠️ Platzhalter-Telefonnummer darf nicht live gehen.
+2. **Catering-Formular echt machen:** Server Action + Supabase-Speicherung + Admin-Posteingang
+   + E-Mail via Hostinger-SMTP (`kontakt@kurvenbeck.com`, „Weg B" — Zugangsdaten offen).
+3. **Backstube-Vorbestellen** (Konzept festgehalten, §11): Warenkorb → Bestellung → Admin mit
+   Einzelbestellungen **und** aggregierter Backliste. Braucht das Termin-Backend aus #1.
+4. **„Empfehlung des Hauses"** + Menü-Icons (vegetarisch/vegan als Symbole).
+5. Recht/Begriffe/Metadaten: Titelschutz durchziehen, „seit 1978" klären, Rechtstexte füllen.
+6. Local-SEO (ohne „Bakery"), restliche Fotos, Next.js-Update, Repo-Umzug.
 
 ## 9. Deployment (noch offen)
 
@@ -238,3 +246,65 @@ nur die App liest über den Publishable-Key.
 
 **Offen (nicht Menü-Backend):** `npm audit` meldet Schwachstellen in **Next.js 15.1.6**
 (u. a. Middleware-SSRF) → separates Update auf Next 15.5.x empfohlen, siehe `web/TODO.md`.
+
+---
+
+## 11. Beschlossene Roadmap & Entscheidungen (Durchsprache 2026-07-05)
+
+Festgehalten, damit nichts aus der Abstimmung verloren geht. Operative Checklisten dazu
+stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
+
+### Begriffe & Recht (verbindlich)
+- **Titelschutz:** Der Betrieb ist eine **Backstube**, **keine „Bäckerei"**; der Betreiber
+  ist **kein gelernter „Bäcker"**. In **allen** Texten/Labels/Alt-Texten/Metadaten die Wörter
+  „Bäcker"/„Bäckerei" **vermeiden** → „Backstube", „aus dem Ofen", „von Hand gebacken";
+  Person = „Betreiber/Familie/Team". (Auch in CLAUDE.md verankert.)
+- **„seit 1978"** steht aktuell **live** in `app/layout.tsx` (Meta-/OG-Beschreibung, 2×) und
+  in CLAUDE.md/README. Die Backstube existiert erst ~1,5 Jahre → **noch offen: klären, ob die
+  Jahreszahl für den Gesamtbetrieb stimmt**, sonst entfernen. Bis dahin nicht bewerben.
+
+### Kontaktdaten & Öffnungszeiten → ins Backend (Prio 1)
+- **Telefon/Adresse** aus `site_settings`, vom Betreiber im Admin pflegbar. Aktuelle Nummer
+  ist ein **Platzhalter** und darf nicht live gehen.
+- **Öffnungszeiten = Besenwirtschaft:** unregelmäßige Tage, **nicht** „immer Sa/So". Der
+  Betreiber trägt konkrete Termine ein (**Wochentag + Datum + Uhrzeit von–bis**), die Seite
+  zeigt daraus verständlich z. B. „Heute, Sonntag 5. Juli, von 10–18 Uhr geöffnet" bzw.
+  „Heute geschlossen — nächster Öffnungstag …". Tabelle `opening_days`. **Dies ist der aktuell
+  begonnene Arbeitsschritt.**
+
+### Catering-Formular echt machen (Prio 2)
+- Server Action + serverseitige Validierung; Anfrage in Supabase (`catering_requests`).
+- **Catering-Posteingang im Admin** (eigener Tab, „neu/erledigt") — definitiv gewünscht.
+- **E-Mail-Versand = „Weg B":** über **SMTP des Hostinger-Postfachs `kontakt@kurvenbeck.com`**
+  (alles läuft bei **Hostinger**). SMTP-Zugangsdaten **liegen noch nicht vor** → offen; kommen
+  ausschließlich in `web/.env.local`, **nie committen**. Bis dahin kann der Posteingang schon
+  ohne Mailversand gebaut werden.
+
+### Backstube: echtes Online-Vorbestellen (Konzept, kommt nach dem Termin-Backend)
+- Aktueller Ablauf **bleibt gültig**: Backtag wird angekündigt (WhatsApp/Mundpropaganda/Home),
+  Bestellung bis z. B. Fr 18 Uhr, Abholung Sa 8 Uhr. Backstube-Seite = Text-Menü + WhatsApp.
+- **Vision:** Gast legt Mengen in den **Warenkorb** (z. B. 5 Brezeln, 3 Körnerwecken, 7 Briegl),
+  schickt ab → „Bestellung eingegangen"; **E-Mail-Bestätigung nur, wenn E-Mail angegeben**;
+  **kein WhatsApp** (kostet).
+- **Admin — zwei Sichten:** (1) **pro Bestellung** mit Name + Positionen; (2) **aggregierte
+  Backliste** über alle Bestellungen (z. B. „Brezeln 112 · Körnerwecken 40 · Briegl 88") —
+  das ist das **Killer-Feature** für die Backvorbereitung.
+- **Bausteine da:** Warenkorb-Komponenten (`components/cart/*`) bewusst erhalten; Sortiment im
+  Menü-Backend. **Abhängigkeit:** Backtag/Abholtag-Logik → baut auf dem Termin-Backend (Prio 1) auf.
+
+### Menü-Verbesserungen
+- **„Empfehlung des Hauses":** hervorgehobener Sonder-Eintrag, der sonst **nicht** auf der Karte
+  steht (z. B. spontaner Schweinebraten). Flag/Feld am Eintrag + Hervorhebung; im Admin schaltbar.
+- **Kennzeichnungen als Icons** (vegetarisch/vegan/alkoholfrei) statt Text — bessere Scanbarkeit.
+- **Backstube bleibt bewusst ohne Produktfotos** (Text-Format wie Biergarten).
+
+### Admin-UX
+- ✅ **Erledigt:** Save-Status grün/rot (deckungsgleich mit Live ↔ ungespeichert),
+  Löschen mit Anzahl-Rückfrage.
+- Hoch/Runter-Sortierpfeile bleiben vorerst (Drag&Drop später, „schauen wie wir es leben").
+- Offen: Handy-Tauglichkeit des Admin prüfen (Betreiber pflegt vermutlich vom Smartphone).
+
+### Local-SEO
+- Erwünscht, aber **kein `Bakery`-Schema** (Titelschutz) — passenderer `schema.org`-Typ
+  (z. B. `Restaurant`/`FoodEstablishment`) mit Adresse/Öffnungszeiten/Geo; `sitemap.xml`,
+  `robots.txt`, Google-Business-Profil.

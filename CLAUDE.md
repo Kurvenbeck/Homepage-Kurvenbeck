@@ -60,10 +60,21 @@ nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen
 - Kontaktdaten (v. a. Telefonnummer) **nicht hardcoden**. Einzige Quelle:
   `web/lib/siteSettings.ts` (`siteSettings.contactPhone` + Helfer `telHref`,
   `whatsappHref`). Footer und Biergarten-CTAs lesen daraus.
-- Geplant: Werte aus Supabase-Tabelle `site_settings` (key `contact_phone`)
-  laden — Details/Schritte in `web/TODO.md`.
+- ⚠️ **Die aktuelle Telefonnummer ist ein Platzhalter** (`07071 / 12 34 56`) und
+  **darf so nicht live gehen** — vorher durch die echte Nummer ersetzen bzw. aus
+  dem Backend laden.
+- **Geplant (beschlossen 2026-07-05):** Kontaktdaten (Telefon + Adresse) und
+  **Öffnungszeiten** in Supabase, vom Betreiber selbst im Admin pflegbar —
+  Telefon/Adresse über `site_settings`, Öffnungszeiten über eine Termin-Tabelle
+  (`opening_days`: Datum + Uhrzeit von–bis, Besenwirtschaft-Modell). Details/Schritte:
+  `web/TODO.md` #1. Öffnungszeiten sind **nicht** „immer Sa/So", sondern konkrete Tage.
 - `wa.me`-Nummern brauchen internationales Format ohne führende Null; der
   Helfer leitet das aus `e164` ab.
+- **E-Mail-Versand (beschlossen 2026-07-05):** transaktionale Mails (Catering-Anfrage,
+  später Vorbestell-Bestätigung) laufen über **SMTP des bestehenden Postfachs
+  `kontakt@kurvenbeck.com` bei Hostinger** („Weg B"). SMTP-Zugangsdaten kommen
+  ausschließlich in `web/.env.local` (git-ignoriert) — **nie committen**. Zugangsdaten
+  liegen noch nicht vor → offen in `web/TODO.md` #2.
 
 ## Supabase & Menü-Backend
 
