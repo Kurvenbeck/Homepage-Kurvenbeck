@@ -14,6 +14,8 @@ export type MenuItem = {
   description: string | null;
   /** Formatierter Preis, z. B. "12,90". */
   price: string;
+  /** Numerischer Preis (Euro) für Warenkorb-Summen, z. B. 12.9. */
+  priceValue: number;
   tags: string[];
   /** Als „Empfehlung des Hauses" hervorgehoben. */
   isRecommendation: boolean;
@@ -178,6 +180,8 @@ export async function getMenu(area: string): Promise<Menu> {
       name: item.name,
       description: item.description,
       price: formatPrice(item.price),
+      priceValue:
+        typeof item.price === "string" ? Number(item.price) : item.price,
       tags: item.tags ?? [],
       isRecommendation: item.is_recommendation,
       allergens: codes,

@@ -80,26 +80,44 @@ Gewünscht: echter Versand als **schöne E-Mail an `kontakt@kurvenbeck.com`** + 
       `web/.env.local`, nie committen. Haken sitzt in `submitCateringRequest` (markierter TODO).
 - [ ] Optional härter: serverseitige **Rate-Limit-Prüfung** (Honeypot deckt einfache Bots ab).
 
-## 3. Backstube: echtes Online-Vorbestellen (Konzept festgehalten)  🔭
+## 3. Backstube: echtes Online-Vorbestellen  ✅ (gebaut 2026-07-05)
 
-**Wichtig — aktueller Ablauf (bleibt gültig):** Kurvenbeck kündigt per WhatsApp / Mundpropaganda /
-Homepage an, wann gebacken wird; Bestellungen bis z. B. **Freitag 18 Uhr**, Abholung
-**Samstag 8 Uhr**. Die Backstube-Seite zeigt heute das Sortiment als Text-Menü + WhatsApp-CTA.
-Der Startseiten-Text „online vorbestellen" ist deshalb aktuell **noch nicht wahr** → entweder
-Copy anpassen **oder** dieses Feature bauen.
+**Gebaut & verifiziert (2026-07-05).** Gäste legen Mengen in den Warenkorb und bestellen
+direkt auf der Backstube-Seite (kein WhatsApp) für den aktuell aktiven **Backtag**; im Admin
+gibt es die **aggregierte Backliste** (Killer-Feature) + die einzelnen Bestellungen.
 
-**Vision (vom Betreiber, 2026-07-05):** kein WhatsApp (kostet) — echtes leichtes Vorbestellen.
-- Gast (z. B. „Otto Schmid") legt Mengen in den **Warenkorb** (5 Brezeln, 3 Körnerwecken,
-  7 Briegl), schickt ab → Bestätigung „Bestellung eingegangen".
-- **E-Mail optional:** wird eine E-Mail hinterlegt → Empfangsbestätigung per Mail.
-- **Admin — pro Bestellung:** jede Bestellung erscheint mit **Name + bestellten Positionen**
-  (bei 25 Bestellungen 25 Einträge).
-- **Admin — Gesamtübersicht (Killer-Feature):** aggregiert **wie viel von jedem Produkt
-  insgesamt** zu backen ist (z. B. „Brezeln: 112 · Körnerwecken: 40 · Briegl: 88").
+**Backtag-Modell (Entscheidung 2026-07-05): EIN global aktiver Backtag** in `site_settings`
+(`backtag_active`/`backtag_date`/`backtag_deadline_text`/`backtag_pickup_text`). Der Betreiber
+schaltet ihn im Admin ein/aus und setzt nach jedem Backtag den nächsten. Keine eigene Termin-
+tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
 
-**Bausteine schon da:** Warenkorb-Komponenten (`components/cart/*`) sind absichtlich erhalten;
-Sortiment liegt bereits im Menü-Backend. **Abhängigkeit:** braucht ein „Backtag/Abholtag"-Modell
-(wann ist Bestellung möglich, bis wann, Abholzeitpunkt) — hängt an Punkt 1b/Öffnungs-/Termin-Logik.
+- [x] Migration `20260705190000_backstube_orders_schema.sql`: Tabelle `backstube_orders`
+      (Name, E-Mail?, Telefon?, Anmerkung?, **`items` JSONB-Snapshot** [{id,name,qty,unitPrice}],
+      `total`, `backtag_date`/`backtag_label`-Snapshot, `status` neu/erledigt) + Backtag-Keys in
+      `site_settings`. **RLS wie Catering:** anon **nur INSERT** (gehärtete `WITH CHECK`:
+      Statusprüfung, Feldlängen, `jsonb_array_length` 1–100, `total`-Grenzen), **Lesen/Ändern nur
+      `is_admin()`**. Verifiziert: anon insert 201, malformed 401, anon select 42501; Advisors sauber.
+- [x] Öffentliche Server Action `app/backstube/order-actions.ts` (`submitBackstubeOrder`):
+      Honeypot, Backtag-Pflicht (kein aktiver Backtag → abgelehnt), **Namen/Preise autoritativ aus
+      dem Live-Menü** (`getMenu('backstube')`) gesnapshottet (Client-Preise werden ignoriert).
+- [x] Menügetriebener Warenkorb `components/backstube/BackstubeOrder.tsx` (Client, `localStorage`,
+      +/- je Eintrag, schwebende Warenkorb-Leiste, Drawer mit Formular + Erfolgszustand). Nutzt den
+      **Live-Menü**-Stand (nicht das alte statische `lib/products.ts`). `lib/backtag.ts`
+      (client-sichere Typen/Helfer) + `lib/getBacktag.ts` (Server-Loader).
+- [x] Backstube-Seite (`app/backstube/page.tsx`) zeigt jetzt die interaktive Bestellung statt der
+      read-only Karte; „So funktioniert's" + Header-CTA auf echten Ablauf umgestellt (kein WhatsApp).
+      Zeigt bei aktivem Backtag den grünen Status („Vorbestellen für … · Bestellschluss …"), sonst
+      „Aktuell kein Backtag".
+- [x] **Admin `/admin/bestellungen`** (Tab „Bestellungen", `AdminNav` erweitert): Backtag pflegen
+      (`BacktagAdmin`, grün/rot Save), **aggregierte Backliste** über alle offenen Bestellungen,
+      Einzelbestellungen mit Positionen + Status neu↔erledigt (`OrdersInbox`). Loader
+      `lib/backstubeOrders.ts`, Actions `app/admin/order-actions.ts` (`updateBacktag`,
+      `setBackstubeOrderStatus`).
+- [ ] **E-Mail-Bestätigung (offen — blockiert):** an den Gast, nur wenn E-Mail angegeben. Hängt wie
+      Catering an den **Hostinger-SMTP-Zugangsdaten** (`kontakt@kurvenbeck.com`, noch offen). Haken
+      sitzt markiert in `submitBackstubeOrder`.
+- [x] Startseiten-Text „online vorbestellen" ist damit **wahr**. (Alte Warenkorb-Demo
+      `components/cart/*` + `lib/products.ts` bleiben ungenutzt im Repo — später aufräumen.)
 
 ## 4. „Empfehlung des Hauses"
 

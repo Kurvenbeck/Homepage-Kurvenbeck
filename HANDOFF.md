@@ -117,6 +117,14 @@ Einträge nach.
 Posteingang unter `/admin/catering` (Tab „Anfragen", neu↔erledigt). **Offen:** E-Mail-Versand
 an `kontakt@kurvenbeck.com` (Hostinger-SMTP, Zugangsdaten fehlen noch).
 
+**Backstube-Vorbestellen (live, Stand 2026-07-05) — das „Killer-Feature":** Gäste legen Mengen
+in den Warenkorb und bestellen direkt auf der Backstube-Seite (kein WhatsApp) für den aktuell
+aktiven **Backtag** (ein global aktiver Backtag in `site_settings`, im Admin schaltbar). Bestellung
+in Supabase (`backstube_orders`, RLS wie Catering: anon nur INSERT gehärtet, Lesen/Ändern nur Admin;
+Positionen als JSONB-Snapshot). Admin `/admin/bestellungen` (Tab „Bestellungen"): **aggregierte
+Backliste** über alle offenen Bestellungen + Einzelbestellungen mit Positionen + Status. **Offen:**
+E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben — blockiert bis SMTP). Details: §11.
+
 **Demos (noch ohne Backend):**
 - **Backstube-Warenkorb-Komponenten** (`components/cart/*`) — voll bedienbar inkl.
   Persistenz, aber auf der Seite **nicht mehr eingebunden** (Backstube ist jetzt Text-Menü);
@@ -303,17 +311,27 @@ verifiziert.
   die Benachrichtigung sitzt bereits markiert in `submitCateringRequest`. Optional zusätzlich
   serverseitiges Rate-Limit.
 
-### Backstube: echtes Online-Vorbestellen (Konzept, kommt nach dem Termin-Backend)
-- Aktueller Ablauf **bleibt gültig**: Backtag wird angekündigt (WhatsApp/Mundpropaganda/Home),
-  Bestellung bis z. B. Fr 18 Uhr, Abholung Sa 8 Uhr. Backstube-Seite = Text-Menü + WhatsApp.
-- **Vision:** Gast legt Mengen in den **Warenkorb** (z. B. 5 Brezeln, 3 Körnerwecken, 7 Briegl),
-  schickt ab → „Bestellung eingegangen"; **E-Mail-Bestätigung nur, wenn E-Mail angegeben**;
-  **kein WhatsApp** (kostet).
-- **Admin — zwei Sichten:** (1) **pro Bestellung** mit Name + Positionen; (2) **aggregierte
-  Backliste** über alle Bestellungen (z. B. „Brezeln 112 · Körnerwecken 40 · Briegl 88") —
-  das ist das **Killer-Feature** für die Backvorbereitung.
-- **Bausteine da:** Warenkorb-Komponenten (`components/cart/*`) bewusst erhalten; Sortiment im
-  Menü-Backend. **Abhängigkeit:** Backtag/Abholtag-Logik → baut auf dem Termin-Backend (Prio 1) auf.
+### Backstube: echtes Online-Vorbestellen ✅ (gebaut 2026-07-05 — das „Killer-Feature")
+- **Backtag-Modell (Entscheidung 2026-07-05): EIN global aktiver Backtag** in `site_settings`
+  (`backtag_active`/`backtag_date`/`backtag_deadline_text`/`backtag_pickup_text`) — der Betreiber
+  schaltet ihn im Admin ein/aus und setzt nach jedem Backtag den nächsten. Bewusst **keine** eigene
+  Termintabelle → keine Abhängigkeit zum Öffnungszeiten-Backend.
+- **Gast-Flow:** Warenkorb (menügetrieben, live aus der DB), Vorbestellung mit Name (E-Mail/Telefon
+  optional) → „Bestellung eingegangen". **Kein WhatsApp.** Ist kein Backtag aktiv, zeigt die Seite
+  „Aktuell kein Backtag" und niemand kann bestellen.
+- **Admin `/admin/bestellungen` — zwei Sichten:** (1) **aggregierte Backliste** über alle offenen
+  Bestellungen (das Killer-Feature) + (2) **pro Bestellung** mit Name + Positionen + Status
+  neu↔erledigt. Plus Backtag-Pflege (grün/rot Save).
+- **Sicherheit/Umsetzung:** Tabelle `backstube_orders` (RLS wie Catering: anon nur INSERT gehärtet,
+  Lesen/Ändern nur `is_admin()`), Positionen als **JSONB-Snapshot** (Name+Einzelpreis zum
+  Bestellzeitpunkt). Server Action übernimmt **Preise/Namen autoritativ aus dem Live-Menü**.
+  Dateien: Migration `..._190000_backstube_orders_schema.sql`, `lib/backtag.ts`/`lib/getBacktag.ts`,
+  `lib/backstubeOrders.ts`, `app/backstube/order-actions.ts`, `app/admin/order-actions.ts`,
+  `components/backstube/BackstubeOrder.tsx`, `components/admin/BacktagAdmin.tsx` +
+  `components/admin/OrdersInbox.tsx`. Verifiziert: Build grün, RLS (201/401/42501), beide Seiten-
+  zustände gerendert, Advisors sauber.
+- **Offen:** E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben) — blockiert bis Hostinger-
+  SMTP-Zugangsdaten. Alte Warenkorb-Demo (`components/cart/*`, `lib/products.ts`) jetzt ungenutzt.
 
 ### Menü-Verbesserungen
 - **„Empfehlung des Hauses":** hervorgehobener Sonder-Eintrag, der sonst **nicht** auf der Karte

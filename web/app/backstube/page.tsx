@@ -1,12 +1,13 @@
 import type { Metadata } from "next";
-import { IconBrandWhatsapp } from "@tabler/icons-react";
+import { IconShoppingBag } from "@tabler/icons-react";
 import { getSiteSettings } from "@/lib/getSiteSettings";
 import { Photo } from "@/components/Photo";
 import { backstubePhotos } from "@/lib/images";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getMenu } from "@/lib/menu";
-import { MenuRecommendations } from "@/components/MenuRecommendations";
+import { getBacktag } from "@/lib/getBacktag";
+import { BackstubeOrder } from "@/components/backstube/BackstubeOrder";
 
 export const metadata: Metadata = {
   title: "Backstube",
@@ -18,9 +19,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function BackstubePage() {
-  const [menu, contact] = await Promise.all([
+  const [menu, contact, backtag] = await Promise.all([
     getMenu("backstube"),
     getSiteSettings(),
+    getBacktag(),
   ]);
 
   return (
@@ -29,13 +31,8 @@ export default async function BackstubePage() {
         active="backstube"
         logoSuffix="Backstube"
         action={
-          <a
-            href={contact.whatsappHref}
-            className="btn btn-ghost"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <IconBrandWhatsapp size={18} stroke={1.75} aria-hidden />
+          <a href="#bestellen" className="btn btn-ghost">
+            <IconShoppingBag size={18} stroke={1.75} aria-hidden />
             Vorbestellen
           </a>
         }
@@ -71,74 +68,20 @@ export default async function BackstubePage() {
             <strong>So funktioniert&apos;s:</strong>
           </p>
           <ol className="info-steps">
-            <li>
-              Aktuelle Abholtage erfragst du per{" "}
-              <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
-                WhatsApp
-              </a>
-            </li>
-            <li>Bestellung bis 18 Uhr am Vortag</li>
-            <li>Abholung am gewählten Termin — frisch aus dem Ofen</li>
+            <li>Backwaren aussuchen und in den Warenkorb legen</li>
+            <li>Vorbestellung mit deinem Namen abschicken</li>
+            <li>Am Backtag frisch abholen — bezahlt wird bei der Abholung</li>
           </ol>
         </div>
       </div>
 
-      <section className="section menu-wrap" id="sortiment">
-        <div className="container">
-          <div className="section-head">
-            <p className="eyebrow">Aus dem Ofen</p>
-            <h2>Heute frisch gebacken</h2>
-            <p>Preise pro Stück, inkl. MwSt. Vorbestellung per WhatsApp.</p>
-          </div>
+      <div className="section-head" style={{ paddingTop: "var(--space-16)" }}>
+        <p className="eyebrow">Aus dem Ofen</p>
+        <h2>Such dir aus, was frisch gebacken werden soll</h2>
+        <p>Preise pro Stück, inkl. MwSt. Vorbestellung direkt hier — kein WhatsApp nötig.</p>
+      </div>
 
-          <MenuRecommendations items={menu.recommendations} />
-
-          <div className="menu-grid">
-            {menu.categories.map((category) => (
-              <div className="menu-block" key={category.id}>
-                <h3>{category.title}</h3>
-                <div className="menu-list">
-                  {category.items.map((item) => (
-                    <div className="menu-item" key={item.id}>
-                      <span className="mi-name">
-                        {item.name}
-                        {item.allergens.length > 0 && (
-                          <span className="mi-allergens">
-                            ({item.allergens.join(", ")})
-                          </span>
-                        )}
-                        {item.tags.map((tag) => (
-                          <span className="menu-tag" key={tag}>
-                            {tag}
-                          </span>
-                        ))}
-                        {item.description && (
-                          <span className="mi-desc">{item.description}</span>
-                        )}
-                      </span>
-                      <span className="mi-price">{item.price}</span>
-                    </div>
-                  ))}
-                </div>
-              </div>
-            ))}
-          </div>
-
-          {menu.legend.length > 0 && (
-            <div className="menu-legend">
-              <p className="eyebrow">Allergene</p>
-              <dl>
-                {menu.legend.map((entry) => (
-                  <div key={entry.code}>
-                    <dt>{entry.code}</dt>
-                    <dd>{entry.label}</dd>
-                  </div>
-                ))}
-              </dl>
-            </div>
-          )}
-        </div>
-      </section>
+      <BackstubeOrder menu={menu} backtag={backtag} />
 
       <SiteFooter contact={contact} />
     </>
