@@ -34,6 +34,25 @@ function itemNoun(area: MenuArea): string {
   return area === "backstube" ? "Backware" : "Gericht";
 }
 
+/** Zwei String-Listen mengengleich (Reihenfolge egal)? Für Tags/Allergene. */
+function sameSet(a: string[], b: string[]): boolean {
+  if (a.length !== b.length) return false;
+  const set = new Set(a);
+  return b.every((v) => set.has(v));
+}
+
+/** Deckt sich der bearbeitete Stand mit dem Live-Stand? Steuert den Save-Status. */
+function sameItem(a: ItemInput, b: ItemInput): boolean {
+  return (
+    a.name.trim() === b.name.trim() &&
+    a.description.trim() === b.description.trim() &&
+    a.price.trim() === b.price.trim() &&
+    a.isAvailable === b.isAvailable &&
+    sameSet(a.tags, b.tags) &&
+    sameSet(a.allergens, b.allergens)
+  );
+}
+
 export function MenuAdmin({ menu, area }: { menu: AdminMenu; area: MenuArea }) {
   const [newCategory, setNewCategory] = useState("");
   const [pending, startTransition] = useTransition();
@@ -174,9 +193,16 @@ function CategoryBlock({
             title="Kategorie löschen"
             disabled={disabled}
             onClick={() => {
+              const n = category.items.length;
+              const zusatz =
+                n === 0
+                  ? "Sie ist leer."
+                  : n === 1
+                    ? "Dabei wird 1 Eintrag mitgelöscht."
+                    : `Dabei werden ${n} Einträge mitgelöscht.`;
               if (
                 window.confirm(
-                  `Kategorie „${category.title}" mit allen Einträgen löschen?`,
+                  `Kategorie „${category.title}" wirklich löschen?\n${zusatz}`,
                 )
               ) {
                 onRun(() => deleteCategory(area, category.id));
@@ -242,17 +268,20 @@ function ItemEditor({
   parentDisabled: boolean;
   onRun: (action: () => Promise<ActionResult>) => void;
 }) {
-  const [form, setForm] = useState<ItemInput>({
+  const live: ItemInput = {
     name: item.name,
     description: item.description ?? "",
     price: item.price,
     tags: item.tags,
     isAvailable: item.isAvailable,
     allergens: item.allergens,
-  });
+  };
+  const [form, setForm] = useState<ItemInput>(live);
   const [pending, startTransition] = useTransition();
-  const [saved, setSaved] = useState(false);
   const [error, setError] = useState("");
+
+  // „Deckungsgleich mit der Live-Seite?“ — steuert Farbe & Text des Speichern-Buttons.
+  const dirty = !sameItem(form, live);
 
   function toggle(list: string[], value: string): string[] {
     return list.includes(value)
@@ -262,15 +291,10 @@ function ItemEditor({
 
   function save() {
     setError("");
-    setSaved(false);
     startTransition(async () => {
       const r = await updateItem(area, item.id, form);
-      if (r.ok) {
-        setSaved(true);
-        setTimeout(() => setSaved(false), 2000);
-      } else {
-        setError(r.error);
-      }
+      if (!r.ok) setError(r.error);
+      // Bei Erfolg lädt die Seite (revalidate) neu → `item` == `form` → Button wird grün.
     });
   }
 
@@ -382,16 +406,21 @@ function ItemEditor({
           </button>
           <button
             type="button"
-            className="btn btn-primary admin-save"
-            disabled={pending}
+            className={`btn admin-save ${dirty ? "admin-save--dirty" : "admin-save--clean"}`}
+            disabled={pending || !dirty}
             onClick={save}
+            title={
+              dirty
+                ? "Änderung noch nicht gespeichert"
+                : "Deckungsgleich mit der Live-Seite"
+            }
           >
-            {saved ? (
-              <IconCheck size={18} stroke={1.75} aria-hidden />
-            ) : (
+            {dirty ? (
               <IconDeviceFloppy size={18} stroke={1.75} aria-hidden />
+            ) : (
+              <IconCheck size={18} stroke={1.75} aria-hidden />
             )}
-            {saved ? "Gespeichert" : pending ? "Speichert …" : "Speichern"}
+            {pending ? "Speichert …" : dirty ? "Speichern" : "Gespeichert"}
           </button>
         </div>
       </div>

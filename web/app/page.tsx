@@ -98,7 +98,7 @@ export default function HomePage() {
           <Link className="hcard" href="/backstube">
             <Photo
               img={photos.homeBackstube}
-              label="Foto: Bäcker schlingt Brezel, Mehlstaub"
+              label="Foto: Brezel wird von Hand geschlungen, Mehlstaub"
               baseClass="hc-photo"
               sizes="(max-width: 860px) 100vw, 45vw"
             />

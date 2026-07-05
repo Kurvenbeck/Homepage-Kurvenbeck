@@ -6,6 +6,7 @@
   /* Farben */
   --color-primary:        #565655;
   --color-accent:         #ab0d0e;
+  --color-success:        #2f7d4f;   /* „gespeichert“-Grün (Admin-Statusbutton) */
   --color-background:     #ffffff;
   --color-surface:        #f7f4f0;
   --color-dark-bg:        #565655;
@@ -886,6 +887,10 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
   border-top: 1px dotted var(--color-border); padding-top: var(--space-4);
 }
 .admin-save { white-space: nowrap; }
+/* Statusfarbe: grün = deckungsgleich mit der Live-Seite, rot = ungespeicherte Änderung. */
+.admin-save--clean { background: var(--color-success); color: #fff; }
+.admin-save--clean:hover { background: var(--color-success); filter: brightness(0.95); }
+.admin-save--dirty { background: var(--color-accent); color: #fff; }
 .admin-add-item { align-self: flex-start; margin-top: var(--space-5); }
 
 .admin-add-category { display: flex; gap: var(--space-3); align-items: center; flex-wrap: wrap; }

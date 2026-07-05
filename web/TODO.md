@@ -5,107 +5,137 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > **✅ Erledigt — Menü-Backend (Biergarten + Backstube):** Supabase komplett angebunden
 > (Clients, Middleware, Schema, RLS, Seed). **Biergarten und Backstube** lesen ihre Karte
 > live aus der DB (Text-Format ohne Fotos); Magic-Link-Admin unter `/admin` pflegt beide
-> Bereiche über Tabs (Kategorien/Einträge/Allergene). Phasen 1–6 + Backstube-Andockung
-> end-to-end verifiziert (2026-07-03). Details: `plans/biergarten-menu-backend.md` +
-> HANDOFF.md §10.
-> Offene Folgeschritte: Catering ans Backend andocken, Drag&Drop-Sortierung, eigener
-> SMTP-Absender über `kurvenbeck.com` (Supabase-Standard-Mailversand hat niedriges Limit).
+> Bereiche über Tabs. Phasen 1–6 + Backstube-Andockung end-to-end verifiziert (2026-07-03).
+> Details: `plans/biergarten-menu-backend.md` + HANDOFF.md §10.
+>
+> **✅ Erledigt — Admin-Feinschliff (2026-07-05):** Save-Status pro Eintrag ist jetzt
+> **grün „Gespeichert" (= deckungsgleich mit der Live-Seite) ↔ rot „Speichern" (= ungespeicherte
+> Änderung)** — Überblick auf einen Blick, was noch nicht live ist. Kategorie-Löschen fragt
+> jetzt mit **Anzahl der betroffenen Einträge** nach. „Bäcker"-Alt-Text von der Startseite
+> entfernt (Titelschutz, siehe unten).
 
-## 0. Next.js-Sicherheitsupdate (separat, vorziehen erwägen)
+---
 
-- [ ] `npm audit` meldet Schwachstellen in **Next.js 15.1.6** (u. a. Middleware-SSRF,
-      Cache-Poisoning). Update auf **Next 15.5.x** und danach `npm run build` grün halten.
-      Getrennt vom Menü-Backend-Plan durchführen.
+## 1. Kontaktdaten & Öffnungszeiten ins Backend  ⭐ (höchste Priorität)
 
-## 1. Telefonnummer aus Supabase (`site_settings`) lesen
+### 1a. Kontaktdaten (Telefon, Adresse) — ⚠️ Platzhalter darf NICHT live gehen
+Aktuell steht in `web/lib/siteSettings.ts` eine **Platzhalter-Telefonnummer**
+(`07071 / 12 34 56`) — würde die Seite so live gehen, ruft jeder Gast eine falsche Nummer an.
+Adresse fehlt komplett. **Entscheidung: ja, Kontaktdaten kommen ins Backend** (der Betreiber
+soll sie selbst pflegen).
 
-**Ziel:** Die Kontakt-Telefonnummer nicht mehr statisch in `web/lib/siteSettings.ts`
-halten, sondern dynamisch aus einer Supabase-Tabelle `site_settings`
-(key: `contact_phone`) laden. Sie wird genutzt für:
+- [ ] Tabelle `site_settings` (`key text primary key`, `value text not null`, `updated_at`).
+      Keys u. a. `contact_phone` (E.164, ohne führende Null → für `wa.me`), `address`.
+- [ ] RLS: öffentlich lesbar, Schreiben nur Admin (wie Menü-Tabellen, `is_admin()`).
+- [ ] `web/lib/siteSettings.ts` → async Loader (`getSiteSettings()`, gecacht); `telHref`/
+      `whatsappHref` daraus ableiten; Fallback, damit nie ein leerer `tel:`/`wa.me` entsteht.
+- [ ] Admin-UI: eigener Tab/Bereich „Einstellungen" zum Pflegen von Telefon & Adresse.
+- [ ] Verbraucher (Biergarten-CTAs, Footer) auf den Loader umstellen (sind Server-Components).
 
-- Biergarten-CTAs „Tisch reservieren" (`tel:`) und „WhatsApp" (`wa.me`) — `app/biergarten/page.tsx`
-- Footer-Telefonnummer — `components/SiteFooter.tsx`
-- (künftig) überall, wo eine Kontaktnummer auftaucht
+### 1b. Öffnungszeiten (Besenwirtschaft) — konkretes Modell
+Der Biergarten ist eine **Besenwirtschaft** mit **unregelmäßigen** Öffnungstagen (nicht „immer
+Sa/So"). Aktuell hart im Code (`app/biergarten/page.tsx`: „Sa & So · Feiertage, 11–22 Uhr").
+**Ziel:** Der Betreiber trägt im Backend konkrete Termine ein — **Wochentag + Datum + Uhrzeit
+von–bis** — und die Seite zeigt daraus klar verständlich:
+> „Heute, Sonntag 5. Juli, von 10–18 Uhr geöffnet." bzw. „Heute geschlossen — nächster
+> Öffnungstag: …"
 
-**Aktueller Stand:** zentrale, statische Quelle in `web/lib/siteSettings.ts`
-(`siteSettings.contactPhone` + Helfer `telHref` / `whatsappHref`). Alle Verbraucher
-ziehen bereits aus dieser einen Quelle — es muss also nur die *Datenherkunft*
-getauscht werden.
+- [ ] Tabelle `opening_days` (`id`, `area`, `date`, `open_time`, `close_time`, `note`).
+- [ ] Admin-UI: Öffnungstage anlegen/bearbeiten/löschen (Datum + Uhrzeiten).
+- [ ] Frontend: dynamisches „Heute geöffnet/geschlossen"-Badge (Biergarten-Seite; evtl.
+      Startseite). Datum menschlich formatiert (de-DE), Zeitzone Europe/Berlin.
+- [ ] Footer zeigt bewusst **keine** Öffnungszeiten (Doppelpflege vermeiden), nur Verlinkung.
 
-- [ ] Supabase-Projekt anbinden (`@supabase/supabase-js`, Server-Client via `@supabase/ssr`).
-      ENV: `NEXT_PUBLIC_SUPABASE_URL`, Anon-/Service-Key in `.env`.
-- [ ] Tabelle `site_settings` anlegen: `key text primary key`, `value text not null`,
-      `updated_at timestamptz`. Zeile `('contact_phone', '+49…')` einpflegen
-      (E.164-Format, ohne führende Null — wichtig für `wa.me`).
-- [ ] RLS: öffentliche **Lese**-Policy nur für `site_settings`, Schreiben nur via Service-Role/Admin.
-- [ ] `web/lib/siteSettings.ts` zu async Loader umbauen (`getSiteSettings()`,
-      gecacht via `revalidate`); `telHref`/`whatsappHref` aus dem Wert ableiten.
-- [ ] Verbraucher auf den Loader umstellen (sind Server-Components → unkritisch).
-- [ ] Fallback, falls DB-Wert fehlt, damit nie ein leerer `tel:`/`wa.me`-Link entsteht.
-- [ ] `npm run build` grün halten.
+## 2. Catering-Formular echt machen (Backend + E-Mail + Posteingang)  ⭐
 
-**Hinweis:** Das `supabase`-Skill kann für Schema, RLS und SSR-Integration genutzt werden.
+`components/CateringForm.tsx` ist heute eine **Demo ohne Versand** → jede Anfrage geht verloren.
+Gewünscht: echter Versand als **schöne E-Mail an `kontakt@kurvenbeck.com`** + Anfrage im Admin.
 
-## 2. Restliche echte Fotos einsetzen
+- [ ] Server Action mit **serverseitiger** Validierung (Client-Validierung bleibt als UX).
+- [ ] Anfrage in Supabase speichern (Tabelle `catering_requests`: Name, E-Mail, Anlass,
+      Gäste, Wunschdatum, Nachricht, `created_at`, `status` = neu/erledigt).
+- [ ] **Catering-Posteingang im Admin** (eigener Tab): Liste aller Anfragen, als „erledigt"
+      markierbar. (Definitiv gewünscht.)
+- [ ] E-Mail-Versand: hübsches HTML-Template. Benachrichtigung an `kontakt@kurvenbeck.com`;
+      optional Empfangsbestätigung an den Absender, **falls** E-Mail angegeben.
+- [ ] Spam-Schutz (Honeypot-Feld + serverseitige Rate-Limit-Prüfung).
+- [ ] **Offene Entscheidung:** E-Mail-Provider (Resend empfohlen) + Domain-Verifizierung für
+      `kurvenbeck.com` (SPF/DKIM) — braucht Account + DNS-Zugriff vom Betreiber.
 
-**Erledigt:** Logo (Header/Footer/Hero-Badge + Favicon), alle vier Catering-Kacheln
-(Fingerfood, Schwäbisches Buffet, Geburtstage & Jubiläen, Hochzeits-Menü).
+## 3. Backstube: echtes Online-Vorbestellen (Konzept festgehalten)  🔭
 
-- [ ] Verbleibende WebP-Dateien gemäß `public/images/README.md` ablegen
-      (Biergarten-Intro, Backstube-Produkte, Home-Bereichskarten — prüfen, welche
-      Slots in `web/lib/images.ts` noch `null` sind).
-- [ ] Slots in `web/lib/images.ts` freischalten (von `null` auf `{ src, alt }`).
-- [ ] Aussagekräftige `alt`-Texte je Bild (A11y/SEO).
-- [ ] Hero-Bild bleibt `priority`.
+**Wichtig — aktueller Ablauf (bleibt gültig):** Kurvenbeck kündigt per WhatsApp / Mundpropaganda /
+Homepage an, wann gebacken wird; Bestellungen bis z. B. **Freitag 18 Uhr**, Abholung
+**Samstag 8 Uhr**. Die Backstube-Seite zeigt heute das Sortiment als Text-Menü + WhatsApp-CTA.
+Der Startseiten-Text „online vorbestellen" ist deshalb aktuell **noch nicht wahr** → entweder
+Copy anpassen **oder** dieses Feature bauen.
 
-## 3. Catering-Formular an Backend anbinden
+**Vision (vom Betreiber, 2026-07-05):** kein WhatsApp (kostet) — echtes leichtes Vorbestellen.
+- Gast (z. B. „Otto Schmid") legt Mengen in den **Warenkorb** (5 Brezeln, 3 Körnerwecken,
+  7 Briegl), schickt ab → Bestätigung „Bestellung eingegangen".
+- **E-Mail optional:** wird eine E-Mail hinterlegt → Empfangsbestätigung per Mail.
+- **Admin — pro Bestellung:** jede Bestellung erscheint mit **Name + bestellten Positionen**
+  (bei 25 Bestellungen 25 Einträge).
+- **Admin — Gesamtübersicht (Killer-Feature):** aggregiert **wie viel von jedem Produkt
+  insgesamt** zu backen ist (z. B. „Brezeln: 112 · Körnerwecken: 40 · Briegl: 88").
 
-- [ ] `components/CateringForm.tsx` aktuell Demo (kein echter Versand).
-      An E-Mail/Backend anbinden inkl. serverseitiger Validierung, Erfolgs-/Fehlerzustand,
-      Spam-Schutz.
+**Bausteine schon da:** Warenkorb-Komponenten (`components/cart/*`) sind absichtlich erhalten;
+Sortiment liegt bereits im Menü-Backend. **Abhängigkeit:** braucht ein „Backtag/Abholtag"-Modell
+(wann ist Bestellung möglich, bis wann, Abholzeitpunkt) — hängt an Punkt 1b/Öffnungs-/Termin-Logik.
 
-## 4. Backstube-Bestellung produktiv machen
+## 4. „Empfehlung des Hauses" + Menü-Scanbarkeit
 
-**Stand:** Das Backstube-**Sortiment** wird jetzt als Text-Menü aus Supabase gelesen und im
-Admin gepflegt (siehe Menü-Backend oben). Vorbestellung läuft aktuell über WhatsApp. Der
-frühere Demo-Warenkorb ist von der Seite entfernt; die Komponenten (`components/cart/*`,
-`lib/products.ts`) bleiben für einen echten Checkout aufbewahrt.
+- [ ] **Empfehlung des Hauses:** hervorgehobener Sonder-Eintrag (z. B. spontaner Schweinebraten),
+      der **sonst nicht auf der Karte** steht. Umsetzung: Flag/Feld am Menü-Eintrag
+      (`is_recommendation` o. ä.) + eigene Hervorhebung auf der Bereichsseite; im Admin ein-/
+      ausschaltbar. Gilt für Biergarten (und ggf. Backstube).
+- [ ] Kennzeichnungen (vegetarisch/vegan/alkoholfrei) als kleine **Icons** statt Text —
+      bessere Scanbarkeit der Karte.
 
-- [ ] Echter Checkout-Flow (statt WhatsApp): Abhol-Termin/Slot-Auswahl, Zusammenfassung,
-      Bestellübermittlung — kann die vorhandenen Warenkorb-Komponenten wiederverwenden.
-- [ ] Falls Checkout kommt: Produktdaten/Preise aus dem Menü-Backend statt `lib/products.ts`
-      beziehen (eine Quelle).
+## 5. Recht, Begriffe & Metadaten
 
-## 5. Inhalte & Recht finalisieren
+- [ ] **Titelschutz durchziehen:** nirgends „Bäcker"/„Bäckerei" (siehe CLAUDE.md). Person =
+      „Betreiber/Familie/Team". Bestehende Texte/Alt-Texte gegenlesen.
+- [ ] **„seit 1978" prüfen:** steht live in `app/layout.tsx` (Meta-/OG-Beschreibung, 2×) sowie
+      in CLAUDE.md/README. Backstube existiert erst ~1,5 Jahre → **klären, ob die Jahreszahl
+      für den Gesamtbetrieb überhaupt stimmt**; sonst entfernen/ersetzen.
+- [ ] Impressum, Datenschutz, AGB mit echten Texten füllen (`app/impressum|datenschutz|agb`
+      sind Platzhalter). Bei echtem Formular/Bestellung: Datenschutz auf Datenverarbeitung
+      anpassen.
 
-- [ ] Speisekarte/Preise/Öffnungszeiten/Adresse final einpflegen (z. B. via CMS).
-- [ ] **Öffnungszeiten ans Backend binden (eine Quelle pro Bereich).** Aktuell hart
-      im Code: Biergarten `Sa & So · Feiertage, 11–22 Uhr` in `app/biergarten/page.tsx`.
-      Ziel: pro Bereich (Biergarten, Backstube, Catering) genau eine Quelle
-      (z. B. `site_settings`/CMS), aus der die jeweilige Leistungsseite liest.
-      Der Footer zeigt bewusst **keine** Öffnungszeiten mehr, sondern verlinkt nur
-      auf die Bereiche — Doppelpflege vermeiden.
-- [ ] Impressum, Datenschutz, AGB mit echten Texten füllen
-      (`app/impressum`, `app/datenschutz`, `app/agb` sind Platzhalter).
+## 6. Local-SEO
 
-## 6. Repo auf Kurvenbeck-Org umziehen
+- [ ] Strukturierte Daten (`schema.org`) — **ohne** „Bakery"! Passender Typ (z. B.
+      `Restaurant`/`FoodEstablishment`) mit Adresse, Öffnungszeiten (aus 1b), Geo, Telefon.
+- [ ] `sitemap.xml` + `robots.txt`.
+- [ ] Google-Business-Profil (NAP-Konsistenz) verlinken.
 
-**Stand:** Code liegt vorerst im privaten Repo
-`ihringmichael-max/Homepage-Kurvenbeck` (Account `ihringmichael-max` ist kein
-Mitglied der Org `Kurvenbeck`, daher konnte nicht direkt nach
-`Kurvenbeck/Homepage-Kurvenbeck` gepusht werden).
+## 7. Restliche Fotos einsetzen
 
-- [ ] Zugang klären: `ihringmichael-max` in die Org **Kurvenbeck** einladen
-      (Schreibrechte) **oder** mit dem Org-Account arbeiten.
-- [ ] Umzug auf `Kurvenbeck/Homepage-Kurvenbeck`, eine der Optionen:
-  - Repo per GitHub **transferieren** (Settings → Transfer ownership), oder
-  - Org-Repo anlegen und Remote umhängen:
-    `git remote set-url origin https://github.com/Kurvenbeck/Homepage-Kurvenbeck.git && git push -u origin main`
-- [ ] Danach ggf. lokale Klone/Links aktualisieren.
+**Erledigt:** Logo (Header/Footer/Hero-Badge + Favicon), alle vier Catering-Kacheln.
 
-## 7. Feinschliff (optional)
+- [ ] Verbleibende WebP-Dateien gemäß `public/images/README.md` ablegen (Biergarten-Intro,
+      Home-Bereichskarten — welche Slots in `web/lib/images.ts` noch `null` sind). **Menüs
+      bleiben bewusst ohne Produktfotos.**
+- [ ] Slots freischalten (`null` → `{ src, alt }`), aussagekräftige `alt`-Texte, Hero bleibt `priority`.
 
-- [ ] `aria-label` für Telefon-/WhatsApp-CTAs (z. B. „Per WhatsApp schreiben").
-- [ ] Scroll-Reveal selektiv aktivieren (`enable-scroll-animations` am `<body>`),
-      `prefers-reduced-motion` ist bereits berücksichtigt.
-- [ ] Kontakt/Anfahrt-Seite mit Karte (Handoff §12.5).
+## 8. Next.js-Sicherheitsupdate (separat)
+
+- [ ] `npm audit`: Schwachstellen in **Next.js 15.1.6** (Middleware-SSRF, Cache-Poisoning).
+      Update auf **Next 15.5.x**, danach `npm run build` grün halten. Getrennt durchführen.
+
+## 9. Repo auf Kurvenbeck-Org umziehen
+
+**Stand:** Code im privaten Repo `ihringmichael-max/Homepage-Kurvenbeck` (Account ist kein
+Org-Mitglied → direkter Push nach `Kurvenbeck/…` bisher nicht möglich).
+
+- [ ] Zugang klären (`ihringmichael-max` in Org **Kurvenbeck** einladen **oder** Org-Account nutzen).
+- [ ] Umzug: GitHub **Transfer ownership** oder Org-Repo + Remote umhängen
+      (`git remote set-url origin …Kurvenbeck/Homepage-Kurvenbeck.git`).
+
+## 10. Feinschliff (optional)
+
+- [ ] `aria-label` für Telefon-/WhatsApp-CTAs.
+- [ ] Scroll-Reveal selektiv aktivieren (`enable-scroll-animations` am `<body>`).
+- [ ] Kontakt/Anfahrt-Seite mit Karte (Handoff §12.5) — nutzt Adresse aus 1a.
+- [ ] Admin: Handy-Tauglichkeit prüfen (Betreiber pflegt vermutlich vom Smartphone).

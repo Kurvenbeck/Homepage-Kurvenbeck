@@ -32,6 +32,14 @@ nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen
   „Schnell sei, sonst isch's weg.") — **nie** in Formularen, Checkout oder Rechtstexten.
 - **Rechtstexte** (Impressum, Datenschutz, AGB) dürfen sachlich-neutral formuliert
   sein; wo eine Anrede vorkommt, ebenfalls Du-Form.
+- **Geschützte Berufs-/Betriebsbezeichnungen (verbindlich):** Der Betrieb ist eine
+  **Backstube**, **keine „Bäckerei"**, und der Betreiber ist **kein gelernter „Bäcker"**
+  (kein Ausbildungs-/Meistertitel). Daher in **allen** Texten, Labels, Alt-Texten und
+  Meta-Beschreibungen die Wörter **„Bäcker" und „Bäckerei" vermeiden**. Stattdessen:
+  „Backstube", „aus dem Ofen", „von Hand geformt/gebacken", und für die Person
+  „der Betreiber / die Familie / das Team / Kurvenbeck".
+- **„seit 1978" nicht bewerben**, bis die Jahreszahl bestätigt ist (Backstube existiert
+  erst ~1,5 Jahre). Aktuell noch in `app/layout.tsx`-Metadaten — siehe `web/TODO.md`.
 
 ## Design
 
