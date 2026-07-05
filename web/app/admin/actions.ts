@@ -180,6 +180,7 @@ export type ItemInput = {
   price: string;
   tags: string[];
   isAvailable: boolean;
+  isRecommendation: boolean;
   allergens: string[];
 };
 
@@ -207,6 +208,7 @@ export async function updateItem(
         price,
         tags: input.tags,
         is_available: input.isAvailable,
+        is_recommendation: input.isRecommendation,
       })
       .eq("id", id);
     if (itemError) throw itemError;

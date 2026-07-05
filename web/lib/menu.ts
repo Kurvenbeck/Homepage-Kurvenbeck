@@ -15,6 +15,8 @@ export type MenuItem = {
   /** Formatierter Preis, z. B. "12,90". */
   price: string;
   tags: string[];
+  /** Als „Empfehlung des Hauses" hervorgehoben. */
+  isRecommendation: boolean;
   /** Allergen-Codes (LMIV, z. B. ["A", "G"]), sortiert. */
   allergens: string[];
 };
@@ -27,6 +29,8 @@ export type MenuCategory = {
 
 export type Menu = {
   categories: MenuCategory[];
+  /** Hervorgehobene „Empfehlungen des Hauses" (aus den Kategorien herausgelöst). */
+  recommendations: MenuItem[];
   /** Legende: nur die auf der Seite tatsächlich verwendeten Allergene. */
   legend: { code: string; label: string }[];
 };
@@ -52,6 +56,7 @@ type CategoryRow = {
     tags: string[] | null;
     sort_order: number;
     is_available: boolean;
+    is_recommendation: boolean;
     menu_item_allergens: { allergen_code: string }[];
   }[];
 };
@@ -68,6 +73,7 @@ export type AdminMenuItem = {
   price: string;
   tags: string[];
   isAvailable: boolean;
+  isRecommendation: boolean;
   allergens: string[];
   sortOrder: number;
 };
@@ -94,7 +100,7 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
         .select(
           `id, title, sort_order,
            menu_items (
-             id, name, description, price, tags, sort_order, is_available,
+             id, name, description, price, tags, sort_order, is_available, is_recommendation,
              menu_item_allergens ( allergen_code )
            )`,
         )
@@ -119,6 +125,7 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
       price: formatPrice(item.price),
       tags: item.tags ?? [],
       isAvailable: item.is_available,
+      isRecommendation: item.is_recommendation,
       allergens: item.menu_item_allergens
         .map((a) => a.allergen_code)
         .sort((a, b) => a.localeCompare(b)),
@@ -142,7 +149,7 @@ export async function getMenu(area: string): Promise<Menu> {
         .select(
           `id, title, sort_order,
            menu_items (
-             id, name, description, price, tags, sort_order, is_available,
+             id, name, description, price, tags, sort_order, is_available, is_recommendation,
              menu_item_allergens ( allergen_code )
            )`,
         )
@@ -157,25 +164,40 @@ export async function getMenu(area: string): Promise<Menu> {
   if (allError) throw allError;
 
   const usedCodes = new Set<string>();
+  const recommendations: MenuItem[] = [];
 
+  const toMenuItem = (
+    item: CategoryRow["menu_items"][number],
+  ): MenuItem => {
+    const codes = item.menu_item_allergens
+      .map((a) => a.allergen_code)
+      .sort((a, b) => a.localeCompare(b));
+    codes.forEach((c) => usedCodes.add(c));
+    return {
+      id: item.id,
+      name: item.name,
+      description: item.description,
+      price: formatPrice(item.price),
+      tags: item.tags ?? [],
+      isRecommendation: item.is_recommendation,
+      allergens: codes,
+    };
+  };
+
+  // Empfehlungen werden aus der normalen Kategorieliste herausgelöst und oben
+  // hervorgehoben (stehen „sonst nicht auf der Karte").
   const mappedCategories: MenuCategory[] = (categories ?? []).map((cat) => ({
     id: cat.id,
     title: cat.title,
     items: cat.menu_items
       .filter((item) => item.is_available)
-      .map((item) => {
-        const codes = item.menu_item_allergens
-          .map((a) => a.allergen_code)
-          .sort((a, b) => a.localeCompare(b));
-        codes.forEach((c) => usedCodes.add(c));
-        return {
-          id: item.id,
-          name: item.name,
-          description: item.description,
-          price: formatPrice(item.price),
-          tags: item.tags ?? [],
-          allergens: codes,
-        };
+      .map(toMenuItem)
+      .filter((item) => {
+        if (item.isRecommendation) {
+          recommendations.push(item);
+          return false;
+        }
+        return true;
       }),
   }));
 
@@ -183,5 +205,5 @@ export async function getMenu(area: string): Promise<Menu> {
     .filter((a) => usedCodes.has(a.code))
     .map((a) => ({ code: a.code, label: a.label }));
 
-  return { categories: mappedCategories, legend };
+  return { categories: mappedCategories, recommendations, legend };
 }

@@ -48,6 +48,7 @@ function sameItem(a: ItemInput, b: ItemInput): boolean {
     a.description.trim() === b.description.trim() &&
     a.price.trim() === b.price.trim() &&
     a.isAvailable === b.isAvailable &&
+    a.isRecommendation === b.isRecommendation &&
     sameSet(a.tags, b.tags) &&
     sameSet(a.allergens, b.allergens)
   );
@@ -274,6 +275,7 @@ function ItemEditor({
     price: item.price,
     tags: item.tags,
     isAvailable: item.isAvailable,
+    isRecommendation: item.isRecommendation,
     allergens: item.allergens,
   };
   const [form, setForm] = useState<ItemInput>(live);
@@ -363,14 +365,26 @@ function ItemEditor({
       </div>
 
       <div className="admin-item-foot">
-        <label className="admin-check">
-          <input
-            type="checkbox"
-            checked={form.isAvailable}
-            onChange={(e) => setForm({ ...form, isAvailable: e.target.checked })}
-          />
-          Verfügbar (öffentlich sichtbar)
-        </label>
+        <div className="admin-item-flags">
+          <label className="admin-check">
+            <input
+              type="checkbox"
+              checked={form.isAvailable}
+              onChange={(e) => setForm({ ...form, isAvailable: e.target.checked })}
+            />
+            Verfügbar (öffentlich sichtbar)
+          </label>
+          <label className="admin-check" title="Wird oben hervorgehoben und steht nicht in der normalen Liste.">
+            <input
+              type="checkbox"
+              checked={form.isRecommendation}
+              onChange={(e) =>
+                setForm({ ...form, isRecommendation: e.target.checked })
+              }
+            />
+            Empfehlung des Hauses
+          </label>
+        </div>
 
         <div className="admin-actions">
           <button
