@@ -134,7 +134,8 @@ in **§11**. Kompakt (Stand 2026-07-05):
    + E-Mail via Hostinger-SMTP (`kontakt@kurvenbeck.com`, „Weg B" — Zugangsdaten offen).
 3. **Backstube-Vorbestellen** (Konzept festgehalten, §11): Warenkorb → Bestellung → Admin mit
    Einzelbestellungen **und** aggregierter Backliste. Braucht das Termin-Backend aus #1.
-4. **„Empfehlung des Hauses"** + Menü-Icons (vegetarisch/vegan als Symbole).
+4. **„Empfehlung des Hauses"** (erledigt). Kennzeichnungen (vegetarisch/vegan/alkoholfrei)
+   bleiben bewusst **Text** — keine Icons.
 5. Recht/Begriffe/Metadaten: Titelschutz durchziehen, „seit 1978" klären, Rechtstexte füllen.
 6. Local-SEO (ohne „Bakery"), restliche Fotos, Next.js-Update, Repo-Umzug.
 
@@ -308,7 +309,14 @@ stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
 ### Menü-Verbesserungen
 - **„Empfehlung des Hauses":** hervorgehobener Sonder-Eintrag, der sonst **nicht** auf der Karte
   steht (z. B. spontaner Schweinebraten). Flag/Feld am Eintrag + Hervorhebung; im Admin schaltbar.
-- **Kennzeichnungen als Icons** (vegetarisch/vegan/alkoholfrei) statt Text — bessere Scanbarkeit.
+- **Kennzeichnungen bleiben Text** (vegetarisch/vegan/alkoholfrei) — **keine Icons**
+  (Entscheidung 2026-07-05).
+- **Druckbare Tisch-Speisekarte (Biergarten, Entscheidung 2026-07-05):** Gäste am Tisch brauchen
+  eine Karte. Lösung = **Druck-Ansicht** (eigene Route + `@media print`-A4-CSS, live aus der DB),
+  **auth-geschützt unter `/admin/...`** (nur der eingeloggte Betreiber), die er per Button öffnet
+  und über den Browser druckt bzw. „als PDF sichert" —
+  **keine** serverseitige PDF-/Word-Erzeugung (keine schweren Libs, immer aktuell, markengetreu).
+  Auf der Karte ein **QR-Code** → `kurvenbeck.com/biergarten`. Details: `web/TODO.md` #4b.
 - **Backstube bleibt bewusst ohne Produktfotos** (Text-Format wie Biergarten).
 
 ### Admin-UX

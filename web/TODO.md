@@ -95,15 +95,41 @@ Copy anpassen **oder** dieses Feature bauen.
 Sortiment liegt bereits im Menü-Backend. **Abhängigkeit:** braucht ein „Backtag/Abholtag"-Modell
 (wann ist Bestellung möglich, bis wann, Abholzeitpunkt) — hängt an Punkt 1b/Öffnungs-/Termin-Logik.
 
-## 4. „Empfehlung des Hauses" + Menü-Scanbarkeit
+## 4. „Empfehlung des Hauses"
 
 - [x] **Empfehlung des Hauses:** Flag `is_recommendation` am Menü-Eintrag (Migration
       `20260705133000_menu_recommendation.sql`), im Admin per Checkbox ein-/ausschaltbar. Markierte
       Einträge werden auf der Bereichsseite oben als „Empfehlung des Hauses" hervorgehoben und aus
       der normalen Kategorieliste **herausgelöst** (steht sonst nicht auf der Karte). Komponente
       `components/MenuRecommendations.tsx`, gilt für Biergarten **und** Backstube. End-to-end verifiziert.
-- [ ] Kennzeichnungen (vegetarisch/vegan/alkoholfrei) als kleine **Icons** statt Text —
-      bessere Scanbarkeit der Karte. *(noch offen)*
+
+> **Entscheidung (2026-07-05):** Kennzeichnungen (vegetarisch/vegan/alkoholfrei) bleiben
+> **Text** — es wird **keine** Icon-Darstellung geben.
+
+## 4b. Druckbare Tisch-Speisekarte (Biergarten)  🖨️
+
+**Problem:** Gäste am Tisch haben keine Karte. **Ziel:** Der Betreiber druckt aus dem Admin
+eine **A4-Speisekarte**, die **1:1 dem Live-Menü aus der DB** entspricht, und legt sie an die Tische.
+
+**Entscheidung (2026-07-05):** **keine** serverseitige PDF-/Word-Datei-Generierung, sondern eine
+**Druck-Ansicht** (eigene Route + `@media print`-CSS). Der Betreiber öffnet sie über einen Button
+im Admin und nutzt den Browser-Druckdialog → **drucken oder „Als PDF sichern"**. Vorteile: immer
+live aus der DB, markengetreu (echte Fonts/Tokens), **keine** schweren Libraries, PDF-Export gratis.
+**Word bewusst raus** (verleitet zum manuellen Nachbearbeiten → driftet vom echten Menü ab).
+
+- [x] Umfang: **nur Biergarten** (Backstube evtl. später, gleiches Muster).
+- [x] **Auth-geschützt** unter `app/admin/speisekarte/drucken/page.tsx` (`async` + `force-dynamic`,
+      lädt `getMenu('biergarten')`; Route-Schutz via middleware + Admin-Allowlist-Check in der Seite).
+- [x] A4-Druck-Layout: Kategorien (2 Spalten), Preise, Allergen-Codes + Legende, „Empfehlung des
+      Hauses" oben, Logo-Kopf, Fußzeile. `@media print` + `@page A4` (randlos, `break-inside: avoid`
+      für Kategorien/Fußzeile), Screen-Vorschau als A4-Blatt mit Toolbar (`.print-*` in globals.css).
+- [x] **QR-Code** auf der Karte → `kurvenbeck.com/biergarten` (`qrcode` serverseitig als Inline-SVG).
+- [x] Button „Speisekarte drucken (A4)" in der Admin-Speisekarte (nur Biergarten); Client-Toolbar
+      `components/admin/PrintMenuToolbar.tsx` mit `window.print()` + „Zurück zur Verwaltung".
+
+**Gebaut & verifiziert (2026-07-05):** `npm run build` grün, Route ist dynamisch (`ƒ`), Auth-Schutz
+greift (unauth → 307 `/admin/login`). Nächster Schritt: eingeloggt visuell prüfen und ggf. echte
+Termine/Druckränder feinjustieren. Backstube-Druckkarte später über denselben Weg möglich.
 
 ## 5. Recht, Begriffe & Metadaten
 
