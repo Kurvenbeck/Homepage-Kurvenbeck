@@ -5,10 +5,11 @@ import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
-import { telHref, whatsappHref } from "@/lib/siteSettings";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 import { getMenu } from "@/lib/menu";
 import { getOpeningStatus } from "@/lib/openingHours";
 import { OpeningStatusView } from "@/components/OpeningStatusView";
+import { MenuRecommendations } from "@/components/MenuRecommendations";
 
 export const metadata: Metadata = {
   title: "Biergarten",
@@ -20,9 +21,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function BiergartenPage() {
-  const [menu, opening] = await Promise.all([
+  const [menu, opening, contact] = await Promise.all([
     getMenu("biergarten"),
     getOpeningStatus("biergarten"),
+    getSiteSettings(),
   ]);
   return (
     <>
@@ -94,12 +96,12 @@ export default async function BiergartenPage() {
               <a href="#speisekarte" className="btn btn-primary">
                 Zur Speisekarte
               </a>
-              <a href={telHref} className="btn btn-ghost">
+              <a href={contact.telHref} className="btn btn-ghost">
                 <IconPhone size={18} stroke={1.75} aria-hidden />
                 Tisch reservieren
               </a>
               <a
-                href={whatsappHref}
+                href={contact.whatsappHref}
                 className="btn btn-ghost"
                 target="_blank"
                 rel="noopener noreferrer"
@@ -125,6 +127,7 @@ export default async function BiergartenPage() {
             <h2>Drau&szlig;&apos; schmeckt&apos;s am besten</h2>
             <p>Täglich frisch, regional eingekauft. Preise inkl. MwSt.</p>
           </div>
+          <MenuRecommendations items={menu.recommendations} />
           <div className="menu-grid">
             {menu.categories.map((category) => (
               <div className="menu-block" key={category.id}>
@@ -197,7 +200,7 @@ export default async function BiergartenPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooter contact={contact} />
     </>
   );
 }

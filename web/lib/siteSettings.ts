@@ -1,24 +1,59 @@
 /**
- * Zentrale Seiten-Einstellungen — eine einzige Quelle, kein Hardcoden in
- * Komponenten.
+ * Zentrale Kontakt-/Seiten-Einstellungen — client-sicher (kein Server-Import!),
+ * damit auch Client-Komponenten (z. B. der Footer auf der Login-Seite) diese
+ * Typen/Fallbacks nutzen können.
  *
- * TODO: Werte aus der `site_settings`-Tabelle lesen (z. B. key `contact_phone`),
- * sobald Backend/CMS angebunden ist. Bis dahin statischer Platzhalter.
- * Dann diese Datei zu einem async Loader umbauen (oder Werte via Layout/
- * Server-Component aus der DB injizieren) — die `telHref`/`whatsappHref`-Helfer
- * bleiben gleich.
+ * Die echten Werte kommen aus der Supabase-Tabelle `site_settings` und werden
+ * serverseitig über `lib/getSiteSettings.ts` geladen. Solange dort (noch) nichts
+ * gepflegt ist, greift `FALLBACK_CONTACT` — so entsteht nie ein leerer
+ * `tel:`/`wa.me`-Link.
+ *
+ * ⚠️ Die Fallback-Telefonnummer ist ein PLATZHALTER und darf nicht live gehen —
+ * der Betreiber pflegt die echte Nummer im Admin unter „Einstellungen".
  */
-export const siteSettings = {
-  /** key: contact_phone */
-  contactPhone: {
-    display: "07071 / 12 34 56",
-    /** E.164 für tel:-Links */
-    e164: "+4970711234560",
-  },
+
+export type SiteContact = {
+  /** Anzeige-Telefonnummer, z. B. "07071 / 12 34 56". */
+  phoneDisplay: string;
+  /** E.164 für tel:-Links, z. B. "+4970711234560". */
+  phoneE164: string;
+  /** Adresse zeilenweise (leere Zeilen entfernt). */
+  addressLines: string[];
+  telHref: string;
+  whatsappHref: string;
+};
+
+/** DB-Schlüssel der Einstellungen (Single Source, geteilt mit Loader + Admin). */
+export const SETTINGS_KEYS = {
+  phoneDisplay: "contact_phone_display",
+  phoneE164: "contact_phone_e164",
+  address: "contact_address",
 } as const;
 
-/** Nur Ziffern (für wa.me): "4970711234560" */
-const phoneDigits = siteSettings.contactPhone.e164.replace(/\D/g, "");
+/** Baut die abgeleiteten Links aus den rohen Werten. */
+export function buildContact(input: {
+  phoneDisplay: string;
+  phoneE164: string;
+  address: string;
+}): SiteContact {
+  const digits = input.phoneE164.replace(/\D/g, ""); // wa.me: ohne + und ohne führende Null
+  return {
+    phoneDisplay: input.phoneDisplay,
+    phoneE164: input.phoneE164,
+    addressLines: input.address
+      .split("\n")
+      .map((line) => line.trim())
+      .filter(Boolean),
+    telHref: `tel:${input.phoneE164}`,
+    whatsappHref: `https://wa.me/${digits}`,
+  };
+}
 
-export const telHref = `tel:${siteSettings.contactPhone.e164}`;
-export const whatsappHref = `https://wa.me/${phoneDigits}`;
+/** Rohwerte-Platzhalter (deckungsgleich mit dem Seed der Migration). */
+export const FALLBACK_SETTINGS = {
+  phoneDisplay: "07071 / 12 34 56",
+  phoneE164: "+4970711234560",
+  address: "Mühlweg 12\n72074 Musterstadt",
+} as const;
+
+export const FALLBACK_CONTACT: SiteContact = buildContact(FALLBACK_SETTINGS);

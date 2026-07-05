@@ -1,8 +1,12 @@
 import Link from "next/link";
 import { Logo } from "./Logo";
-import { siteSettings, telHref } from "@/lib/siteSettings";
+import { FALLBACK_CONTACT, type SiteContact } from "@/lib/siteSettings";
 
-export function SiteFooter() {
+export function SiteFooter({
+  contact = FALLBACK_CONTACT,
+}: {
+  contact?: SiteContact;
+}) {
   return (
     <footer className="site-footer">
       <div className="container">
@@ -31,9 +35,11 @@ export function SiteFooter() {
           <div>
             <h4>Kontakt</h4>
             <ul>
-              <li>Mühlweg 12, 72074 Musterstadt</li>
+              {contact.addressLines.length > 0 && (
+                <li>{contact.addressLines.join(", ")}</li>
+              )}
               <li>
-                <a href={telHref}>{siteSettings.contactPhone.display}</a>
+                <a href={contact.telHref}>{contact.phoneDisplay}</a>
               </li>
               <li>
                 <a href="mailto:hallo@kurvenbeck.de">hallo@kurvenbeck.de</a>

@@ -5,13 +5,17 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { getOpeningStatus } from "@/lib/openingHours";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 import { OpeningStatusView } from "@/components/OpeningStatusView";
 
 // Dynamisch rendern, damit der Öffnungs-Status auf der Startseite tagesaktuell ist.
 export const dynamic = "force-dynamic";
 
 export default async function HomePage() {
-  const opening = await getOpeningStatus("biergarten");
+  const [opening, contact] = await Promise.all([
+    getOpeningStatus("biergarten"),
+    getSiteSettings(),
+  ]);
   return (
     <div className="home-bg">
       <SiteHeader action={null} />
@@ -144,7 +148,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooter contact={contact} />
     </div>
   );
 }

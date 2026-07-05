@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
 import { IconBrandWhatsapp } from "@tabler/icons-react";
-import { whatsappHref } from "@/lib/siteSettings";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 import { Photo } from "@/components/Photo";
 import { backstubePhotos } from "@/lib/images";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
 import { getMenu } from "@/lib/menu";
+import { MenuRecommendations } from "@/components/MenuRecommendations";
 
 export const metadata: Metadata = {
   title: "Backstube",
@@ -17,7 +18,10 @@ export const metadata: Metadata = {
 export const dynamic = "force-dynamic";
 
 export default async function BackstubePage() {
-  const menu = await getMenu("backstube");
+  const [menu, contact] = await Promise.all([
+    getMenu("backstube"),
+    getSiteSettings(),
+  ]);
 
   return (
     <>
@@ -26,7 +30,7 @@ export default async function BackstubePage() {
         logoSuffix="Backstube"
         action={
           <a
-            href={whatsappHref}
+            href={contact.whatsappHref}
             className="btn btn-ghost"
             target="_blank"
             rel="noopener noreferrer"
@@ -69,7 +73,7 @@ export default async function BackstubePage() {
           <ol className="info-steps">
             <li>
               Aktuelle Abholtage erfragst du per{" "}
-              <a href={whatsappHref} target="_blank" rel="noopener noreferrer">
+              <a href={contact.whatsappHref} target="_blank" rel="noopener noreferrer">
                 WhatsApp
               </a>
             </li>
@@ -86,6 +90,8 @@ export default async function BackstubePage() {
             <h2>Heute frisch gebacken</h2>
             <p>Preise pro Stück, inkl. MwSt. Vorbestellung per WhatsApp.</p>
           </div>
+
+          <MenuRecommendations items={menu.recommendations} />
 
           <div className="menu-grid">
             {menu.categories.map((category) => (
@@ -134,7 +140,7 @@ export default async function BackstubePage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooter contact={contact} />
     </>
   );
 }

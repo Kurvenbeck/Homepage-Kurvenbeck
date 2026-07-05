@@ -3,6 +3,7 @@ import { SiteFooter } from "@/components/SiteFooter";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { CateringForm } from "@/components/CateringForm";
+import { getSiteSettings } from "@/lib/getSiteSettings";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -11,7 +12,11 @@ export const metadata: Metadata = {
     "Von der Familienfeier bis zum Firmenevent — wir kochen, liefern und kümmern uns um alles, was schmeckt.",
 };
 
-export default function CateringPage() {
+// Dynamisch, damit der Footer die im Admin gepflegten Kontaktdaten zeigt.
+export const dynamic = "force-dynamic";
+
+export default async function CateringPage() {
+  const contact = await getSiteSettings();
   return (
     <>
       <SiteHeader
@@ -221,7 +226,7 @@ export default function CateringPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooter contact={contact} />
     </>
   );
 }
