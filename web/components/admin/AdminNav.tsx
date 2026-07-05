@@ -1,7 +1,11 @@
 import Link from "next/link";
 
-/** Bereichs-Navigation der Verwaltung: Speisekarte ↔ Öffnungszeiten ↔ Einstellungen. */
-export function AdminNav({ active }: { active: "menu" | "hours" | "settings" }) {
+/** Bereichs-Navigation der Verwaltung: Speisekarte ↔ Öffnungszeiten ↔ Anfragen ↔ Einstellungen. */
+export function AdminNav({
+  active,
+}: {
+  active: "menu" | "hours" | "catering" | "settings";
+}) {
   return (
     <nav className="admin-nav" aria-label="Verwaltungsbereiche">
       <Link
@@ -17,6 +21,13 @@ export function AdminNav({ active }: { active: "menu" | "hours" | "settings" }) 
         aria-current={active === "hours" ? "page" : undefined}
       >
         Öffnungszeiten
+      </Link>
+      <Link
+        href="/admin/catering"
+        className={`admin-nav-link${active === "catering" ? " is-active" : ""}`}
+        aria-current={active === "catering" ? "page" : undefined}
+      >
+        Anfragen
       </Link>
       <Link
         href="/admin/einstellungen"

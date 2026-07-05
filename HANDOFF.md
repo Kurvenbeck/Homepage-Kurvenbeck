@@ -29,7 +29,8 @@ werden **nicht** ausgeliefert — die produktive App liegt unter **`web/`**.
 - Icons: **`@tabler/icons-react`**.
 - **Supabase** (Postgres 17) für das Menü-Backend angebunden via `@supabase/ssr` —
   siehe §10. Biergarten **und Backstube** lesen ihre Karte live aus der DB und werden
-  im Admin gepflegt. Das Catering-Formular ist weiterhin eine Demo.
+  im Admin gepflegt. Das **Catering-Formular speichert** jetzt echt in Supabase
+  (`catering_requests`) + Admin-Posteingang `/admin/catering`; nur der E-Mail-Versand fehlt (SMTP offen).
 
 ## 3. Schnellstart
 
@@ -111,8 +112,12 @@ und werden unter `/admin` (Bereichs-Tabs) selbst gepflegt — siehe §10. **Admi
 (Dirty-Status gegen den Live-Stand); Kategorie-Löschen fragt mit Anzahl der betroffenen
 Einträge nach.
 
+**Catering-Anfragen (live, Stand 2026-07-05):** Formular speichert echt in Supabase
+(`catering_requests`, RLS: anon nur INSERT, Lesen/Ändern nur Admin) + Honeypot-Spamschutz;
+Posteingang unter `/admin/catering` (Tab „Anfragen", neu↔erledigt). **Offen:** E-Mail-Versand
+an `kontakt@kurvenbeck.com` (Hostinger-SMTP, Zugangsdaten fehlen noch).
+
 **Demos (noch ohne Backend):**
-- **Catering-Formular** — Client-Validierung + Erfolgszustand, aber kein echter Versand.
 - **Backstube-Warenkorb-Komponenten** (`components/cart/*`) — voll bedienbar inkl.
   Persistenz, aber auf der Seite **nicht mehr eingebunden** (Backstube ist jetzt Text-Menü);
   aufbewahrt für den späteren echten Checkout (TODO #4).
@@ -287,12 +292,16 @@ stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
   Offen: Badge evtl. auch auf der Startseite; Backstube-„Backtage" später separat.
 
 ### Catering-Formular echt machen (Prio 2)
-- Server Action + serverseitige Validierung; Anfrage in Supabase (`catering_requests`).
-- **Catering-Posteingang im Admin** (eigener Tab, „neu/erledigt") — definitiv gewünscht.
-- **E-Mail-Versand = „Weg B":** über **SMTP des Hostinger-Postfachs `kontakt@kurvenbeck.com`**
-  (alles läuft bei **Hostinger**). SMTP-Zugangsdaten **liegen noch nicht vor** → offen; kommen
-  ausschließlich in `web/.env.local`, **nie committen**. Bis dahin kann der Posteingang schon
-  ohne Mailversand gebaut werden.
+✅ **Gebaut (2026-07-05):** Server Action `app/catering/actions.ts` (`submitCateringRequest`) mit
+serverseitiger Validierung + Honeypot; Anfrage in Supabase (`catering_requests`, RLS: anon nur
+INSERT mit gehärtetem `WITH CHECK`, Lesen/Ändern nur `is_admin()`). **Posteingang im Admin**
+`/admin/catering` (Tab „Anfragen", neu↔erledigt) — Loader `lib/catering.ts`, Status-Action
+`app/admin/catering-actions.ts`, UI `components/admin/CateringInbox.tsx`. Build grün, RLS + Advisors
+verifiziert.
+- **Offen — E-Mail-Versand = „Weg B":** über **SMTP des Hostinger-Postfachs `kontakt@kurvenbeck.com`**.
+  SMTP-Zugangsdaten **liegen noch nicht vor** → nur in `web/.env.local`, **nie committen**. Haken für
+  die Benachrichtigung sitzt bereits markiert in `submitCateringRequest`. Optional zusätzlich
+  serverseitiges Rate-Limit.
 
 ### Backstube: echtes Online-Vorbestellen (Konzept, kommt nach dem Termin-Backend)
 - Aktueller Ablauf **bleibt gültig**: Backtag wird angekündigt (WhatsApp/Mundpropaganda/Home),

@@ -60,19 +60,25 @@ von–bis** — und die Seite zeigt daraus klar verständlich:
 
 ## 2. Catering-Formular echt machen (Backend + E-Mail + Posteingang)  ⭐
 
-`components/CateringForm.tsx` ist heute eine **Demo ohne Versand** → jede Anfrage geht verloren.
 Gewünscht: echter Versand als **schöne E-Mail an `kontakt@kurvenbeck.com`** + Anfrage im Admin.
+**Speichern + Posteingang sind gebaut (2026-07-05); nur der Mailversand fehlt (SMTP offen).**
 
-- [ ] Server Action mit **serverseitiger** Validierung (Client-Validierung bleibt als UX).
-- [ ] Anfrage in Supabase speichern (Tabelle `catering_requests`: Name, E-Mail, Anlass,
-      Gäste, Wunschdatum, Nachricht, `created_at`, `status` = neu/erledigt).
-- [ ] **Catering-Posteingang im Admin** (eigener Tab): Liste aller Anfragen, als „erledigt"
-      markierbar. (Definitiv gewünscht.)
-- [ ] E-Mail-Versand: hübsches HTML-Template. Benachrichtigung an `kontakt@kurvenbeck.com`;
-      optional Empfangsbestätigung an den Absender, **falls** E-Mail angegeben.
-- [ ] Spam-Schutz (Honeypot-Feld + serverseitige Rate-Limit-Prüfung).
-- [ ] **Offene Entscheidung:** E-Mail-Provider (Resend empfohlen) + Domain-Verifizierung für
-      `kurvenbeck.com` (SPF/DKIM) — braucht Account + DNS-Zugriff vom Betreiber.
+- [x] Server Action `app/catering/actions.ts` (`submitCateringRequest`) mit **serverseitiger**
+      Validierung (Client-Validierung bleibt als UX). Läuft öffentlich (anon), schreibt via RLS.
+- [x] Anfrage in Supabase gespeichert (Tabelle `catering_requests`: Name, E-Mail, Anlass, Gäste,
+      Wunschdatum, Nachricht, `created_at`, `status` = neu/erledigt). Migration
+      `20260705143000_catering_requests_schema.sql`. **RLS:** anon **nur INSERT** (gehärtete
+      `WITH CHECK`, Migration `..._144500_..._tighten_insert.sql`), **Lesen/Ändern nur Admin**
+      (`is_admin()`). Verifiziert: anon insert ✓, anon select ✗; Advisors sauber.
+- [x] **Catering-Posteingang im Admin** (`/admin/catering`, Tab „Anfragen"): Liste aller Anfragen
+      (neu zuerst), als „erledigt" ↔ „neu" umschaltbar. Loader `lib/catering.ts`, Status-Action
+      `app/admin/catering-actions.ts`, UI `components/admin/CateringInbox.tsx`, `AdminNav` erweitert.
+- [x] Spam-Schutz: **Honeypot-Feld** (`company`, visuell versteckt) in Formular + Server Action.
+- [ ] **E-Mail-Versand (offen — blockiert):** hübsches HTML-Template, Benachrichtigung an
+      `kontakt@kurvenbeck.com` + optional Empfangsbestätigung an den Absender. **Weg B = Hostinger-
+      SMTP** (`kontakt@kurvenbeck.com`); **SMTP-Zugangsdaten liegen noch nicht vor** → nur in
+      `web/.env.local`, nie committen. Haken sitzt in `submitCateringRequest` (markierter TODO).
+- [ ] Optional härter: serverseitige **Rate-Limit-Prüfung** (Honeypot deckt einfache Bots ab).
 
 ## 3. Backstube: echtes Online-Vorbestellen (Konzept festgehalten)  🔭
 

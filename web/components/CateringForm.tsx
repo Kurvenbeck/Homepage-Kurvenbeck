@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useTransition } from "react";
+import { submitCateringRequest } from "@/app/catering/actions";
 
 type Errors = Partial<Record<"name" | "mail" | "gaeste", string>>;
 
@@ -13,20 +14,24 @@ const ANLAESSE = [
 ];
 
 /**
- * Catering-Anfrageformular. Demo: keine echte Übermittlung (README §12.2 — Backend
- * noch anzubinden), aber mit Client-Validierung + Erfolgszustand.
+ * Catering-Anfrageformular. Client-Validierung für schnelles Feedback, echte
+ * Übermittlung über die Server Action `submitCateringRequest` (speichert in
+ * Supabase; Admin-Posteingang unter /admin/catering).
  */
 export function CateringForm() {
   const [errors, setErrors] = useState<Errors>({});
+  const [serverError, setServerError] = useState<string | null>(null);
   const [sent, setSent] = useState(false);
+  const [pending, startTransition] = useTransition();
 
   function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
+    setServerError(null);
     const form = e.currentTarget;
     const data = new FormData(form);
-    const name = (data.get("name") as string)?.trim();
-    const mail = (data.get("mail") as string)?.trim();
-    const gaeste = (data.get("gaeste") as string)?.trim();
+    const name = (data.get("name") as string)?.trim() ?? "";
+    const mail = (data.get("mail") as string)?.trim() ?? "";
+    const gaeste = (data.get("gaeste") as string)?.trim() ?? "";
 
     const next: Errors = {};
     if (!name) next.name = "Bitte gib deinen Namen an.";
@@ -37,10 +42,21 @@ export function CateringForm() {
       next.gaeste = "Bitte eine gültige Gästezahl angeben.";
 
     setErrors(next);
-    if (Object.keys(next).length === 0) {
-      // TODO: an echtes Backend/E-Mail anbinden.
-      setSent(true);
-    }
+    if (Object.keys(next).length > 0) return;
+
+    startTransition(async () => {
+      const result = await submitCateringRequest({
+        name,
+        email: mail,
+        occasion: (data.get("anlass") as string) ?? "",
+        guests: gaeste,
+        eventDate: (data.get("datum") as string) ?? "",
+        message: (data.get("nachricht") as string) ?? "",
+        company: (data.get("company") as string) ?? "",
+      });
+      if (result.ok) setSent(true);
+      else setServerError(result.error);
+    });
   }
 
   if (sent) {
@@ -51,15 +67,17 @@ export function CateringForm() {
           Wir haben deine Nachricht erhalten und melden uns innerhalb von 48
           Stunden mit einem unverbindlichen Angebot bei dir.
         </p>
-        <p className="form-note">
-          Demo-Formular — es wurde keine echte Anfrage versendet.
-        </p>
       </div>
     );
   }
 
   return (
     <form className="form-card" onSubmit={handleSubmit} noValidate>
+      {/* Honeypot: für Menschen unsichtbar, fängt einfache Bots ab. */}
+      <div className="hp-field" aria-hidden>
+        <label htmlFor="company">Firma (bitte leer lassen)</label>
+        <input id="company" name="company" type="text" tabIndex={-1} autoComplete="off" />
+      </div>
       <div className="field-row">
         <div className="field">
           <label htmlFor="name">Name</label>
@@ -134,14 +152,22 @@ export function CateringForm() {
           placeholder="Worauf dürfen wir uns einstellen?"
         />
       </div>
+      {serverError && (
+        <p className="field-error" role="alert" style={{ marginBottom: "var(--space-3)" }}>
+          {serverError}
+        </p>
+      )}
       <button
         type="submit"
         className="btn btn-primary"
         style={{ width: "100%", justifyContent: "center" }}
+        disabled={pending}
       >
-        Anfrage senden
+        {pending ? "Wird gesendet …" : "Anfrage senden"}
       </button>
-      <p className="form-note">Demo-Formular — keine echte Übermittlung.</p>
+      <p className="form-note">
+        Wir nutzen deine Angaben nur, um deine Anfrage zu beantworten.
+      </p>
     </form>
   );
 }
