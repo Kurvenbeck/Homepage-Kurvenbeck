@@ -24,14 +24,14 @@ export const metadata: Metadata = {
     template: "%s — Kurvenbeck",
   },
   description:
-    "Familienbetrieb seit 1978: Biergarten, Catering und Backstube. Drei Handwerke, ein Name — ehrliches schwäbisches Handwerk.",
+    "Familienbetrieb: Biergarten, Catering und Backstube. Drei Handwerke, ein Name — ehrliches schwäbisches Handwerk.",
   openGraph: {
     type: "website",
     locale: "de_DE",
     siteName: "Kurvenbeck",
     title: "Kurvenbeck — Biergarten · Catering · Backstube",
     description:
-      "Familienbetrieb seit 1978: Biergarten, Catering und Backstube. Drei Handwerke, ein Name.",
+      "Familienbetrieb: Biergarten, Catering und Backstube. Drei Handwerke, ein Name.",
   },
 };
 

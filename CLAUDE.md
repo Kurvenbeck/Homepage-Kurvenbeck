@@ -5,7 +5,7 @@ jeder Session gelesen.
 
 ## Projekt
 
-Web-Präsenz für den Familienbetrieb **Kurvenbeck** (seit 1978) mit drei Bereichen:
+Web-Präsenz für den Familienbetrieb **Kurvenbeck** mit drei Bereichen:
 Biergarten, Catering, Backstube. Visuelle Richtung: Option C „Warm & Handwerklich".
 Quellen: `README.md` (Handoff) + `kurvenbeck-design-guide Kopie.md` (Design-Tokens,
 Single Source of Truth). Die `*.html`-Dateien im Root sind **Design-Referenzen**,
@@ -38,8 +38,10 @@ nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen
   Meta-Beschreibungen die Wörter **„Bäcker" und „Bäckerei" vermeiden**. Stattdessen:
   „Backstube", „aus dem Ofen", „von Hand geformt/gebacken", und für die Person
   „der Betreiber / die Familie / das Team / Kurvenbeck".
-- **„seit 1978" nicht bewerben**, bis die Jahreszahl bestätigt ist (Backstube existiert
-  erst ~1,5 Jahre). Aktuell noch in `app/layout.tsx`-Metadaten — siehe `web/TODO.md`.
+- **„seit 1978" wird nicht beworben (Entscheidung 2026-07-06, endgültig):** die Backstube
+  existiert erst ~1,5 Jahre, die Jahreszahl würde den Gesamtbetrieb falsch darstellen.
+  Jede Erwähnung von „1978"/„seit 1978" — Meta-Beschreibungen, Copy, Design-Referenzen —
+  ist entfernt und darf **nicht** wieder eingeführt werden.
 
 ## Design
 

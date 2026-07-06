@@ -39,7 +39,7 @@ Detaillierter Status der ursprünglichen offenen Punkte: siehe **§12**.
 
 ## 1. Überblick
 
-Neue Web-Präsenz für den Familienbetrieb **Kurvenbeck** (gegründet 1978). Drei eigenständige Geschäftsbereiche unter einer Marke, die auf der Startseite klar getrennt werden und jeweils eine eigene Unterseite haben:
+Neue Web-Präsenz für den Familienbetrieb **Kurvenbeck**. Drei eigenständige Geschäftsbereiche unter einer Marke, die auf der Startseite klar getrennt werden und jeweils eine eigene Unterseite haben:
 
 | Bereich | Inhalt | Besonderheit |
 |---|---|---|
@@ -123,7 +123,7 @@ Quelle: `kurvenbeck-design-guide.md` (Single Source of Truth). Vollständige CSS
 - **Mobile (≤ 860px):** Nav ausgeblendet → **Hamburger-Menü ist noch zu bauen** (offener Punkt).
 
 ### Logo-Wortmarke (`.kb-logo`)
-Aktuell als Schriftzug umgesetzt, da echtes Asset laut Guide aussteht: „Kurven“ in `--color-primary` + „beck“ in `--color-accent`, `Playfair Display` 800, optionales `<small>`-Suffix (z. B. „seit 1978“) in `DM Sans`, Caps, `--color-text-muted`. **Sobald Logo-WebP/SVG vorliegt: ersetzen.**
+Aktuell als Schriftzug umgesetzt, da echtes Asset laut Guide aussteht: „Kurven“ in `--color-primary` + „beck“ in `--color-accent`, `Playfair Display` 800. **Kein Jahres-Suffix** (siehe CLAUDE.md, „seit 1978" ist bewusst nicht Teil der Marke). **Sobald Logo-WebP/SVG vorliegt: ersetzen.**
 
 ### Buttons (`.btn`)
 Padding `12px 24px`, Radius `md`, `DM Sans` 500, `--text-sm`. **Hover = nur Schatten, kein Farbwechsel.**
@@ -145,7 +145,7 @@ Alle Bilder sind aktuell beschriftete Platzhalter (diagonal gestreift, `data-lab
 ### 6.1 Startseite — `index.html` (Option C „Warm & Handwerklich“)
 **Zweck:** Einstieg, Marke vermitteln, in die drei Bereiche leiten.
 
-1. **Hero** (`data-screen-label="Home C · Hero"`): vollbreites Stimmungsbild, Höhe `88vh` (min 600 / **max 820px**), dunkler Verlaufs-Scrim (`linear-gradient` von 0.85 unten zu 0.25 Mitte). Inhalt unten links: Eyebrow „Familienbetrieb seit 1978“, H1 „Drei Handwerke, ein Name.“ (`clamp(2.75rem,6.5vw,5rem)`, weiß), Tagline kursiv „Bei uns kommt's frisch auf den Tisch.“, zwei CTAs (`btn-primary` „Biergarten entdecken“ → biergarten.html, `btn-ghost--inverted` „Online vorbestellen“ → backstube.html).
+1. **Hero** (`data-screen-label="Home C · Hero"`): vollbreites Stimmungsbild, Höhe `88vh` (min 600 / **max 820px**), dunkler Verlaufs-Scrim (`linear-gradient` von 0.85 unten zu 0.25 Mitte). Inhalt unten links: Eyebrow „Aus dem Herzen der Schwäbischen Alb“, H1 „Drei Handwerke, ein Name.“ (`clamp(2.75rem,6.5vw,5rem)`, weiß), Tagline kursiv „Bei uns kommt's frisch auf den Tisch.“, zwei CTAs (`btn-primary` „Biergarten entdecken“ → biergarten.html, `btn-ghost--inverted` „Online vorbestellen“ → backstube.html).
 2. **Intro** (zentriert, max 60ch): Eyebrow, H2 „Bewirten, beliefern, backen“, Fließtext.
 3. **Drei Karten** (`.hcard`, gestapelt, gap 48px): jede Karte = großes Foto + Textseite, **abwechselnde Spaltenverteilung** (`nth-child(even)` spiegelt: Foto rechts), BG `--color-surface`, Border, Radius `xl`, Shadow `0 10px 30px rgba(86,86,85,.07)`. **Hover:** `translateY(-3px)` + Shadow `0 18px 44px rgba(86,86,85,.13)`, „Mehr“-Link → `--color-accent`. Inhalt je Karte: runde rote Nummer (40px), Bereichs-Label (Caps), H3-Tagline, Fließtext, Link. Ganze Karte ist `<a>` zur Unterseite.
    - 1 Biergarten — „Hock di na.“ → biergarten.html

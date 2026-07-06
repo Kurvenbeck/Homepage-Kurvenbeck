@@ -7,6 +7,8 @@ import { photos } from "@/lib/images";
 import { getOpeningStatus } from "@/lib/openingHours";
 import { getSiteSettings } from "@/lib/getSiteSettings";
 import { OpeningStatusView } from "@/components/OpeningStatusView";
+import { EventBanner } from "@/components/EventBanner";
+import { buildFoodEstablishmentJsonLd } from "@/lib/structuredData";
 
 // Dynamisch rendern, damit der Öffnungs-Status auf der Startseite tagesaktuell ist.
 export const dynamic = "force-dynamic";
@@ -16,8 +18,17 @@ export default async function HomePage() {
     getOpeningStatus("biergarten"),
     getSiteSettings(),
   ]);
+  const jsonLd = buildFoodEstablishmentJsonLd(contact, opening);
+
   return (
     <div className="home-bg">
+      <script
+        type="application/ld+json"
+        // eslint-disable-next-line react/no-danger
+        dangerouslySetInnerHTML={{
+          __html: JSON.stringify(jsonLd).replace(/</g, "\\u003c"),
+        }}
+      />
       <SiteHeader action={null} />
 
       <section className="hero-c" data-screen-label="Home C · Hero">
@@ -43,6 +54,8 @@ export default async function HomePage() {
               <h1>Drei Leidenschaften. Ein Haus.</h1>
               <p className="tagline">{"„Frisch, ehrlich, von hier.“"}</p>
               {/* CTA-Buttons auf Wunsch entfernt */}
+              <OpeningStatusView status={opening} variant="hero" />
+              <EventBanner events={opening.events} />
             </div>
           </div>
         </Photo>

@@ -149,7 +149,7 @@ in **§11**. Kompakt (Stand 2026-07-05):
    Einzelbestellungen **und** aggregierter Backliste. Braucht das Termin-Backend aus #1.
 4. **„Empfehlung des Hauses"** (erledigt). Kennzeichnungen (vegetarisch/vegan/alkoholfrei)
    bleiben bewusst **Text** — keine Icons.
-5. Recht/Begriffe/Metadaten: Titelschutz durchziehen, „seit 1978" klären, Rechtstexte füllen.
+5. Recht/Begriffe/Metadaten: Titelschutz ✅ geprüft, „seit 1978" ✅ entfernt (2026-07-06), Rechtstexte füllen offen.
 6. Local-SEO (ohne „Bakery"), restliche Fotos, Next.js-Update, Repo-Umzug.
 
 ## 9. Deployment (noch offen)
@@ -280,9 +280,12 @@ stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
   ist **kein gelernter „Bäcker"**. In **allen** Texten/Labels/Alt-Texten/Metadaten die Wörter
   „Bäcker"/„Bäckerei" **vermeiden** → „Backstube", „aus dem Ofen", „von Hand gebacken";
   Person = „Betreiber/Familie/Team". (Auch in CLAUDE.md verankert.)
-- **„seit 1978"** steht aktuell **live** in `app/layout.tsx` (Meta-/OG-Beschreibung, 2×) und
-  in CLAUDE.md/README. Die Backstube existiert erst ~1,5 Jahre → **noch offen: klären, ob die
-  Jahreszahl für den Gesamtbetrieb stimmt**, sonst entfernen. Bis dahin nicht bewerben.
+  ✅ **Geprüft (2026-07-06):** Live-Code + DB-Inhalte (Menü, `site_settings`, Öffnungstage,
+  Catering-Anfragen) systematisch durchsucht — keine Treffer, Titelschutz sauber.
+- **„seit 1978" entfernt (2026-07-06, endgültig):** war in `app/layout.tsx` (Meta-/OG-
+  Beschreibung, 2×) sowie in CLAUDE.md und den `*.html`-Design-Referenzen. Die Backstube
+  existiert erst ~1,5 Jahre, die Jahreszahl passt nicht zum Gesamtbetrieb → **komplett entfernt**,
+  nicht nur zurückgehalten. Darf nicht wieder eingeführt werden.
 
 ### Kontaktdaten & Öffnungszeiten → ins Backend (Prio 1)
 - **Telefon/Adresse** aus `site_settings`, vom Betreiber im Admin pflegbar. Aktuelle Nummer
@@ -297,7 +300,14 @@ stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
   **`/admin/oeffnungszeiten`** (`OpeningHoursAdmin` + `AdminNav`-Umschalter). Server Actions
   `app/admin/opening-actions.ts` (area-validiert, Datum/Zeit geprüft, open < close).
   Aktuell **Beispieldaten** geseedet (05./11./12. Juli) — im Admin durch echte Termine ersetzen.
-  Offen: Badge evtl. auch auf der Startseite; Backstube-„Backtage" später separat.
+  ✅ **Erweitert (2026-07-06):** Öffnungsstatus jetzt zusätzlich **prominent im Hero der Startseite**
+  (`OpeningStatusView`, neue Variante `hero`) statt nur in der Biergarten-Kachel — Begründung: „ist
+  offen?" ist der erste Gedanke eines Landingpage-Besuchers. Zeigt Status + bis zu 3 künftige
+  Öffnungstage (`OpeningStatus.upcoming`, `lib/openingHours.ts`), rollt automatisch weiter. Zusätzlich
+  **Events**: Öffnungstage im Admin als „Besonderes Event" markierbar (`is_event`/`event_title`,
+  Migration `20260706100000_opening_days_event_fields.sql`, z. B. Live-Musik) — erscheinen unabhängig
+  von der 3-Tage-Vorschau in einem separaten **Event-Banner** (`components/EventBanner.tsx`) auf der
+  Startseite. Backstube-„Backtage" bleiben separat (eigenes Modell in `site_settings`).
 
 ### Catering-Formular echt machen (Prio 2)
 ✅ **Gebaut (2026-07-05):** Server Action `app/catering/actions.ts` (`submitCateringRequest`) mit
@@ -345,6 +355,17 @@ verifiziert.
   **keine** serverseitige PDF-/Word-Erzeugung (keine schweren Libs, immer aktuell, markengetreu).
   Auf der Karte ein **QR-Code** → `kurvenbeck.com/biergarten`. Details: `web/TODO.md` #4b.
 - **Backstube bleibt bewusst ohne Produktfotos** (Text-Format wie Biergarten).
+- **Startseiten-Kachel Biergarten** bleibt bewusst das wiederverwendete Hero-Foto (Entscheidung
+  2026-07-06, kein separates Foto vorhanden) — kein offener Foto-Punkt mehr.
+
+### Local-SEO ✅ (gebaut 2026-07-06)
+- **JSON-LD** (`lib/structuredData.ts`, in `app/page.tsx`): Typ **`FoodEstablishment`** (bewusst
+  ohne „Bakery"), Adresse/Telefon aus `site_settings`, Öffnungszeiten (heute + `upcoming` aus
+  `opening_days`) als `openingHoursSpecification` je Datum.
+- **`app/sitemap.ts`** (alle öffentlichen Routen) + **`app/robots.ts`** (Disallow `/admin`,
+  `/auth`, verweist auf die Sitemap) — Next.js-Metadata-Routes, kein manuelles XML.
+- **Offen:** Google-Business-Profil verlinken (NAP-Konsistenz) — mit dem Kunden zu klären
+  (Termin heute Abend, 2026-07-06).
 
 ### Admin-UX
 - ✅ **Erledigt:** Save-Status grün/rot (deckungsgleich mit Live ↔ ungespeichert),

@@ -56,6 +56,19 @@ von–bis** — und die Seite zeigt daraus klar verständlich:
 - [x] Badge auch auf der Startseite zeigen — kompakte Pille „Heute geöffnet · 11–22 Uhr"
       in der Biergarten-Kachel (`components/OpeningStatusView.tsx`, Variante `compact`; Startseite
       jetzt `force-dynamic`). Biergarten-Seite nutzt dieselbe Komponente (Variante `full`).
+- [x] **Öffnungsstatus prominent im Hero (2026-07-06):** Entscheidung — die „Ist offen?"-Frage ist
+      der erste Gedanke eines Landingpage-Besuchers, daher zusätzlich **groß direkt im Hero**
+      (`OpeningStatusView`, neue Variante `hero`), nicht nur in der Biergarten-Kachel weiter unten
+      (Kachel-Pille bleibt zusätzlich bestehen). Zeigt Status + bis zu 3 künftige Öffnungstage als
+      Kurzvorschau (`OpeningStatus.upcoming` in `lib/openingHours.ts`) — rutscht automatisch nach,
+      sobald ein Tag vergangen ist. Admin kann beliebig viele Tage im Voraus anlegen (kein Limit),
+      die Landingpage zeigt trotzdem nur die nächsten 3.
+- [x] **Events (2026-07-06):** Öffnungstage können im Admin als „Besonderes Event" markiert werden
+      (`is_event` + `event_title`, Migration `20260706100000_opening_days_event_fields.sql`) — z. B.
+      Live-Musik. Fachlich ein normaler Öffnungstag (Datum/Uhrzeit), aber auf der Startseite
+      zusätzlich in einem separaten, farblich abgesetzten **Event-Banner**
+      (`components/EventBanner.tsx`) hervorgehoben — unabhängig davon, wie weit das Event in der
+      Zukunft liegt (nicht auf die 3-Tage-Vorschau begrenzt).
 - [ ] Footer zeigt bewusst **keine** Öffnungszeiten (Doppelpflege vermeiden), nur Verlinkung.
 
 ## 2. Catering-Formular echt machen (Backend + E-Mail + Posteingang)  ⭐
@@ -157,30 +170,46 @@ Termine/Druckränder feinjustieren. Backstube-Druckkarte später über denselben
 
 ## 5. Recht, Begriffe & Metadaten
 
-- [ ] **Titelschutz durchziehen:** nirgends „Bäcker"/„Bäckerei" (siehe CLAUDE.md). Person =
-      „Betreiber/Familie/Team". Bestehende Texte/Alt-Texte gegenlesen.
-- [ ] **„seit 1978" prüfen:** steht live in `app/layout.tsx` (Meta-/OG-Beschreibung, 2×) sowie
-      in CLAUDE.md/README. Backstube existiert erst ~1,5 Jahre → **klären, ob die Jahreszahl
-      für den Gesamtbetrieb überhaupt stimmt**; sonst entfernen/ersetzen.
+- [x] **Titelschutz geprüft (2026-07-06):** Live-Code (alle `.tsx`) **und** DB-Inhalte
+      (Menüpunkte/-kategorien, `site_settings`, Öffnungstage, Catering-Anfragen) systematisch
+      auf „Bäcker"/„Bäckerei" durchsucht — **null Treffer**. Einzige Fundstellen waren interne
+      Doku-Notizen (`TODO.md`, `public/images/README.md`), nicht nutzersichtbar. Titelschutz ist
+      sauber.
+- [x] **„seit 1978" entfernt (2026-07-06, endgültig):** Backstube existiert erst ~1,5 Jahre, die
+      Jahreszahl passt nicht zum Gesamtbetrieb. Entfernt aus `app/layout.tsx` (Meta-/OG-
+      Beschreibung, 2×), `CLAUDE.md`, sowie aus den `*.html`-Design-Referenzen im Root
+      (Logo-Suffix, Hero-Eyebrow, Footer-Zeile, Stat-Kachel in `home-split.html`).
 - [ ] Impressum, Datenschutz, AGB mit echten Texten füllen (`app/impressum|datenschutz|agb`
       sind Platzhalter). Bei echtem Formular/Bestellung: Datenschutz auf Datenverarbeitung
       anpassen.
 
 ## 6. Local-SEO
 
-- [ ] Strukturierte Daten (`schema.org`) — **ohne** „Bakery"! Passender Typ (z. B.
-      `Restaurant`/`FoodEstablishment`) mit Adresse, Öffnungszeiten (aus 1b), Geo, Telefon.
-- [ ] `sitemap.xml` + `robots.txt`.
-- [ ] Google-Business-Profil (NAP-Konsistenz) verlinken.
+- [x] **Strukturierte Daten (2026-07-06):** JSON-LD nach schema.org auf der Startseite
+      (`lib/structuredData.ts`, eingebunden in `app/page.tsx`) — Typ **`FoodEstablishment`**
+      (bewusst **ohne** „Bakery", Titelschutz), mit Adresse + Telefon aus `site_settings` und
+      Öffnungszeiten (heute + `upcoming`) aus `opening_days` als `openingHoursSpecification`
+      je Datum. Live geprüft: Adresse/Telefon/Öffnungstage korrekt im `<script type="application/ld+json">`.
+- [x] **`sitemap.xml` + `robots.txt` (2026-07-06):** `app/sitemap.ts` (alle öffentlichen Routen)
+      + `app/robots.ts` (Disallow `/admin`, `/auth`, verweist auf die Sitemap). Next.js-Bordmittel
+      (Metadata Routes), kein manuelles XML. Build + Live geprüft (`/sitemap.xml`, `/robots.txt`).
+- [ ] **Google-Business-Profil verlinken (NAP-Konsistenz)** — mit dem Kunden zu klären, wer das
+      Profil anlegt/verwaltet und mit welcher Adresse/Telefonnummer (muss exakt mit der Website
+      übereinstimmen). **Steht heute Abend (2026-07-06) mit dem Kunden an.**
 
 ## 7. Restliche Fotos einsetzen
 
-**Erledigt:** Logo (Header/Footer/Hero-Badge + Favicon), alle vier Catering-Kacheln.
+**Erledigt:** Logo (Header/Footer/Hero-Badge + Favicon), alle vier Catering-Kacheln,
+Biergarten-Intro (`garten.webp`).
 
-- [ ] Verbleibende WebP-Dateien gemäß `public/images/README.md` ablegen (Biergarten-Intro,
-      Home-Bereichskarten — welche Slots in `web/lib/images.ts` noch `null` sind). **Menüs
-      bleiben bewusst ohne Produktfotos.**
-- [ ] Slots freischalten (`null` → `{ src, alt }`), aussagekräftige `alt`-Texte, Hero bleibt `priority`.
+**Entschieden (2026-07-06) — damit erledigt:**
+- **Startseiten-Kachel Biergarten** bleibt bewusst das wiederverwendete Hero-Foto
+  (`home/startseite-hero.webp`) — aktuell kein anderes Foto vorhanden. Kein offener Punkt mehr.
+- **Backstube-Waren bleiben ohne Fotos** (wie die Speisekarte, reines Text-Format) — bewusste
+  Entscheidung, keine Produktfotos für Brezel/Briegl/Körnerwecken/etc. beauftragt. War bereits so
+  in CLAUDE.md verankert („Menüs ohne Produktfotos — Biergarten **und** Backstube"); der
+  `backstubePhotos`-Eintrag in `lib/images.ts` wird nur für **ein** generisches Hero-Foto auf der
+  Backstube-Seite genutzt, nicht pro Ware — entspricht der Entscheidung, keine Änderung nötig.
 
 ## 8. Next.js-Sicherheitsupdate (separat)
 
@@ -204,3 +233,10 @@ Org-Mitglied → direkter Push nach `Kurvenbeck/…` bisher nicht möglich).
 - [ ] Scroll-Reveal selektiv aktivieren (`enable-scroll-animations` am `<body>`).
 - [ ] Kontakt/Anfahrt-Seite mit Karte (Handoff §12.5) — nutzt Adresse aus 1a.
 - [ ] Admin: Handy-Tauglichkeit prüfen (Betreiber pflegt vermutlich vom Smartphone).
+
+## 11. Go-Live-Checkliste
+
+- [ ] **Supabase Auth URL Configuration umstellen:** Site URL + Redirect URLs im Supabase-Dashboard
+      (Authentication → URL Configuration) von `localhost:3003` auf die echte Domain
+      (`https://kurvenbeck.com`) setzen — sonst zeigt der Magic-Link-Login im Admin nach dem
+      Go-Live noch auf localhost und funktioniert nicht.

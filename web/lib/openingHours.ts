@@ -18,6 +18,10 @@ export type OpeningDay = {
   /** "HH:MM". */
   closeTime: string;
   note: string | null;
+  /** Besonderes Event (z. B. Live-Musik) statt normaler Öffnungstag. */
+  isEvent: boolean;
+  /** Titel des Events, z. B. "Metallica live" (nur bei isEvent). */
+  eventTitle: string | null;
 };
 
 export type OpeningStatus = {
@@ -29,6 +33,10 @@ export type OpeningStatus = {
   opensLaterToday: boolean;
   /** Nächster künftiger Öffnungstag (nach heute), falls vorhanden. */
   next: OpeningDay | null;
+  /** Bis zu 3 künftige Öffnungstage nach heute (für die Hero-Vorschau). */
+  upcoming: OpeningDay[];
+  /** Bis zu 2 anstehende Events (heute oder künftig), älteste zuerst. */
+  events: OpeningDay[];
 };
 
 type Row = {
@@ -37,6 +45,8 @@ type Row = {
   open_time: string;
   close_time: string;
   note: string | null;
+  is_event: boolean;
+  event_title: string | null;
 };
 
 /** Datum/Uhrzeit „jetzt" in Europe/Berlin als Bausteine. */
@@ -71,6 +81,8 @@ function mapRow(r: Row): OpeningDay {
     openTime: r.open_time.slice(0, 5),
     closeTime: r.close_time.slice(0, 5),
     note: r.note,
+    isEvent: r.is_event,
+    eventTitle: r.event_title,
   };
 }
 
@@ -82,7 +94,7 @@ export async function getOpeningStatus(area: string): Promise<OpeningStatus> {
   // Alle Tage ab heute (aufsteigend). Vergangene Tage sind irrelevant.
   const { data, error } = await supabase
     .from("opening_days")
-    .select("id, date, open_time, close_time, note")
+    .select("id, date, open_time, close_time, note, is_event, event_title")
     .eq("area", area)
     .gte("date", todayIso)
     .order("date")
@@ -106,7 +118,15 @@ export async function getOpeningStatus(area: string): Promise<OpeningStatus> {
   // geschlossener Heute-Eintrag soll nicht als „nächster Öffnungstag" erscheinen).
   const next = days.find((d) => d.date > todayIso) ?? null;
 
-  return { today, openNow, opensLaterToday, next };
+  // Die nächsten künftigen Öffnungstage (ohne heute) für die Hero-Vorschau —
+  // rutscht Tag für Tag nach, sobald ein Tag in der Vergangenheit liegt.
+  const upcoming = days.filter((d) => d.date > todayIso).slice(0, 3);
+
+  // Events: bis zu 2, können heute oder ein beliebiger künftiger Tag sein, auch
+  // außerhalb der `upcoming`-Vorschau (z. B. ein Konzert erst in Wochen).
+  const events = days.filter((d) => d.isEvent).slice(0, 2);
+
+  return { today, openNow, opensLaterToday, next, upcoming, events };
 }
 
 /** Alle künftigen Öffnungstage (ab heute) für die Admin-Verwaltung. */
@@ -116,7 +136,7 @@ export async function getOpeningDaysForAdmin(area: string): Promise<OpeningDay[]
 
   const { data, error } = await supabase
     .from("opening_days")
-    .select("id, date, open_time, close_time, note")
+    .select("id, date, open_time, close_time, note, is_event, event_title")
     .eq("area", area)
     .gte("date", todayIso)
     .order("date")
@@ -148,4 +168,19 @@ export function formatTime(hm: string): string {
 /** "11:00"/"22:00" → "11–22 Uhr". */
 export function formatRange(open: string, close: string): string {
   return `${formatTime(open)}–${formatTime(close)} Uhr`;
+}
+
+/** "2026-07-11" → "Sa 11.7." (kurz, für Vorschau-Listen). */
+export function formatShortDate(iso: string): string {
+  const d = new Date(`${iso}T12:00:00`);
+  const weekday = new Intl.DateTimeFormat("de-DE", {
+    weekday: "short",
+    timeZone: TZ,
+  }).format(d);
+  const dayMonth = new Intl.DateTimeFormat("de-DE", {
+    day: "numeric",
+    month: "numeric",
+    timeZone: TZ,
+  }).format(d);
+  return `${weekday} ${dayMonth}.`;
 }

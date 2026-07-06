@@ -25,7 +25,7 @@ Atmosphäre). Die Web-Einbindung legt automatisch einen leichten Filter darüber
 |---|---|---|---|
 | `biergarten.webp` | 4:3 | 1200×900 | Biergarten unter Kastanien, lange Tische |
 | `catering.webp` | 4:3 | 1200×900 | Catering-Team beim Aufbau, Buffet |
-| `backstube.webp` | 4:3 | 1200×900 | Bäcker schlingt Brezel, Mehlstaub |
+| `backstube.webp` | 4:3 | 1200×900 | Brezel wird von Hand geschlungen, Mehlstaub |
 
 ### `biergarten/` — Intro-Foto der Biergarten-Seite
 | Datei | Seitenverhältnis | Zielmaß | Motiv |

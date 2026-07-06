@@ -1,6 +1,7 @@
 import {
   type OpeningStatus,
   formatGermanDate,
+  formatShortDate,
   formatTime,
   formatRange,
 } from "@/lib/openingHours";
@@ -8,7 +9,8 @@ import {
 /**
  * Zeigt den Öffnungs-Status eines Bereichs (Besenwirtschaft-Modell).
  * - `full`:    ausführliche Darstellung mit Datum + Uhrzeit (Bereichsseite).
- * - `compact`: kompakte Pille „Heute geöffnet · 11–22 Uhr" für Übersichten (Startseite).
+ * - `compact`: kompakte Pille „Heute geöffnet · 11–22 Uhr" für Übersichten (Startseite-Kachel).
+ * - `hero`:    große Pille + Vorschau der nächsten Öffnungstage, für den Hero-Bereich.
  * Der grüne Punkt bedeutet „jetzt geöffnet"; sonst neutral.
  */
 export function OpeningStatusView({
@@ -16,15 +18,39 @@ export function OpeningStatusView({
   variant = "full",
 }: {
   status: OpeningStatus;
-  variant?: "full" | "compact";
+  variant?: "full" | "compact" | "hero";
 }) {
-  const { today, openNow, opensLaterToday, next } = status;
+  const { today, openNow, opensLaterToday, next, upcoming } = status;
 
   const headline = today
     ? opensLaterToday
       ? `Heute ab ${formatTime(today.openTime)} Uhr geöffnet`
       : "Heute geöffnet"
     : "Heute geschlossen";
+
+  if (variant === "hero") {
+    const detail = today
+      ? formatRange(today.openTime, today.closeTime)
+      : next
+        ? `nächster Tag: ${formatGermanDate(next.date)}`
+        : null;
+    return (
+      <div className="hero-status">
+        <span className={`open-pill open-pill--hero${openNow ? " is-open" : ""}`}>
+          <span className={`open-dot${openNow ? " is-open" : ""}`} aria-hidden />
+          <span className="open-pill-text">
+            {headline}
+            {detail && <span className="open-pill-detail"> · {detail}</span>}
+          </span>
+        </span>
+        {upcoming.length > 0 && (
+          <p className="hero-status-upcoming">
+            Weitere Öffnungstage: {upcoming.map((d) => formatShortDate(d.date)).join(" · ")}
+          </p>
+        )}
+      </div>
+    );
+  }
 
   if (variant === "compact") {
     const detail = today

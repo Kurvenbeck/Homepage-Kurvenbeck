@@ -75,10 +75,12 @@ export default async function BackstubePage() {
         </div>
       </div>
 
-      <div className="section-head" style={{ paddingTop: "var(--space-16)" }}>
-        <p className="eyebrow">Aus dem Ofen</p>
-        <h2>Such dir aus, was frisch gebacken werden soll</h2>
-        <p>Preise pro Stück, inkl. MwSt. Vorbestellung direkt hier — kein WhatsApp nötig.</p>
+      <div className="container">
+        <div className="section-head" style={{ paddingTop: "var(--space-16)" }}>
+          <p className="eyebrow">Aus dem Ofen</p>
+          <h2>Such dir aus, was frisch gebacken werden soll</h2>
+          <p>Preise pro Stück, inkl. MwSt. Vorbestellung direkt hier — kein WhatsApp nötig.</p>
+        </div>
       </div>
 
       <BackstubeOrder menu={menu} backtag={backtag} />

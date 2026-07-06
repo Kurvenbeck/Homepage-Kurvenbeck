@@ -19,6 +19,10 @@ export type OpeningInput = {
   /** HH:MM */
   closeTime: string;
   note: string;
+  /** Besonderes Event statt normaler Öffnungstag. */
+  isEvent: boolean;
+  /** Titel des Events, z. B. "Metallica live" (Pflicht wenn isEvent). */
+  eventTitle: string;
 };
 
 async function getSupabase() {
@@ -48,7 +52,21 @@ function validate(
   if (openTime >= closeTime)
     return { ok: false, error: "Die Schließzeit muss nach der Öffnungszeit liegen." };
 
-  return { ok: true, value: { date, openTime, closeTime, note: input.note.trim() } };
+  const eventTitle = input.eventTitle.trim();
+  if (input.isEvent && !eventTitle)
+    return { ok: false, error: "Bitte einen Event-Titel angeben." };
+
+  return {
+    ok: true,
+    value: {
+      date,
+      openTime,
+      closeTime,
+      note: input.note.trim(),
+      isEvent: input.isEvent,
+      eventTitle,
+    },
+  };
 }
 
 function revalidate(area: string) {
@@ -79,6 +97,8 @@ export async function createOpeningDay(
       open_time: v.value.openTime,
       close_time: v.value.closeTime,
       note: v.value.note || null,
+      is_event: v.value.isEvent,
+      event_title: v.value.eventTitle || null,
     });
     if (error) throw error;
 
@@ -107,6 +127,8 @@ export async function updateOpeningDay(
         open_time: v.value.openTime,
         close_time: v.value.closeTime,
         note: v.value.note || null,
+        is_event: v.value.isEvent,
+        event_title: v.value.eventTitle || null,
       })
       .eq("id", id);
     if (error) throw error;

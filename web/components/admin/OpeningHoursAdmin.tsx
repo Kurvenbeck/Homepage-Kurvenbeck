@@ -28,7 +28,14 @@ function weekdayLabel(iso: string): string {
   }).format(new Date(`${iso}T12:00:00`));
 }
 
-const EMPTY: OpeningInput = { date: "", openTime: "11:00", closeTime: "22:00", note: "" };
+const EMPTY: OpeningInput = {
+  date: "",
+  openTime: "11:00",
+  closeTime: "22:00",
+  note: "",
+  isEvent: false,
+  eventTitle: "",
+};
 
 export function OpeningHoursAdmin({
   days,
@@ -55,7 +62,8 @@ export function OpeningHoursAdmin({
       <p className="admin-intro">
         Trag hier die konkreten Öffnungstage ein — Datum und Uhrzeit von/bis. Die
         Biergarten-Seite zeigt daraus automatisch „Heute geöffnet/geschlossen". Vergangene
-        Tage blendet sie selbst aus.
+        Tage blendet sie selbst aus. Markiere einen Tag als „Besonderes Event" (z. B.
+        Live-Musik), damit er auf der Startseite zusätzlich hervorgehoben wird.
       </p>
 
       {error && <p className="admin-error">{error}</p>}
@@ -106,6 +114,25 @@ export function OpeningHoursAdmin({
             placeholder="z. B. Feiertag"
           />
         </div>
+        <div className="field admin-openingday-event">
+          <label className="admin-checkbox-label">
+            <input
+              type="checkbox"
+              checked={draft.isEvent}
+              onChange={(e) => setDraft({ ...draft, isEvent: e.target.checked })}
+            />
+            Besonderes Event
+          </label>
+          {draft.isEvent && (
+            <input
+              type="text"
+              value={draft.eventTitle}
+              onChange={(e) => setDraft({ ...draft, eventTitle: e.target.value })}
+              placeholder="z. B. Metallica live"
+              required
+            />
+          )}
+        </div>
         <button type="submit" className="btn btn-primary" disabled={pending}>
           <IconPlus size={18} stroke={1.75} aria-hidden />
           Tag hinzufügen
@@ -127,6 +154,8 @@ function DayRow({ day, area }: { day: OpeningDay; area: MenuArea }) {
     openTime: day.openTime,
     closeTime: day.closeTime,
     note: day.note ?? "",
+    isEvent: day.isEvent,
+    eventTitle: day.eventTitle ?? "",
   };
   const [form, setForm] = useState<OpeningInput>(live);
   const [pending, startTransition] = useTransition();
@@ -136,7 +165,9 @@ function DayRow({ day, area }: { day: OpeningDay; area: MenuArea }) {
     form.date !== live.date ||
     form.openTime !== live.openTime ||
     form.closeTime !== live.closeTime ||
-    form.note.trim() !== live.note.trim();
+    form.note.trim() !== live.note.trim() ||
+    form.isEvent !== live.isEvent ||
+    form.eventTitle.trim() !== live.eventTitle.trim();
 
   function save() {
     setError("");
@@ -190,6 +221,25 @@ function DayRow({ day, area }: { day: OpeningDay; area: MenuArea }) {
           onChange={(e) => setForm({ ...form, note: e.target.value })}
           placeholder="z. B. Feiertag"
         />
+      </div>
+      <div className="field admin-openingday-event">
+        <label className="admin-checkbox-label">
+          <input
+            type="checkbox"
+            checked={form.isEvent}
+            onChange={(e) => setForm({ ...form, isEvent: e.target.checked })}
+          />
+          Besonderes Event
+        </label>
+        {form.isEvent && (
+          <input
+            type="text"
+            value={form.eventTitle}
+            onChange={(e) => setForm({ ...form, eventTitle: e.target.value })}
+            placeholder="z. B. Metallica live"
+            required
+          />
+        )}
       </div>
       <div className="admin-actions">
         <button
