@@ -377,6 +377,18 @@ a.text-link:hover { color: var(--color-accent); }
 .section-head h2 { font-size: var(--text-4xl); margin-top: var(--space-3); }
 .section-head p { color: var(--color-text-secondary); font-size: var(--text-lg); margin-top: var(--space-4); }
 
+/* Rechtstexte (Impressum, Datenschutz, AGB) */
+.legal-content { color: var(--color-text-secondary); font-size: var(--text-base); line-height: var(--leading-relaxed); }
+.legal-content h2 { color: var(--color-text-primary); font-size: var(--text-xl); margin-top: var(--space-12); margin-bottom: var(--space-3); }
+.legal-content h2:first-of-type { margin-top: 0; }
+.legal-content h3 { color: var(--color-text-primary); font-size: var(--text-lg); margin-top: var(--space-6); margin-bottom: var(--space-2); }
+.legal-content p { margin-top: var(--space-3); }
+.legal-content ul { margin-top: var(--space-3); padding-left: 1.25rem; display: flex; flex-direction: column; gap: var(--space-2); }
+.legal-content li { list-style: disc; }
+.legal-content a { color: inherit; text-decoration: underline; }
+.legal-content strong { color: var(--color-text-primary); }
+.legal-content .legal-meta { font-size: var(--text-sm); color: var(--color-text-muted); }
+
 /* Footer */
 .site-footer {
   background: var(--color-surface);

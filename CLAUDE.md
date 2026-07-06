@@ -108,6 +108,36 @@ Dauerhafte Konventionen:
   Strings statt NULL in den Token-Spalten) — Dashboard → Authentication → Users nutzen.
   Details/Stand: `kurvenbeck-admin-auth`-Memory + `HANDOFF.md` §10.
 
+## Datenschutz & Hosting
+
+- **Hoster (beschlossen 2026-07-06): Vercel.** Deployment selbst steht noch aus
+  (siehe `HANDOFF.md` §9).
+- **Datenschutzerklärung ist live** (`web/app/datenschutz/page.tsx`, echter Text seit
+  2026-07-06) — nennt Vercel + Supabase als Auftragsverarbeiter, beschreibt
+  Catering-Anfrage und Backstube-Vorbestellung als eigene Verarbeitungsvorgänge inkl.
+  Löschfristen sowie den Supabase-Admin-Login-Cookie und den `localStorage`-Warenkorb.
+  **Impressum + AGB sind noch Platzhalter** und müssen die dort hinterlegten echten
+  Verantwortlicher-Angaben übernehmen (Name, Anschrift, `kontakt@kurvenbeck.com`) —
+  sonst widersprechen sich die Rechtsseiten.
+- **Löschfristen für Formulardaten (beschlossen 2026-07-06), automatisiert per
+  `pg_cron`:**
+  - **Catering-Anfragen** (`catering_requests`): 60 Tage nach `event_date`
+    (Wunschdatum; Fallback `created_at`, falls kein Datum angegeben wurde).
+  - **Backstube-Vorbestellungen** (`backstube_orders`): 7 Tage nach `backtag_date`
+    (Fallback `created_at`).
+  - Jobs `delete-old-catering-requests` / `delete-old-backstube-orders`, Migration
+    `20260706150000_retention_cron_jobs.sql`. Bei neuen personenbezogenen
+    Formulardaten immer eine passende Löschfrist + Cron-Job mitdenken, nicht nur die
+    generischen handels-/steuerrechtlichen Fristen aus der Datenschutzerklärung
+    anwenden — die gelten nur für tatsächliche Buchhaltungsunterlagen.
+- **Keine Tracking-/Analyse-/Marketing-Cookies.** Es werden nur zwei technisch
+  notwendige Speichervorgänge eingesetzt (Supabase-Admin-Login-Cookie,
+  `localStorage`-Warenkorb der Backstube) — beide brauchen laut § 25 Abs. 2 Nr. 2
+  TTDSG keine Einwilligung. **Kein Cookie-Banner einbauen**, solange das so bleibt.
+  Sollte je Analytics (z. B. Google Analytics) oder Marketing-Tracking dazukommen,
+  ändert sich das grundlegend (Consent-Banner + Anpassung der
+  Datenschutzerklärung nötig) — vorher mit dem Kunden abstimmen.
+
 ## Icons
 
 - Icon-Set: **`@tabler/icons-react`** (tree-shakeable). Beispiel:

@@ -179,9 +179,21 @@ Termine/Druckränder feinjustieren. Backstube-Druckkarte später über denselben
       Jahreszahl passt nicht zum Gesamtbetrieb. Entfernt aus `app/layout.tsx` (Meta-/OG-
       Beschreibung, 2×), `CLAUDE.md`, sowie aus den `*.html`-Design-Referenzen im Root
       (Logo-Suffix, Hero-Eyebrow, Footer-Zeile, Stat-Kachel in `home-split.html`).
-- [ ] Impressum, Datenschutz, AGB mit echten Texten füllen (`app/impressum|datenschutz|agb`
-      sind Platzhalter). Bei echtem Formular/Bestellung: Datenschutz auf Datenverarbeitung
-      anpassen.
+- [x] **Datenschutzerklärung (2026-07-06):** `app/datenschutz/page.tsx` mit echtem Text befüllt
+      (Basis: vom Kunden bereitgestellter Datenschutz-Generator.de-Text, abgeglichen mit dem
+      tatsächlichen Code). Ergänzt: Vercel + Supabase als Auftragsverarbeiter (inkl. internat.
+      Übermittlung/SVK), eigene Abschnitte für Catering-Anfrage (Löschung **60 Tage nach
+      Wunschdatum**) und Backstube-Vorbestellung (Löschung **7 Tage nach Backtag**), Cookie-Hinweis
+      (Supabase-Admin-Login-Cookie + `localStorage`-Warenkorb — beide technisch notwendig, kein
+      Consent-Banner nötig), fehlender Abschnitt „Rechte der betroffenen Personen" nachgetragen,
+      fehlende Rechtsgrundlage Art. 6 Abs. 1 lit. b) ergänzt. **Automatische Löschung technisch
+      umgesetzt:** Migration `20260706150000_retention_cron_jobs.sql` — zwei `pg_cron`-Jobs
+      (`delete-old-catering-requests`, `delete-old-backstube-orders`), täglich nachts, verifiziert
+      aktiv in `cron.job`.
+- [ ] **Impressum & AGB noch Platzhalter** (`app/impressum`, `app/agb`). Impressum muss insbesondere
+      die im Datenschutztext hinterlegten echten Angaben (Johannes Wehner, Im Hetzenloch 3, 89558
+      Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`) übernehmen — sonst widersprechen sich
+      beide Rechtsseiten.
 
 ## 6. Local-SEO
 

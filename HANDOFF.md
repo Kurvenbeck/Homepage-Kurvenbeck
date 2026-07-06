@@ -61,7 +61,8 @@ web/
 │  ├─ biergarten/         # Bereichsseite + Speisekarte
 │  ├─ catering/           # Bereichsseite + Anfrageformular
 │  ├─ backstube/          # Bereichsseite + Warenkorb
-│  └─ impressum|datenschutz|agb/   # Rechts-Platzhalterseiten
+│  └─ impressum|datenschutz|agb/   # Datenschutz mit echtem Text (2026-07-06);
+│                                   # Impressum + AGB noch Platzhalter
 ├─ components/
 │  ├─ SiteHeader.tsx      # Sticky-Header + mobile Off-Canvas-Nav (client)
 │  ├─ SiteFooter.tsx
@@ -125,13 +126,29 @@ Positionen als JSONB-Snapshot). Admin `/admin/bestellungen` (Tab „Bestellungen
 Backliste** über alle offenen Bestellungen + Einzelbestellungen mit Positionen + Status. **Offen:**
 E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben — blockiert bis SMTP). Details: §11.
 
+**Datenschutzerklärung (live, Stand 2026-07-06):** `app/datenschutz/page.tsx` mit echtem Text
+(Basis: vom Kunden gelieferter Datenschutz-Generator.de-Text, gegen den Code abgeglichen und
+ergänzt). Nennt Vercel (Hosting) + Supabase (Backend, Server in `eu-central-1`/Frankfurt) als
+Auftragsverarbeiter, beschreibt Catering-Anfrage und Backstube-Vorbestellung als eigene
+Verarbeitungsvorgänge inkl. Löschfristen, erklärt den Supabase-Admin-Login-Cookie sowie den
+`localStorage`-Warenkorb (beide technisch notwendig, **kein** Cookie-Banner nötig — keine
+Tracking-/Analyse-Cookies im Einsatz) und enthält den zuvor fehlenden Abschnitt „Rechte der
+betroffenen Personen". **Löschfristen automatisiert:** Migration
+`20260706150000_retention_cron_jobs.sql` — zwei `pg_cron`-Jobs löschen täglich nachts
+Catering-Anfragen 60 Tage nach Wunschdatum bzw. Backstube-Bestellungen 7 Tage nach Backtag
+(Fallback jeweils Eingangsdatum, falls kein Datum gesetzt ist); in `cron.job` als aktiv
+verifiziert. **Offen:** Impressum + AGB sind noch Platzhalter — Impressum muss insbesondere
+die im Datenschutztext hinterlegten echten Angaben übernehmen (Johannes Wehner, Im Hetzenloch 3,
+89558 Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`), sonst widersprechen sich beide Seiten.
+
 **Demos (noch ohne Backend):**
 - **Backstube-Warenkorb-Komponenten** (`components/cart/*`) — voll bedienbar inkl.
   Persistenz, aber auf der Seite **nicht mehr eingebunden** (Backstube ist jetzt Text-Menü);
   aufbewahrt für den späteren echten Checkout (TODO #4).
 
 **Platzhalter:** noch fehlende Fotos (Biergarten/Home-Karten teils offen, siehe
-`web/public/images/README.md`), Inhalte (Adresse/Öffnungszeiten), Rechtstexte.
+`web/public/images/README.md`), Inhalte (Adresse/Öffnungszeiten), Impressum + AGB
+(Datenschutz ist bereits echt, siehe §7).
 ⚠️ **Telefonnummer in `web/lib/siteSettings.ts` ist ein Platzhalter (`07071 / 12 34 56`)
 und darf nicht live gehen** — echte Nummer bzw. Backend-Anbindung zuerst (§11, TODO #1).
 
@@ -149,14 +166,16 @@ in **§11**. Kompakt (Stand 2026-07-05):
    Einzelbestellungen **und** aggregierter Backliste. Braucht das Termin-Backend aus #1.
 4. **„Empfehlung des Hauses"** (erledigt). Kennzeichnungen (vegetarisch/vegan/alkoholfrei)
    bleiben bewusst **Text** — keine Icons.
-5. Recht/Begriffe/Metadaten: Titelschutz ✅ geprüft, „seit 1978" ✅ entfernt (2026-07-06), Rechtstexte füllen offen.
+5. Recht/Begriffe/Metadaten: Titelschutz ✅ geprüft, „seit 1978" ✅ entfernt (2026-07-06),
+   Datenschutzerklärung ✅ mit echtem Text + automatischer Löschung (2026-07-06). **Offen:**
+   Impressum + AGB noch Platzhalter.
 6. Local-SEO (ohne „Bakery"), restliche Fotos, Next.js-Update, Repo-Umzug.
 
-## 9. Deployment (noch offen)
+## 9. Deployment (Hoster entschieden, Deployment noch offen)
 
-Empfehlung: **Vercel** (nahtlos für Next.js) oder beliebiger Node-Host. Vor dem
-ersten Deploy: die Supabase-ENV (siehe §10) im Host hinterlegen; `.env.local` ist
-git-ignoriert — Keys niemals committen.
+**Entscheidung (2026-07-06): Vercel.** Deployment selbst steht noch aus. Vor dem ersten Deploy:
+die Supabase-ENV (siehe §10) im Host hinterlegen; `.env.local` ist git-ignoriert — Keys niemals
+committen.
 
 ## 10. Menü-Backend (in Arbeit)
 
