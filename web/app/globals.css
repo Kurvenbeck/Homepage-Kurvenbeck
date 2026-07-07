@@ -1334,3 +1334,95 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
 .order-lines-total { border-top: 1px solid var(--color-border); margin-top: var(--space-2); padding-top: var(--space-2) !important; font-weight: 600; }
 .order-lines-total .order-line-name { grid-column: 1 / 3; }
 .order-lines-total .order-line-price { color: var(--color-primary); font-family: var(--font-display); }
+
+/* ==========================================================================
+   Admin: Zutaten-Stammdaten + Rezept-Editor (Backstube)
+   ========================================================================== */
+
+.admin-ingredients {
+  margin-bottom: var(--space-8);
+  padding: var(--space-5) var(--space-6);
+  border: 1px solid var(--color-border); border-radius: var(--radius-md);
+  background: var(--color-surface);
+}
+.admin-ingredients-head h3 { font-family: var(--font-display); font-size: var(--text-xl); }
+.admin-ingredients-hint {
+  margin-top: var(--space-2); font-size: var(--text-sm);
+  color: var(--color-text-secondary); line-height: var(--leading-relaxed);
+  max-width: 44rem;
+}
+
+.ingredient-list { list-style: none; margin: var(--space-5) 0 0; padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.ingredient-item { display: flex; align-items: center; gap: var(--space-2); }
+.ingredient-name-input { flex: 1 1 auto; min-width: 0; }
+.ingredient-unit-input { flex: 0 0 6rem; width: 6rem; }
+.ingredient-item input,
+.ingredient-add input {
+  padding: var(--space-2) var(--space-3);
+  border: 1px solid var(--color-border); border-radius: var(--radius-sm);
+  background: var(--color-bg); font-size: var(--text-sm); color: var(--color-text-primary);
+}
+.ingredient-item input:focus, .ingredient-add input:focus {
+  outline: 2px solid rgba(171,13,14,0.3); outline-offset: 1px; border-color: var(--color-accent);
+}
+.ingredient-add { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-4); flex-wrap: wrap; }
+.ingredient-add input[type="text"]:first-of-type { flex: 1 1 12rem; min-width: 0; }
+
+/* Rezept-Zeilen im Item-Editor */
+.admin-recipe { margin-top: var(--space-4); border: 0; padding: 0; }
+.admin-recipe legend { font-size: var(--text-sm); font-weight: 500; color: var(--color-primary); margin-bottom: var(--space-2); }
+.admin-recipe-hint { font-size: var(--text-sm); color: var(--color-text-muted); }
+.recipe-lines { list-style: none; margin: 0 0 var(--space-2); padding: 0; display: flex; flex-direction: column; gap: var(--space-2); }
+.recipe-line { display: flex; align-items: center; gap: var(--space-2); }
+.recipe-ingredient { flex: 1 1 auto; min-width: 0; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); font-size: var(--text-sm); color: var(--color-text-primary); }
+.recipe-amount { flex: 0 0 5.5rem; width: 5.5rem; padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-sm); background: var(--color-bg); font-size: var(--text-sm); color: var(--color-text-primary); text-align: right; }
+.recipe-ingredient:focus, .recipe-amount:focus { outline: 2px solid rgba(171,13,14,0.3); outline-offset: 1px; border-color: var(--color-accent); }
+.recipe-unit { flex: 0 0 3rem; font-size: var(--text-sm); color: var(--color-text-muted); }
+.recipe-add { margin-top: var(--space-1); }
+
+/* ==========================================================================
+   Admin: Bestellungen — Unter-Reiter, Zutaten-Bedarf, Suche
+   ========================================================================== */
+
+.admin-subtabs {
+  display: flex; flex-wrap: wrap; gap: var(--space-2);
+  margin: var(--space-6) 0 var(--space-2);
+  border-bottom: 1px solid var(--color-border); padding-bottom: var(--space-3);
+}
+.admin-subtab {
+  padding: var(--space-2) var(--space-4); border-radius: var(--radius-sm);
+  border: 1px solid transparent; background: transparent; cursor: pointer;
+  font-size: var(--text-sm); font-weight: 500; color: var(--color-text-secondary);
+}
+.admin-subtab:hover { color: var(--color-primary); background: var(--color-surface); }
+.admin-subtab.is-active { background: var(--color-primary); color: #fff; }
+
+.admin-subhead-row { display: flex; align-items: flex-end; justify-content: space-between; gap: var(--space-4); flex-wrap: wrap; }
+
+/* Backliste-Karten (Backware + Zutaten je Ware) */
+.baking-list li { display: block; }
+.baking-row { display: flex; align-items: baseline; gap: var(--space-3); }
+.baking-ingredients { list-style: none; margin: var(--space-3) 0 0; padding: var(--space-3) 0 0; border-top: 1px dashed var(--color-border); display: flex; flex-direction: column; gap: 2px; font-size: var(--text-sm); color: var(--color-text-secondary); }
+.baking-ingredients strong { color: var(--color-text-primary); font-variant-numeric: tabular-nums; }
+.baking-norecipe { display: flex; align-items: center; gap: var(--space-2); margin-top: var(--space-3); padding-top: var(--space-3); border-top: 1px dashed var(--color-border); font-size: var(--text-xs); color: var(--color-accent); }
+
+/* Gesamt-Einkaufsliste */
+.ingredient-totals { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(220px, 1fr)); gap: var(--space-2); }
+.ingredient-totals li { display: flex; align-items: baseline; justify-content: space-between; gap: var(--space-3); padding: var(--space-3) var(--space-4); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-surface); }
+.ingredient-total-name { color: var(--color-text-primary); font-weight: 500; }
+.ingredient-total-amount { font-family: var(--font-display); font-weight: 700; color: var(--color-accent); font-variant-numeric: tabular-nums; white-space: nowrap; }
+
+/* Namens-Suche in den Einzelbestellungen */
+.orders-search { display: flex; align-items: center; gap: var(--space-2); margin-bottom: var(--space-5); padding: var(--space-2) var(--space-3); border: 1px solid var(--color-border); border-radius: var(--radius-md); background: var(--color-bg); color: var(--color-text-muted); max-width: 28rem; }
+.orders-search input { flex: 1 1 auto; min-width: 0; border: 0; background: transparent; font-size: var(--text-base); color: var(--color-text-primary); }
+.orders-search input:focus { outline: none; }
+
+/* Druck: nur die Backliste + Zutaten (scoped über :has, damit die
+   Speisekarte-Druckseite unberührt bleibt). */
+@media print {
+  body:has(.baking-print) * { visibility: hidden; }
+  body:has(.baking-print) .baking-print,
+  body:has(.baking-print) .baking-print * { visibility: visible; }
+  body:has(.baking-print) .baking-print { position: absolute; left: 0; top: 0; width: 100%; }
+  .baking-print .baking-list li { break-inside: avoid; }
+}

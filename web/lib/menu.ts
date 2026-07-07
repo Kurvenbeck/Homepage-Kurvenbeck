@@ -67,6 +67,24 @@ type CategoryRow = {
 // Admin-Sicht: alle Gerichte (auch nicht verfügbare), roher Preis zum Editieren.
 // ---------------------------------------------------------------------------
 
+/** Wie CategoryRow, zusätzlich mit den Rezept-Zeilen (nur Admin-Query). */
+type AdminCategoryRow = {
+  id: string;
+  title: string;
+  sort_order: number;
+  menu_items: (CategoryRow["menu_items"][number] & {
+    menu_item_ingredients:
+      | { ingredient_id: string; amount: number | string; sort_order: number }[]
+      | null;
+  })[];
+};
+
+/** Eine Rezept-Zeile: welche Zutat, wie viel je 1 Stück der Backware. */
+export type RecipeLine = {
+  ingredientId: string;
+  amount: number;
+};
+
 export type AdminMenuItem = {
   id: string;
   name: string;
@@ -77,6 +95,8 @@ export type AdminMenuItem = {
   isAvailable: boolean;
   isRecommendation: boolean;
   allergens: string[];
+  /** Rezept (nur Backstube gepflegt): Zutat-IDs + Mengen, nach sort_order. */
+  recipe: RecipeLine[];
   sortOrder: number;
 };
 
@@ -103,13 +123,14 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
           `id, title, sort_order,
            menu_items (
              id, name, description, price, tags, sort_order, is_available, is_recommendation,
-             menu_item_allergens ( allergen_code )
+             menu_item_allergens ( allergen_code ),
+             menu_item_ingredients ( ingredient_id, amount, sort_order )
            )`,
         )
         .eq("area", area)
         .order("sort_order")
         .order("sort_order", { referencedTable: "menu_items" })
-        .returns<CategoryRow[]>(),
+        .returns<AdminCategoryRow[]>(),
       supabase.from("allergens").select("code, label").order("sort_order"),
     ]);
 
@@ -131,6 +152,13 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
       allergens: item.menu_item_allergens
         .map((a) => a.allergen_code)
         .sort((a, b) => a.localeCompare(b)),
+      recipe: (item.menu_item_ingredients ?? [])
+        .slice()
+        .sort((a, b) => a.sort_order - b.sort_order)
+        .map((r) => ({
+          ingredientId: r.ingredient_id,
+          amount: typeof r.amount === "string" ? Number(r.amount) : r.amount,
+        })),
       sortOrder: item.sort_order,
     })),
   }));

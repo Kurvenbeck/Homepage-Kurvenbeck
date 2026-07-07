@@ -9,6 +9,7 @@ import {
   IconPlus,
   IconDeviceFloppy,
   IconCheck,
+  IconX,
 } from "@tabler/icons-react";
 import type { AdminMenu, AdminMenuCategory, AdminMenuItem } from "@/lib/menu";
 import {
@@ -22,12 +23,37 @@ import {
   moveItem,
   type ActionResult,
   type ItemInput,
+  type RecipeLineInput,
 } from "@/app/admin/actions";
 import type { MenuArea } from "@/lib/menuAreas";
+import type { Ingredient } from "@/lib/ingredients";
+import { MAX_RECIPE_LINES, formatAmount } from "@/lib/ingredients";
+import { IngredientsAdmin } from "@/components/admin/IngredientsAdmin";
 
 type Allergen = { code: string; label: string };
 
 const ITEM_TAGS = ["vegetarisch", "vegan", "alkoholfrei"] as const;
+
+/** Normalisiert eine Mengen-Eingabe zum Vergleich (dt. Komma → Zahl). */
+function normAmount(s: string): number {
+  return Number(s.trim().replace(/\s/g, "").replace(",", "."));
+}
+
+/** Rezept-Zeilen mengengleich? Leere Zeilen (ohne Zutat) werden ignoriert. */
+function sameRecipe(a: RecipeLineInput[], b: RecipeLineInput[]): boolean {
+  const clean = (list: RecipeLineInput[]) =>
+    list.filter((l) => l.ingredientId.trim() !== "");
+  const ca = clean(a);
+  const cb = clean(b);
+  if (ca.length !== cb.length) return false;
+  return ca.every((l, i) => {
+    const o = cb[i];
+    return (
+      l.ingredientId === o.ingredientId &&
+      normAmount(l.amount) === normAmount(o.amount)
+    );
+  });
+}
 
 /** Bezeichnung eines Eintrags je Bereich (nur Copy — Datenmodell ist identisch). */
 function itemNoun(area: MenuArea): string {
@@ -50,11 +76,21 @@ function sameItem(a: ItemInput, b: ItemInput): boolean {
     a.isAvailable === b.isAvailable &&
     a.isRecommendation === b.isRecommendation &&
     sameSet(a.tags, b.tags) &&
-    sameSet(a.allergens, b.allergens)
+    sameSet(a.allergens, b.allergens) &&
+    sameRecipe(a.recipe, b.recipe)
   );
 }
 
-export function MenuAdmin({ menu, area }: { menu: AdminMenu; area: MenuArea }) {
+export function MenuAdmin({
+  menu,
+  area,
+  ingredients = [],
+}: {
+  menu: AdminMenu;
+  area: MenuArea;
+  /** Zutaten-Stammdaten (nur Backstube gepflegt/verwendet). */
+  ingredients?: Ingredient[];
+}) {
   const [newCategory, setNewCategory] = useState("");
   const [pending, startTransition] = useTransition();
   const [error, setError] = useState("");
@@ -92,6 +128,8 @@ export function MenuAdmin({ menu, area }: { menu: AdminMenu; area: MenuArea }) {
 
       {error && <p className="admin-error">{error}</p>}
 
+      {area === "backstube" && <IngredientsAdmin ingredients={ingredients} />}
+
       {menu.categories.map((category, index) => (
         <CategoryBlock
           key={category.id}
@@ -99,6 +137,7 @@ export function MenuAdmin({ menu, area }: { menu: AdminMenu; area: MenuArea }) {
           area={area}
           noun={noun}
           allergens={menu.allergens}
+          ingredients={ingredients}
           isFirst={index === 0}
           isLast={index === menu.categories.length - 1}
           disabled={pending}
@@ -139,6 +178,7 @@ function CategoryBlock({
   area,
   noun,
   allergens,
+  ingredients,
   isFirst,
   isLast,
   disabled,
@@ -148,6 +188,7 @@ function CategoryBlock({
   area: MenuArea;
   noun: string;
   allergens: Allergen[];
+  ingredients: Ingredient[];
   isFirst: boolean;
   isLast: boolean;
   disabled: boolean;
@@ -224,6 +265,7 @@ function CategoryBlock({
             noun={noun}
             categoryId={category.id}
             allergens={allergens}
+            ingredients={ingredients}
             isFirst={index === 0}
             isLast={index === category.items.length - 1}
             parentDisabled={disabled}
@@ -254,6 +296,7 @@ function ItemEditor({
   noun,
   categoryId,
   allergens,
+  ingredients,
   isFirst,
   isLast,
   parentDisabled,
@@ -264,6 +307,7 @@ function ItemEditor({
   noun: string;
   categoryId: string;
   allergens: Allergen[];
+  ingredients: Ingredient[];
   isFirst: boolean;
   isLast: boolean;
   parentDisabled: boolean;
@@ -277,6 +321,10 @@ function ItemEditor({
     isAvailable: item.isAvailable,
     isRecommendation: item.isRecommendation,
     allergens: item.allergens,
+    recipe: item.recipe.map((r) => ({
+      ingredientId: r.ingredientId,
+      amount: formatAmount(r.amount),
+    })),
   };
   const [form, setForm] = useState<ItemInput>(live);
   const [pending, startTransition] = useTransition();
@@ -290,6 +338,22 @@ function ItemEditor({
       ? list.filter((v) => v !== value)
       : [...list, value];
   }
+
+  // --- Rezept-Zeilen bearbeiten (nur Backstube sichtbar) -------------------
+  function setRecipe(recipe: RecipeLineInput[]) {
+    setForm({ ...form, recipe });
+  }
+  function updateRecipeLine(index: number, patch: Partial<RecipeLineInput>) {
+    setRecipe(form.recipe.map((l, i) => (i === index ? { ...l, ...patch } : l)));
+  }
+  function addRecipeLine() {
+    setRecipe([...form.recipe, { ingredientId: "", amount: "" }]);
+  }
+  function removeRecipeLine(index: number) {
+    setRecipe(form.recipe.filter((_, i) => i !== index));
+  }
+  const unitFor = (ingredientId: string) =>
+    ingredients.find((i) => i.id === ingredientId)?.unit ?? "";
 
   function save() {
     setError("");
@@ -363,6 +427,73 @@ function ItemEditor({
           </div>
         </fieldset>
       </div>
+
+      {area === "backstube" && (
+        <fieldset className="admin-recipe">
+          <legend>Rezept (Zutaten je 1 Stück)</legend>
+          {ingredients.length === 0 ? (
+            <p className="admin-recipe-hint">
+              Lege zuerst oben unter „Zutaten-Stammdaten" deine Zutaten an — dann
+              kannst du sie hier auswählen.
+            </p>
+          ) : (
+            <>
+              {form.recipe.length > 0 && (
+                <ul className="recipe-lines">
+                  {form.recipe.map((line, index) => (
+                    <li key={index} className="recipe-line">
+                      <select
+                        className="recipe-ingredient"
+                        value={line.ingredientId}
+                        onChange={(e) =>
+                          updateRecipeLine(index, { ingredientId: e.target.value })
+                        }
+                        aria-label="Zutat"
+                      >
+                        <option value="">– Zutat wählen –</option>
+                        {ingredients.map((ing) => (
+                          <option key={ing.id} value={ing.id}>
+                            {ing.name}
+                          </option>
+                        ))}
+                      </select>
+                      <input
+                        className="recipe-amount"
+                        value={line.amount}
+                        inputMode="decimal"
+                        onChange={(e) =>
+                          updateRecipeLine(index, { amount: e.target.value })
+                        }
+                        placeholder="Menge"
+                        aria-label="Menge"
+                      />
+                      <span className="recipe-unit">{unitFor(line.ingredientId)}</span>
+                      <button
+                        type="button"
+                        className="admin-icon-btn admin-icon-btn--danger"
+                        title="Zutat entfernen"
+                        onClick={() => removeRecipeLine(index)}
+                      >
+                        <IconX size={16} stroke={1.75} aria-hidden />
+                      </button>
+                    </li>
+                  ))}
+                </ul>
+              )}
+              {form.recipe.length < MAX_RECIPE_LINES && (
+                <button
+                  type="button"
+                  className="btn btn-ghost recipe-add"
+                  onClick={addRecipeLine}
+                >
+                  <IconPlus size={16} stroke={1.75} aria-hidden />
+                  Zutat hinzufügen
+                </button>
+              )}
+            </>
+          )}
+        </fieldset>
+      )}
 
       <div className="admin-item-foot">
         <div className="admin-item-flags">

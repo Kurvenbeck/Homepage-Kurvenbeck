@@ -3,6 +3,7 @@ import { redirect } from "next/navigation";
 import { IconLogout, IconPrinter } from "@tabler/icons-react";
 import { createClient } from "@/utils/supabase/server";
 import { getMenuForAdmin } from "@/lib/menu";
+import { getBackstubeIngredients } from "@/lib/getIngredients";
 import { MenuAdmin } from "@/components/admin/MenuAdmin";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { MENU_AREAS, type MenuArea } from "@/lib/menuAreas";
@@ -51,7 +52,12 @@ export default async function AdminPage({
     .maybeSingle();
 
   const isAdmin = Boolean(adminRow);
-  const menu = isAdmin ? await getMenuForAdmin(area) : null;
+  const [menu, ingredients] = isAdmin
+    ? await Promise.all([
+        getMenuForAdmin(area),
+        area === "backstube" ? getBackstubeIngredients() : Promise.resolve([]),
+      ])
+    : [null, []];
 
   return (
     <>
@@ -97,7 +103,7 @@ export default async function AdminPage({
                   </Link>
                 </div>
               )}
-              <MenuAdmin menu={menu} area={area} />
+              <MenuAdmin menu={menu} area={area} ingredients={ingredients} />
             </>
           ) : (
             <p

@@ -125,14 +125,26 @@ Benachrichtigung an `kontakt@kurvenbeck.com` + Bestätigungsmail an den Gast (Ho
 in den Warenkorb und bestellen direkt auf der Backstube-Seite (kein WhatsApp) für den aktuell
 aktiven **Backtag** (ein global aktiver Backtag in `site_settings`, im Admin schaltbar). Bestellung
 in Supabase (`backstube_orders`, RLS wie Catering: anon nur INSERT gehärtet, Lesen/Ändern nur Admin;
-Positionen als JSONB-Snapshot). Admin `/admin/bestellungen` (Tab „Bestellungen"): **aggregierte
-Backliste** über alle offenen Bestellungen + Einzelbestellungen mit Positionen + Status. Bestellzeilen-
-UI überarbeitet (2026-07-06/07, Kundenfeedback): editierbares Mengenfeld, saubere Preis-/Aktions-
-Spalten, größere Klickziele, Mobile-Layout eigens verifiziert. **E-Mail-Bestätigung an den Gast
-gebaut (2026-07-07):** `submitBackstubeOrder` verschickt bei angegebener E-Mail eine
-Bestätigungsmail (Positionen, Summe, Abholtag) über `lib/mail.ts` — bewusst **ohne** Admin-Mail
-pro Bestellung (eine aggregierte Zusammenfassung nach Bestellschluss wurde durchgesprochen und
-verworfen, da der Betreiber den Backtag manuell abschließt). Details: §11.
+Positionen als JSONB-Snapshot). Bestellzeilen-UI überarbeitet (2026-07-06/07, Kundenfeedback):
+editierbares Mengenfeld, saubere Preis-/Aktions-Spalten, größere Klickziele, Mobile-Layout eigens
+verifiziert. **E-Mail-Bestätigung an den Gast gebaut (2026-07-07):** `submitBackstubeOrder`
+verschickt bei angegebener E-Mail eine Bestätigungsmail (Positionen, Summe, Abholtag) über
+`lib/mail.ts` — bewusst **ohne** Admin-Mail pro Bestellung (eine aggregierte Zusammenfassung nach
+Bestellschluss wurde durchgesprochen und verworfen, da der Betreiber den Backtag manuell abschließt).
+
+**Rezepte, Zutaten-Bedarf & Bestellungen-Umbau (2026-07-07):** Jede Backware kann bis zu **10 Zutaten**
+(Rezept) bekommen — angelegt **an einem Ort** (Speisekarte → Backstube, direkt im Ware-Editor; keine
+Doppelpflege). Zutaten sind zentrale **Stammdaten** (`backstube_ingredients`, Name case-insensitive
+eindeutig + feste Einheit), pro Rezept nur per Dropdown gewählt → Aggregation läuft über die Zutat-ID
+(kein „Wasser"-Doppel). Admin `/admin/bestellungen` ist jetzt in **3 Unter-Reiter** gegliedert
+(`components/admin/BestellungenTabs.tsx`): **Backtag** · **Backliste & Zutaten** (aggregierte Backliste
+über alle offenen Bestellungen + je Backware hochgerechnete Zutaten + **Gesamt-Einkaufsliste des Tages**
++ Drucken) · **Bestellungen** (Einzelbestellungen mit **Namens-Suche**; **offen oben, erledigt unten**
+sortiert — Abhaken schiebt live nach unten). Rezeptmengen sind **interne Betriebsdaten**: die Tabellen
+`backstube_ingredients` + `menu_item_ingredients` sind **admin-only** (Lesen *und* Schreiben),
+Migration `20260707100000_backstube_recipes_schema.sql`. Details: §11. **Offen:** die eingeloggte
+Admin-UI dieser Panels ist noch nicht klick-getestet (braucht Magic-Link-Login) — Typen/Imports/
+DB-Logik sind verifiziert.
 
 **Datenschutzerklärung (live, Stand 2026-07-06):** `app/datenschutz/page.tsx` mit echtem Text
 (Basis: vom Kunden gelieferter Datenschutz-Generator.de-Text, gegen den Code abgeglichen und
@@ -370,9 +382,12 @@ verifiziert.
 - **Gast-Flow:** Warenkorb (menügetrieben, live aus der DB), Vorbestellung mit Name (E-Mail/Telefon
   optional) → „Bestellung eingegangen". **Kein WhatsApp.** Ist kein Backtag aktiv, zeigt die Seite
   „Aktuell kein Backtag" und niemand kann bestellen.
-- **Admin `/admin/bestellungen` — zwei Sichten:** (1) **aggregierte Backliste** über alle offenen
-  Bestellungen (das Killer-Feature) + (2) **pro Bestellung** mit Name + Positionen + Status
-  neu↔erledigt. Plus Backtag-Pflege (grün/rot Save).
+- **Admin `/admin/bestellungen` — 3 Unter-Reiter** (`components/admin/BestellungenTabs.tsx`, seit
+  2026-07-07): (1) **Backtag** (Backtag-Pflege, grün/rot Save) · (2) **Backliste & Zutaten** —
+  aggregierte Backliste über alle offenen Bestellungen (das Killer-Feature) + je Backware
+  hochgerechnete Zutaten + Gesamt-Einkaufsliste des Tages + Drucken · (3) **Bestellungen** —
+  Einzelbestellungen mit Name + Positionen + Status neu↔erledigt, **Namens-Suche**, **offen oben /
+  erledigt unten** sortiert (Abhaken schiebt live nach unten).
 - **Sicherheit/Umsetzung:** Tabelle `backstube_orders` (RLS wie Catering: anon nur INSERT gehärtet,
   Lesen/Ändern nur `is_admin()`), Positionen als **JSONB-Snapshot** (Name+Einzelpreis zum
   Bestellzeitpunkt). Server Action übernimmt **Preise/Namen autoritativ aus dem Live-Menü**.
@@ -416,6 +431,29 @@ verifiziert.
   `--space-6`) — behebt alle betroffenen Stellen gleichzeitig, nicht nur die Bestellliste.
   Zusätzlich `.order-item-price` um **50 % vergrößert** (`calc(var(--text-lg) * 1.5)`, Desktop
   + Mobil einheitlich) auf expliziten Kundenwunsch.
+- ✅ **Rezepte, Zutaten-Stammdaten & Zutaten-Bedarf (2026-07-07, Kundenwunsch):** Jede Backware
+  kann bis zu **10 Zutaten** (Rezept) bekommen. **Verbindliche Architektur — eine Source of Truth:**
+  die Backware wird **nur in der Speisekarte** angelegt/bepreist/verfügbar geschaltet
+  (`/admin?area=backstube`, `MenuAdmin`); das Rezept hängt direkt im selben `ItemEditor`, **kein
+  zweiter Anlege-Ort**. Zutaten sind **zentrale Stammdaten** (`backstube_ingredients`, Name
+  **case-insensitive eindeutig** + feste Einheit), die der Betreiber oben im Backstube-Tab pflegt
+  (`components/admin/IngredientsAdmin.tsx`, `app/admin/ingredient-actions.ts`) und pro Rezept nur
+  noch **auswählt** (Dropdown) — nie Freitext, damit die Aggregation über die Zutat-ID läuft und
+  „Wasser" nicht doppelt entsteht. Löschen einer benutzten Zutat wird mit Anzahl geblockt.
+  Rezept-Zeilen in `menu_item_ingredients` (`menu_item_id`→`ingredient_id`+`amount`, ≤10 server-
+  validiert), persistiert über den bestehenden `updateItem` (`ItemInput.recipe`) inkl. Dirty-Status.
+  **Bedarfsrechnung:** `getBackstubeOrders` liefert je Backware die hochgerechneten Zutaten
+  (Rezept × Bestellmenge) **und** eine Gesamt-Einkaufsliste (`ingredientTotals`) über alle offenen
+  Bestellungen — **live** aus dem aktuellen Rezept (nicht im Bestell-Snapshot eingefroren, da mit
+  dem heutigen Rezept gebacken wird). Backwaren ohne hinterlegtes Rezept werden in der Backliste
+  sichtbar markiert. **RLS: admin-only** (Lesen *und* Schreiben) — Rezeptmengen sind interne
+  Betriebsdaten, anon/Publishable-Key sieht die Tabellen nie. **Datenschicht-Split:** client-sicher
+  `lib/ingredients.ts` (Typen/Konstanten/`formatAmount`) vs. Server-Loader `lib/getIngredients.ts`
+  (nötig wie `backtag.ts`↔`getBacktag.ts`, sonst zieht der Client-Import den Server-Client mit → Build-
+  Bruch). Migration `20260707100000_backstube_recipes_schema.sql` live angewandt, Advisor-Check
+  sauber, Join-/Aggregationslogik mit Testdaten durchgerechnet (30 g → 300 g bei 10×), Testdaten
+  wieder entfernt. **Offen:** eingeloggte Admin-UI der neuen Panels noch nicht klick-getestet
+  (braucht Magic-Link-Login).
 
 ### Menü-Verbesserungen
 - **„Empfehlung des Hauses":** hervorgehobener Sonder-Eintrag, der sonst **nicht** auf der Karte

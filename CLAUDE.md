@@ -105,6 +105,29 @@ Dauerhafte Konventionen:
   ablegen (versioniert), nie nur direkt auf der DB.
 - **Menüs ohne Produktfotos** — Biergarten **und** Backstube: reines Text-Format
   (`.menu-item`). Kein `photo`-Feld im Menü-Schema.
+- **Backstube-Rezepte & Zutaten-Stammdaten (2026-07-07):** Jede Backware kann bis zu
+  **10 Zutaten** (Rezept) bekommen. Verbindliche Architektur: **eine Source of Truth** —
+  die Backware wird **nur in der Speisekarte** (`/admin?area=backstube`, `MenuAdmin`)
+  angelegt/bepreist/verfügbar geschaltet; das Rezept hängt direkt im selben `ItemEditor`.
+  **Kein zweiter Anlege-Ort.** Zutaten sind **zentrale Stammdaten**
+  (Tabelle `backstube_ingredients`, Name **case-insensitive eindeutig** + feste Einheit),
+  die der Betreiber oben im Backstube-Tab pflegt und pro Rezept nur noch **auswählt**
+  (Dropdown) — nie Freitext, damit die Aggregation über die Zutat-ID läuft und „Wasser"
+  nicht doppelt entsteht. Rezept-Zeilen in `menu_item_ingredients`
+  (`menu_item_id`→`ingredient_id`+`amount`). Migration
+  `20260707100000_backstube_recipes_schema.sql`. **RLS: nur Admin** (Lesen **und**
+  Schreiben) — Rezeptmengen sind interne Betriebsdaten, **kein** öffentliches Lesen
+  (anon/Publishable-Key sieht diese Tabellen nie). Der Zutaten-Bedarf wird **live** aus
+  dem aktuellen Rezept × Bestellmenge gerechnet (nicht im Bestell-Snapshot eingefroren —
+  gebacken wird mit dem heutigen Rezept). Client-sichere Typen/Helfer in `lib/ingredients.ts`,
+  Server-Loader in `lib/getIngredients.ts` (Split wie `backtag.ts`↔`getBacktag.ts`, sonst
+  bricht der Client-Import).
+- **Admin `/admin/bestellungen` = 3 Unter-Reiter** (`BestellungenTabs`, Client):
+  **Backtag** (Backtag pflegen) · **Backliste & Zutaten** (was zu backen ist + je Backware
+  hochgerechnete Zutaten + Gesamt-Einkaufsliste des Tages, mit Drucken-Button) ·
+  **Bestellungen** (Einzelbestellungen mit Namens-Suche). Bestellungen sind **offen oben,
+  erledigt unten** sortiert (JS-Sort in `getBackstubeOrders`; Abhaken schiebt via
+  `revalidatePath` live nach unten).
 - **Allergene:** deutsches LMIV-Buchstaben-Schema (A–R) als Stammdaten; Anzeige als
   Codes am Gericht + Legende der verwendeten Allergene. Tags nur
   `vegetarisch` / `vegan` / `alkoholfrei`.

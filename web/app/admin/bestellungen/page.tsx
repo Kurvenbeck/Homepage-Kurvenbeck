@@ -3,8 +3,7 @@ import { IconLogout } from "@tabler/icons-react";
 import { createClient } from "@/utils/supabase/server";
 import { getBacktagForAdmin } from "@/lib/getBacktag";
 import { getBackstubeOrders } from "@/lib/backstubeOrders";
-import { BacktagAdmin } from "@/components/admin/BacktagAdmin";
-import { OrdersInbox } from "@/components/admin/OrdersInbox";
+import { BestellungenTabs } from "@/components/admin/BestellungenTabs";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { SiteHeader } from "@/components/SiteHeader";
 import { SiteFooter } from "@/components/SiteFooter";
@@ -72,33 +71,7 @@ export default async function OrdersAdminPage() {
           {isAdmin && backtag && view ? (
             <>
               <AdminNav active="orders" />
-
-              <h2 className="admin-subhead">Aktiver Backtag</h2>
-              <BacktagAdmin initial={backtag} />
-
-              <h2 className="admin-subhead">
-                Backliste{" "}
-                <span className="admin-subhead-note">
-                  (alle offenen Bestellungen zusammengezählt)
-                </span>
-              </h2>
-              {view.bakingList.length === 0 ? (
-                <p className="inbox-empty">
-                  Noch nichts zu backen — es liegen keine offenen Bestellungen vor.
-                </p>
-              ) : (
-                <ul className="baking-list">
-                  {view.bakingList.map((entry) => (
-                    <li key={entry.name}>
-                      <span className="baking-qty">{entry.qty}×</span>
-                      <span className="baking-name">{entry.name}</span>
-                    </li>
-                  ))}
-                </ul>
-              )}
-
-              <h2 className="admin-subhead">Einzelne Bestellungen</h2>
-              <OrdersInbox orders={view.orders} />
+              <BestellungenTabs backtag={backtag} view={view} />
             </>
           ) : (
             <p

@@ -20,6 +20,18 @@ function parsePrice(input: string): number | null {
   return Math.round(value * 100) / 100;
 }
 
+/** Rezept-Menge "1,5" / "300" → Zahl (max. 3 Nachkommastellen), null bei ungültig. */
+function parseAmount(input: string): number | null {
+  const normalized = input.trim().replace(/\s/g, "").replace(",", ".");
+  if (normalized === "") return null;
+  const value = Number(normalized);
+  if (!Number.isFinite(value) || value < 0) return null;
+  return Math.round(value * 1000) / 1000;
+}
+
+/** Höchstzahl Rezept-Zeilen pro Backware (deckt sich mit lib/ingredients). */
+const MAX_RECIPE_LINES = 10;
+
 async function getSupabase() {
   const supabase = await createClient();
   const {
@@ -174,6 +186,9 @@ export async function createItem(
   }
 }
 
+/** Rezept-Zeile aus dem Editor: Zutat-ID + Menge als Eingabe-String. */
+export type RecipeLineInput = { ingredientId: string; amount: string };
+
 export type ItemInput = {
   name: string;
   description: string;
@@ -182,6 +197,8 @@ export type ItemInput = {
   isAvailable: boolean;
   isRecommendation: boolean;
   allergens: string[];
+  /** Rezept (nur Backstube gepflegt). Leere Zeilen werden ignoriert. */
+  recipe: RecipeLineInput[];
 };
 
 export async function updateItem(
@@ -230,6 +247,37 @@ export async function updateItem(
           })),
         );
       if (insError) throw insError;
+    }
+
+    // Rezept-Zeilen neu setzen (nur Backstube gepflegt; leere Zeilen ignorieren).
+    // Erst normalisieren + validieren, dann löschen + einfügen.
+    const recipeRows: { ingredient_id: string; amount: number; sort_order: number }[] = [];
+    const seen = new Set<string>();
+    for (const line of input.recipe ?? []) {
+      const ingredientId = line.ingredientId.trim();
+      if (!ingredientId) continue; // leere Zeile (nur Platzhalter) → ignorieren
+      if (seen.has(ingredientId))
+        return { ok: false, error: "Eine Zutat ist doppelt im Rezept." };
+      const amount = parseAmount(line.amount);
+      if (amount === null)
+        return { ok: false, error: "Bitte für jede Zutat eine gültige Menge eingeben." };
+      seen.add(ingredientId);
+      recipeRows.push({ ingredient_id: ingredientId, amount, sort_order: recipeRows.length });
+    }
+    if (recipeRows.length > MAX_RECIPE_LINES)
+      return { ok: false, error: `Höchstens ${MAX_RECIPE_LINES} Zutaten pro Backware.` };
+
+    const { error: delRecipeError } = await supabase
+      .from("menu_item_ingredients")
+      .delete()
+      .eq("menu_item_id", id);
+    if (delRecipeError) throw delRecipeError;
+
+    if (recipeRows.length > 0) {
+      const { error: insRecipeError } = await supabase
+        .from("menu_item_ingredients")
+        .insert(recipeRows.map((r) => ({ menu_item_id: id, ...r })));
+      if (insRecipeError) throw insRecipeError;
     }
 
     revalidate(menuArea);

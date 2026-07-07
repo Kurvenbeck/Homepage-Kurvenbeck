@@ -21,6 +21,16 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > größere Klickziele, Mobile verifiziert). Details siehe Punkte 2 und 3 unten sowie
 > HANDOFF.md §11.
 >
+> **✅ Erledigt — Backstube-Rezepte & Zutaten-Bedarf + Bestellungen-Umbau (2026-07-07):**
+> Jede Backware kann jetzt bis zu **10 Zutaten** (Rezept) bekommen — angelegt **an einem
+> Ort** (Speisekarte → Backstube, direkt im Ware-Editor; keine Doppelpflege). Zutaten sind
+> zentrale **Stammdaten** (eindeutiger Name + feste Einheit), pro Rezept nur per Dropdown
+> gewählt → Aggregation läuft über die ID. `/admin/bestellungen` ist jetzt in **3 Unter-
+> Reiter** gegliedert: Backtag · **Backliste & Zutaten** (je Backware hochgerechnete Zutaten
+> + Gesamt-Einkaufsliste des Tages + Drucken) · **Bestellungen** (mit Namens-Suche;
+> offen oben, erledigt unten). Migration `20260707100000_backstube_recipes_schema.sql`
+> (2 Tabellen, RLS admin-only — Rezepte sind interne Betriebsdaten). Details Abschnitt 3.
+>
 > **✅ Erledigt — Backstube-Bestätigungsmail + CSS-Token-Fix (2026-07-07):** Gast bekommt nach
 > einer Vorbestellung (falls E-Mail angegeben) eine Bestätigungsmail mit Positionen, Summe und
 > Abholtag — analog zum Catering-Vorlage, aber **bewusst ohne** Admin-Mail pro Bestellung (zu
@@ -168,6 +178,28 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
       Katalog (`globals.css`) → `.order-item`-Padding fiel unbemerkt auf `0` zurück, Zeilen
       wirkten zu eng. Token als `1.25rem` ergänzt (behebt ~15 Stellen im CSS gleichzeitig).
       Zusätzlich `.order-item-price` um 50 % vergrößert (Desktop + Mobil).
+- [x] **Rezepte, Zutaten-Bedarf & Bestellungen-Umbau (2026-07-07):**
+      - **Zutaten-Stammdaten** (`backstube_ingredients`, Name case-insensitive eindeutig +
+        feste Einheit): oben im Backstube-Tab der Speisekarte pflegbar
+        (`components/admin/IngredientsAdmin.tsx`, Actions `app/admin/ingredient-actions.ts`).
+        Löschen einer benutzten Zutat wird mit Anzahl geblockt.
+      - **Rezept pro Backware** (bis 10 Zeilen, `menu_item_ingredients`): direkt im
+        `ItemEditor` (`MenuAdmin.tsx`), Zutat per Dropdown + Menge, Einheit automatisch.
+        Persistiert über den bestehenden `updateItem` (`ItemInput.recipe`) inkl. Dirty-
+        Status. **Eine Source of Truth** — kein separater Anlege-Ort.
+      - **Datenschicht:** client-sicher `lib/ingredients.ts` (Typen/Konstanten/`formatAmount`)
+        vs. Server-Loader `lib/getIngredients.ts` (Split nötig, sonst bricht der Client-
+        Import). Admin-Menü-Loader `getMenuForAdmin` liefert jetzt `recipe` je Ware.
+      - **`/admin/bestellungen` → 3 Unter-Reiter** (`components/admin/BestellungenTabs.tsx`):
+        *Backtag* · *Backliste & Zutaten* (je Backware hochgerechnete Zutaten +
+        **Gesamt-Einkaufsliste des Tages**, `getBackstubeOrders.ingredientTotals`, +
+        Drucken via `:has()`-scoped `@media print`) · *Bestellungen* (Namens-Suche;
+        **offen oben / erledigt unten**, JS-Sort; Abhaken schiebt live nach unten).
+      - **Migration** `20260707100000_backstube_recipes_schema.sql` live angewandt, RLS
+        **admin-only** (Rezeptmengen = interne Betriebsdaten), Advisor-Check sauber.
+      - **Offen:** eingeloggte Admin-UI ist noch nicht klick-getestet (braucht Magic-Link-
+        Login) — Typen/Imports/DB-Logik verifiziert, visuelles Feintuning der neuen Panels
+        einmal eingeloggt prüfen.
 
 ## 4. „Empfehlung des Hauses"
 
