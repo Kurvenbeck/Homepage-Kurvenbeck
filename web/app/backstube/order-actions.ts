@@ -4,6 +4,8 @@ import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { getMenu } from "@/lib/menu";
 import { getBacktag } from "@/lib/getBacktag";
+import { sendMailTo } from "@/lib/mail";
+import type { Backtag } from "@/lib/backtag";
 
 /**
  * Server Action für die Backstube-Vorbestellung. Öffentlich aufrufbar (kein
@@ -12,12 +14,70 @@ import { getBacktag } from "@/lib/getBacktag";
  * Wichtig: Namen und Einzelpreise werden **serverseitig autoritativ** aus dem
  * Live-Menü übernommen (Client-Preise werden ignoriert) und als JSONB-Snapshot
  * gespeichert. Bestellt wird immer für den aktuell aktiven Backtag; ist keiner
- * aktiv, wird abgelehnt. E-Mail-Bestätigung folgt separat (SMTP offen).
+ * aktiv, wird abgelehnt.
+ *
+ * Nach dem Speichern geht (nur wenn eine E-Mail angegeben wurde) eine
+ * Empfangsbestätigung an den Gast. Bewusst **keine** Admin-Mail pro Bestellung —
+ * der Betreiber bekommt stattdessen eine aggregierte Zusammenfassung nach
+ * Bestellschluss (siehe Backlisten-Zusammenfassung).
  */
 
 export type OrderResult = { ok: true } | { ok: false; error: string };
 
 export type OrderLineInput = { id: string; qty: number };
+
+type OrderLine = { id: string; name: string; qty: number; unitPrice: number };
+
+const EUR = new Intl.NumberFormat("de-DE", {
+  style: "currency",
+  currency: "EUR",
+});
+
+function escapeHtml(value: string) {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;")
+    .replace(/"/g, "&quot;")
+    .replace(/'/g, "&#39;");
+}
+
+function renderBackstubeConfirmationMail(data: {
+  name: string;
+  lines: OrderLine[];
+  total: number;
+  backtag: Backtag;
+}) {
+  const itemRows = data.lines
+    .map(
+      (l) =>
+        `<tr>
+          <td style="padding:4px 12px 4px 0;"><strong>${l.qty}×</strong> ${escapeHtml(l.name)}</td>
+          <td style="padding:4px 0; text-align:right; white-space:nowrap;">${EUR.format(l.unitPrice * l.qty)}</td>
+        </tr>`,
+    )
+    .join("");
+  const pickupDay = data.backtag.dateLabel
+    ? `${escapeHtml(data.backtag.dateLabel)}, ${escapeHtml(data.backtag.pickupText)}`
+    : escapeHtml(data.backtag.pickupText);
+  return `
+    <div style="font-family: sans-serif; font-size: 15px; color: #222;">
+      <h2 style="margin: 0 0 16px;">Wir haben deine Vorbestellung erhalten</h2>
+      <p>Hallo ${escapeHtml(data.name)},</p>
+      <p>danke für deine Vorbestellung! Wir backen frisch für dich. Das hast du bestellt:</p>
+      <table cellpadding="0" cellspacing="0" style="margin: 8px 0;">
+        ${itemRows}
+        <tr><td colspan="2" style="border-top:1px solid #ddd; padding-top:8px;"></td></tr>
+        <tr>
+          <td style="padding-top:4px;"><strong>Summe (Abholung)</strong></td>
+          <td style="padding-top:4px; text-align:right;"><strong>${EUR.format(data.total)}</strong></td>
+        </tr>
+      </table>
+      <p style="margin-top:16px;">Abholung: <strong>${pickupDay}</strong>.<br>Bezahlt wird bei der Abholung.</p>
+      <p style="margin-top:24px;">Bis bald,<br>dein Kurvenbeck-Team</p>
+    </div>
+  `;
+}
 
 export type OrderInput = {
   name: string;
@@ -65,12 +125,7 @@ export async function submitBackstubeOrder(
       ),
     );
 
-    const lines: {
-      id: string;
-      name: string;
-      qty: number;
-      unitPrice: number;
-    }[] = [];
+    const lines: OrderLine[] = [];
     for (const raw of input.items) {
       const product = catalog.get(raw.id);
       if (!product) continue; // nicht mehr verfügbar → still überspringen
@@ -104,8 +159,16 @@ export async function submitBackstubeOrder(
     // Admin-Bestellübersicht + Backliste sofort aktuell halten.
     revalidatePath("/admin/bestellungen");
 
-    // TODO (blockiert bis SMTP-Zugangsdaten da): Empfangsbestätigung an den
-    // Gast (nur wenn E-Mail angegeben) + optional Info an kontakt@kurvenbeck.com.
+    // Empfangsbestätigung an den Gast — nur wenn eine E-Mail angegeben wurde.
+    // Bewusst keine Admin-Mail pro Bestellung (aggregierte Zusammenfassung
+    // nach Bestellschluss statt Einzelmeldungen).
+    if (email) {
+      await sendMailTo({
+        to: email,
+        subject: "Deine Vorbestellung bei der Kurvenbeck-Backstube",
+        html: renderBackstubeConfirmationMail({ name, lines, total, backtag }),
+      });
+    }
 
     return { ok: true };
   } catch (e) {

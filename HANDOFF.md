@@ -121,15 +121,18 @@ Benachrichtigung an `kontakt@kurvenbeck.com` + Bestätigungsmail an den Gast (Ho
 `lib/mail.ts`). Die 4 Beispiel-Kacheln auf der Seite zeigen nur noch Foto/Titel/Beschreibung
 (kein „Menü ansehen", kein Preis/Gästezahl-Hinweis mehr).
 
-**Backstube-Vorbestellen (live, Stand 2026-07-05) — das „Killer-Feature":** Gäste legen Mengen
+**Backstube-Vorbestellen (live, Stand 2026-07-07) — das „Killer-Feature":** Gäste legen Mengen
 in den Warenkorb und bestellen direkt auf der Backstube-Seite (kein WhatsApp) für den aktuell
 aktiven **Backtag** (ein global aktiver Backtag in `site_settings`, im Admin schaltbar). Bestellung
 in Supabase (`backstube_orders`, RLS wie Catering: anon nur INSERT gehärtet, Lesen/Ändern nur Admin;
 Positionen als JSONB-Snapshot). Admin `/admin/bestellungen` (Tab „Bestellungen"): **aggregierte
 Backliste** über alle offenen Bestellungen + Einzelbestellungen mit Positionen + Status. Bestellzeilen-
 UI überarbeitet (2026-07-06/07, Kundenfeedback): editierbares Mengenfeld, saubere Preis-/Aktions-
-Spalten, größere Klickziele, Mobile-Layout eigens verifiziert. **Offen:** E-Mail-Bestätigung an den
-Gast (SMTP steht seit 2026-07-06, aber für die Backstube noch nicht gebaut). Details: §11.
+Spalten, größere Klickziele, Mobile-Layout eigens verifiziert. **E-Mail-Bestätigung an den Gast
+gebaut (2026-07-07):** `submitBackstubeOrder` verschickt bei angegebener E-Mail eine
+Bestätigungsmail (Positionen, Summe, Abholtag) über `lib/mail.ts` — bewusst **ohne** Admin-Mail
+pro Bestellung (eine aggregierte Zusammenfassung nach Bestellschluss wurde durchgesprochen und
+verworfen, da der Betreiber den Backtag manuell abschließt). Details: §11.
 
 **Datenschutzerklärung (live, Stand 2026-07-06):** `app/datenschutz/page.tsx` mit echtem Text
 (Basis: vom Kunden gelieferter Datenschutz-Generator.de-Text, gegen den Code abgeglichen und
@@ -167,18 +170,17 @@ in **§11**. Kompakt (Stand 2026-07-07):
    Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`), sonst widersprechen sich die Rechtsseiten.
 2. **Echte Kontaktdaten eintragen:** Telefonnummer in `site_settings` ist noch Platzhalter
    (`07071 / 12 34 56`) — ⚠️ darf so nicht live gehen. Adresse ebenso zu prüfen/pflegen.
-3. **Backstube-Bestätigungsmail an den Gast bauen:** SMTP steht (siehe unten), Catering-Vorlage
-   (`lib/mail.ts`) als Muster verwendbar — nur für die Backstube noch nicht umgesetzt.
-4. **Google-Business-Profil verlinken** (NAP-Konsistenz) — Kundentermin war am 2026-07-06.
-5. **Vercel-Deployment durchführen** (Hoster entschieden) + Supabase Auth-URLs von localhost auf
+3. **Google-Business-Profil verlinken** (NAP-Konsistenz) — Kundentermin war am 2026-07-06.
+4. **Vercel-Deployment durchführen** (Hoster entschieden) + Supabase Auth-URLs von localhost auf
    die echte Domain umstellen (Go-Live-Checkliste, `web/TODO.md` #11).
-6. Repo-Umzug in die Kurvenbeck-Org, restliche Fotos, kleinere Feinschliff-Punkte.
+5. Repo-Umzug in die Kurvenbeck-Org, restliche Fotos, kleinere Feinschliff-Punkte.
 
 **Bereits erledigt (nicht mehr offen):** Kontaktdaten-/Öffnungszeiten-Backend, Catering-Formular
 inkl. **E-Mail-Versand** (Admin-Benachrichtigung + Gast-Bestätigung, seit 2026-07-06/07 live),
-Backstube-Vorbestellen inkl. UI-Feinschliff (2026-07-07), „Empfehlung des Hauses", Titelschutz,
-„seit 1978" entfernt, Datenschutzerklärung mit automatischer Löschung, Local-SEO (JSON-LD,
-Sitemap, Robots), Catering-Kacheln bereinigt (kein totes „Menü ansehen" mehr).
+Backstube-Vorbestellen inkl. UI-Feinschliff **und Gast-Bestätigungsmail** (2026-07-07),
+„Empfehlung des Hauses", Titelschutz, „seit 1978" entfernt, Datenschutzerklärung mit
+automatischer Löschung, Local-SEO (JSON-LD, Sitemap, Robots), Catering-Kacheln bereinigt (kein
+totes „Menü ansehen" mehr).
 
 ## 9. Deployment (Hoster entschieden, Deployment noch offen)
 
@@ -379,9 +381,19 @@ verifiziert.
   `components/backstube/BackstubeOrder.tsx`, `components/admin/BacktagAdmin.tsx` +
   `components/admin/OrdersInbox.tsx`. Verifiziert: Build grün, RLS (201/401/42501), beide Seiten-
   zustände gerendert, Advisors sauber.
-- **Offen:** E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben) — **nicht mehr blockiert**,
-  SMTP steht seit 2026-07-06 (siehe Catering-Abschnitt oben, `lib/mail.ts`), aber für die Backstube
-  noch nicht gebaut. Alte Warenkorb-Demo (`components/cart/*`, `lib/products.ts`) jetzt ungenutzt.
+- ✅ **E-Mail-Bestätigung an den Gast (gebaut 2026-07-07):** `app/backstube/order-actions.ts`
+  (`submitBackstubeOrder`) verschickt nach erfolgreichem Insert — nur wenn eine E-Mail angegeben
+  wurde — eine Bestätigungsmail über `sendMailTo()` (`lib/mail.ts`): Positionen (Menge × Name,
+  Einzelsumme), Gesamtsumme, Abholtag (`backtag.dateLabel`) + Abholtext. Analog zum
+  Catering-Template (eigenes HTML mit Escaping gegen Injection), aber **bewusst keine**
+  Admin-Benachrichtigung pro Bestellung an `kontakt@kurvenbeck.com` — das würde bei mehreren
+  Bestellungen pro Backtag zu viel Rauschen erzeugen. Eine **aggregierte
+  Zusammenfassungs-Mail** nach Bestellschluss (z. B. „730× Brezel, 500× Körnerwecken …") wurde
+  durchgesprochen und **bewusst verworfen**: es gibt keinen maschinenlesbaren Frist-Zeitpunkt
+  (nur der Anzeigetext `backtag_deadline_text`, z. B. „Freitag 18 Uhr"), und der Betreiber
+  deaktiviert den Backtag ohnehin manuell im Admin — die dort bereits vorhandene aggregierte
+  Backliste (`lib/backstubeOrders.ts`) deckt den Bedarf ab. Alte Warenkorb-Demo
+  (`components/cart/*`, `lib/products.ts`) bleibt ungenutzt.
 - ✅ **Bestellzeilen-UI überarbeitet (2026-07-06/07, Kundenfeedback nach Live-Test):**
   `components/backstube/BackstubeOrder.tsx` + `.order-item`/`.qty`/`.add-btn`/`.order-bar` in
   `globals.css`. Menge ist jetzt ein editierbares Zahlenfeld (`inputmode="numeric"`, Fokus markiert
@@ -395,6 +407,15 @@ verifiziert.
   Effekt, damit der Klick zum Abschluss der Bestellung intuitiver wirkt. „+ Vorbestellen"-Button hat
   jetzt sichtbaren Abstand zwischen Icon und Text. Mobile-Layout mit echter Device-Emulation (Chrome
   DevTools Protocol, 390px) verifiziert — kein horizontaler Overflow.
+- ✅ **CSS-Token-Lücke behoben + Preisgröße (2026-07-07, Kundenfeedback):** `--space-5` wurde an
+  ~15 Stellen in `globals.css` referenziert (u. a. `.order-item`-Padding), war aber **nie im
+  `:root`-Token-Katalog definiert** — eine ungültige `var()`-Referenz macht die ganze
+  Shorthand-Deklaration ungültig, das Padding fiel also unbemerkt auf `0` zurück. Das war die
+  eigentliche Ursache für den zu engen Zeilenabstand zwischen den Backwaren. Fix: Token als
+  `1.25rem` ergänzt (passend zur bestehenden 0,25rem-Schrittfolge zwischen `--space-4` und
+  `--space-6`) — behebt alle betroffenen Stellen gleichzeitig, nicht nur die Bestellliste.
+  Zusätzlich `.order-item-price` um **50 % vergrößert** (`calc(var(--text-lg) * 1.5)`, Desktop
+  + Mobil einheitlich) auf expliziten Kundenwunsch.
 
 ### Menü-Verbesserungen
 - **„Empfehlung des Hauses":** hervorgehobener Sonder-Eintrag, der sonst **nicht** auf der Karte

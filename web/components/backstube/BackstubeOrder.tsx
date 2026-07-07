@@ -473,7 +473,7 @@ function OrderDrawer({
                     onSubmit={handleSubmit}
                   >
                     <label className="order-field">
-                      <span>Dein Name *</span>
+                      <span>Dein Name (Vorname & Nachname) *</span>
                       <input
                         type="text"
                         value={name}
@@ -542,7 +542,7 @@ function OrderDrawer({
                 {submitting ? "Wird gesendet …" : "Verbindlich vorbestellen"}
               </button>
               <p className="demo-note">
-                Kostenlos & unverbindlich für dich — wir backen nach Bestellung.
+                Wir backen nach Bestellung.
               </p>
             </div>
           </>

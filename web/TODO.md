@@ -20,6 +20,17 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > Bestellzeilen-UI überarbeitet (editierbares Mengenfeld, feste Preis-/Aktions-Spalten,
 > größere Klickziele, Mobile verifiziert). Details siehe Punkte 2 und 3 unten sowie
 > HANDOFF.md §11.
+>
+> **✅ Erledigt — Backstube-Bestätigungsmail + CSS-Token-Fix (2026-07-07):** Gast bekommt nach
+> einer Vorbestellung (falls E-Mail angegeben) eine Bestätigungsmail mit Positionen, Summe und
+> Abholtag — analog zum Catering-Vorlage, aber **bewusst ohne** Admin-Mail pro Bestellung (zu
+> viel Rauschen). Eine aggregierte Zusammenfassungs-Mail nach Bestellschluss wurde geprüft und
+> **bewusst verworfen** — der Betreiber schaltet den Backtag ohnehin manuell aus, die
+> bestehende Backliste im Admin reicht. Nebenbei entdeckt: `--space-5` wurde an ~15 Stellen in
+> `globals.css` verwendet, war aber **nie im Token-Katalog definiert** (fiel unbemerkt auf `0`
+> zurück) — jetzt als `1.25rem` ergänzt. Dadurch haben Bestellzeilen wieder ihr reguläres
+> Padding. Zusätzlich: Preis in der Bestellliste (`.order-item-price`) um 50 % vergrößert
+> (Kundenwunsch, Desktop + Mobil einheitlich).
 
 ---
 
@@ -139,10 +150,12 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
       Einzelbestellungen mit Positionen + Status neu↔erledigt (`OrdersInbox`). Loader
       `lib/backstubeOrders.ts`, Actions `app/admin/order-actions.ts` (`updateBacktag`,
       `setBackstubeOrderStatus`).
-- [ ] **E-Mail-Bestätigung (nicht mehr blockiert, aber noch nicht gebaut):** an den Gast, nur wenn
-      E-Mail angegeben. SMTP steht seit 2026-07-06 (`lib/mail.ts`, siehe Catering-Umsetzung als
-      Vorlage) — für die Backstube-Bestellung selbst noch zu implementieren in
-      `submitBackstubeOrder`.
+- [x] **E-Mail-Bestätigung an den Gast (erledigt 2026-07-07):** `submitBackstubeOrder` verschickt
+      nach erfolgreichem Speichern (nur wenn E-Mail angegeben) eine Bestätigungsmail mit
+      Positionen, Summe und Abholtag/-text (`lib/mail.ts`, analog Catering-Vorlage). Bewusst
+      **keine** Admin-Mail pro Bestellung. Eine zusätzliche aggregierte Zusammenfassungs-Mail an
+      `kontakt@kurvenbeck.com` nach Bestellschluss wurde durchgesprochen und **verworfen** — der
+      Betreiber deaktiviert den Backtag manuell, die Backliste im Admin genügt dafür.
 - [x] Startseiten-Text „online vorbestellen" ist damit **wahr**. (Alte Warenkorb-Demo
       `components/cart/*` + `lib/products.ts` bleiben ungenutzt im Repo — später aufräumen.)
 - [x] **Bestellzeilen-UI überarbeitet (2026-07-06/07, Kundenfeedback):** Menge editierbar per
@@ -151,6 +164,10 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
       Klickziele bei Stepper/„+ Vorbestellen"-Button, größere schwebende Warenkorb-Leiste mit
       Hover-Effekt. Mobile bei 390px mit Chrome-DevTools-Protocol-Emulation verifiziert (kein
       horizontaler Overflow).
+- [x] **Zeilenabstand-Bug behoben + Preisgröße (2026-07-07):** `--space-5`-Token fehlte im
+      Katalog (`globals.css`) → `.order-item`-Padding fiel unbemerkt auf `0` zurück, Zeilen
+      wirkten zu eng. Token als `1.25rem` ergänzt (behebt ~15 Stellen im CSS gleichzeitig).
+      Zusätzlich `.order-item-price` um 50 % vergrößert (Desktop + Mobil).
 
 ## 4. „Empfehlung des Hauses"
 
