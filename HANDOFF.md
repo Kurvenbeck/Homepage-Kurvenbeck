@@ -30,7 +30,8 @@ werden **nicht** ausgeliefert — die produktive App liegt unter **`web/`**.
 - **Supabase** (Postgres 17) für das Menü-Backend angebunden via `@supabase/ssr` —
   siehe §10. Biergarten **und Backstube** lesen ihre Karte live aus der DB und werden
   im Admin gepflegt. Das **Catering-Formular speichert** jetzt echt in Supabase
-  (`catering_requests`) + Admin-Posteingang `/admin/catering`; nur der E-Mail-Versand fehlt (SMTP offen).
+  (`catering_requests`) + Admin-Posteingang `/admin/catering`; **E-Mail-Versand läuft** (Admin-
+  Benachrichtigung + Gast-Bestätigung, Hostinger-SMTP über `lib/mail.ts`).
 
 ## 3. Schnellstart
 
@@ -113,18 +114,22 @@ und werden unter `/admin` (Bereichs-Tabs) selbst gepflegt — siehe §10. **Admi
 (Dirty-Status gegen den Live-Stand); Kategorie-Löschen fragt mit Anzahl der betroffenen
 Einträge nach.
 
-**Catering-Anfragen (live, Stand 2026-07-05):** Formular speichert echt in Supabase
+**Catering-Anfragen (live, Stand 2026-07-06/07):** Formular speichert echt in Supabase
 (`catering_requests`, RLS: anon nur INSERT, Lesen/Ändern nur Admin) + Honeypot-Spamschutz;
-Posteingang unter `/admin/catering` (Tab „Anfragen", neu↔erledigt). **Offen:** E-Mail-Versand
-an `kontakt@kurvenbeck.com` (Hostinger-SMTP, Zugangsdaten fehlen noch).
+Posteingang unter `/admin/catering` (Tab „Anfragen", neu↔erledigt). **E-Mail-Versand live:**
+Benachrichtigung an `kontakt@kurvenbeck.com` + Bestätigungsmail an den Gast (Hostinger-SMTP,
+`lib/mail.ts`). Die 4 Beispiel-Kacheln auf der Seite zeigen nur noch Foto/Titel/Beschreibung
+(kein „Menü ansehen", kein Preis/Gästezahl-Hinweis mehr).
 
 **Backstube-Vorbestellen (live, Stand 2026-07-05) — das „Killer-Feature":** Gäste legen Mengen
 in den Warenkorb und bestellen direkt auf der Backstube-Seite (kein WhatsApp) für den aktuell
 aktiven **Backtag** (ein global aktiver Backtag in `site_settings`, im Admin schaltbar). Bestellung
 in Supabase (`backstube_orders`, RLS wie Catering: anon nur INSERT gehärtet, Lesen/Ändern nur Admin;
 Positionen als JSONB-Snapshot). Admin `/admin/bestellungen` (Tab „Bestellungen"): **aggregierte
-Backliste** über alle offenen Bestellungen + Einzelbestellungen mit Positionen + Status. **Offen:**
-E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben — blockiert bis SMTP). Details: §11.
+Backliste** über alle offenen Bestellungen + Einzelbestellungen mit Positionen + Status. Bestellzeilen-
+UI überarbeitet (2026-07-06/07, Kundenfeedback): editierbares Mengenfeld, saubere Preis-/Aktions-
+Spalten, größere Klickziele, Mobile-Layout eigens verifiziert. **Offen:** E-Mail-Bestätigung an den
+Gast (SMTP steht seit 2026-07-06, aber für die Backstube noch nicht gebaut). Details: §11.
 
 **Datenschutzerklärung (live, Stand 2026-07-06):** `app/datenschutz/page.tsx` mit echtem Text
 (Basis: vom Kunden gelieferter Datenschutz-Generator.de-Text, gegen den Code abgeglichen und
@@ -155,21 +160,25 @@ und darf nicht live gehen** — echte Nummer bzw. Backend-Anbindung zuerst (§11
 ## 8. Nächste Schritte
 
 Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen Entscheidungen stehen
-in **§11**. Kompakt (Stand 2026-07-05):
+in **§11**. Kompakt (Stand 2026-07-07):
 
-1. **Kontaktdaten & Öffnungszeiten ins Backend** (höchste Prio): Telefon/Adresse aus
-   `site_settings`, Öffnungszeiten als Besenwirtschaft-Termine (`opening_days`) + „Heute
-   geöffnet/geschlossen"-Badge. ⚠️ Platzhalter-Telefonnummer darf nicht live gehen.
-2. **Catering-Formular echt machen:** Server Action + Supabase-Speicherung + Admin-Posteingang
-   + E-Mail via Hostinger-SMTP (`kontakt@kurvenbeck.com`, „Weg B" — Zugangsdaten offen).
-3. **Backstube-Vorbestellen** (Konzept festgehalten, §11): Warenkorb → Bestellung → Admin mit
-   Einzelbestellungen **und** aggregierter Backliste. Braucht das Termin-Backend aus #1.
-4. **„Empfehlung des Hauses"** (erledigt). Kennzeichnungen (vegetarisch/vegan/alkoholfrei)
-   bleiben bewusst **Text** — keine Icons.
-5. Recht/Begriffe/Metadaten: Titelschutz ✅ geprüft, „seit 1978" ✅ entfernt (2026-07-06),
-   Datenschutzerklärung ✅ mit echtem Text + automatischer Löschung (2026-07-06). **Offen:**
-   Impressum + AGB noch Platzhalter.
-6. Local-SEO (ohne „Bakery"), restliche Fotos, Next.js-Update, Repo-Umzug.
+1. **Impressum + AGB mit echten Angaben befüllen** (höchste Prio, blockiert Go-Live): müssen die im
+   Datenschutztext hinterlegten echten Angaben übernehmen (Johannes Wehner, Im Hetzenloch 3, 89558
+   Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`), sonst widersprechen sich die Rechtsseiten.
+2. **Echte Kontaktdaten eintragen:** Telefonnummer in `site_settings` ist noch Platzhalter
+   (`07071 / 12 34 56`) — ⚠️ darf so nicht live gehen. Adresse ebenso zu prüfen/pflegen.
+3. **Backstube-Bestätigungsmail an den Gast bauen:** SMTP steht (siehe unten), Catering-Vorlage
+   (`lib/mail.ts`) als Muster verwendbar — nur für die Backstube noch nicht umgesetzt.
+4. **Google-Business-Profil verlinken** (NAP-Konsistenz) — Kundentermin war am 2026-07-06.
+5. **Vercel-Deployment durchführen** (Hoster entschieden) + Supabase Auth-URLs von localhost auf
+   die echte Domain umstellen (Go-Live-Checkliste, `web/TODO.md` #11).
+6. Repo-Umzug in die Kurvenbeck-Org, restliche Fotos, kleinere Feinschliff-Punkte.
+
+**Bereits erledigt (nicht mehr offen):** Kontaktdaten-/Öffnungszeiten-Backend, Catering-Formular
+inkl. **E-Mail-Versand** (Admin-Benachrichtigung + Gast-Bestätigung, seit 2026-07-06/07 live),
+Backstube-Vorbestellen inkl. UI-Feinschliff (2026-07-07), „Empfehlung des Hauses", Titelschutz,
+„seit 1978" entfernt, Datenschutzerklärung mit automatischer Löschung, Local-SEO (JSON-LD,
+Sitemap, Robots), Catering-Kacheln bereinigt (kein totes „Menü ansehen" mehr).
 
 ## 9. Deployment (Hoster entschieden, Deployment noch offen)
 
@@ -335,10 +344,21 @@ INSERT mit gehärtetem `WITH CHECK`, Lesen/Ändern nur `is_admin()`). **Posteing
 `/admin/catering` (Tab „Anfragen", neu↔erledigt) — Loader `lib/catering.ts`, Status-Action
 `app/admin/catering-actions.ts`, UI `components/admin/CateringInbox.tsx`. Build grün, RLS + Advisors
 verifiziert.
-- **Offen — E-Mail-Versand = „Weg B":** über **SMTP des Hostinger-Postfachs `kontakt@kurvenbeck.com`**.
-  SMTP-Zugangsdaten **liegen noch nicht vor** → nur in `web/.env.local`, **nie committen**. Haken für
-  die Benachrichtigung sitzt bereits markiert in `submitCateringRequest`. Optional zusätzlich
-  serverseitiges Rate-Limit.
+- ✅ **E-Mail-Versand (gebaut 2026-07-06/07):** SMTP-Zugangsdaten liegen jetzt vor
+  (`smtp.hostinger.com:465`, `kontakt@kurvenbeck.com`) und sind in `web/.env.local` eingetragen.
+  Zentraler Helper `web/lib/mail.ts` (`nodemailer`, Absendername „Kurvenbeck Homepage"):
+  `sendNotificationMail()` verschickt bei jeder neuen Anfrage eine Benachrichtigung an
+  `kontakt@kurvenbeck.com` (Reply-To = Anfragende E-Mail), `sendMailTo()` verschickt zusätzlich eine
+  Bestätigungsmail an den Gast („Wir haben deine Anfrage erhalten" + eingegebene Angaben). Beide
+  HTML-Templates escapen Nutzereingaben (XSS-Schutz). SMTP-Verbindung + Testversand live verifiziert.
+  Fehlt SMTP oder schlägt der Versand fehl, wird nur geloggt — blockiert nie das Speichern der
+  Anfrage. Optional weiterhin offen: serverseitiges Rate-Limit (Honeypot deckt einfache Bots ab).
+- ✅ **Catering-Kacheln bereinigt (2026-07-06, Kundenfeedback):** Die 4 Beispiel-Kacheln
+  (`app/catering/page.tsx`) zeigten „Menü ansehen →" (führte ins Leere, wird es nie geben — Menü ist
+  immer individuelle Absprache) sowie Preis-pro-Person/Mindestgästezahl. Beides entfernt, Kacheln
+  zeigen nur noch Foto + Titel + Beschreibung; einzige Aktion bleibt das Anfrageformular unten.
+  Hover-Effekt der Kacheln (`.cat-card`) auf denselben Stil wie die Startseiten-Kacheln (`.hcard`)
+  angeglichen (stärkerer Schatten + `translateY(-3px)`).
 
 ### Backstube: echtes Online-Vorbestellen ✅ (gebaut 2026-07-05 — das „Killer-Feature")
 - **Backtag-Modell (Entscheidung 2026-07-05): EIN global aktiver Backtag** in `site_settings`
@@ -359,8 +379,22 @@ verifiziert.
   `components/backstube/BackstubeOrder.tsx`, `components/admin/BacktagAdmin.tsx` +
   `components/admin/OrdersInbox.tsx`. Verifiziert: Build grün, RLS (201/401/42501), beide Seiten-
   zustände gerendert, Advisors sauber.
-- **Offen:** E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben) — blockiert bis Hostinger-
-  SMTP-Zugangsdaten. Alte Warenkorb-Demo (`components/cart/*`, `lib/products.ts`) jetzt ungenutzt.
+- **Offen:** E-Mail-Bestätigung an den Gast (nur wenn E-Mail angegeben) — **nicht mehr blockiert**,
+  SMTP steht seit 2026-07-06 (siehe Catering-Abschnitt oben, `lib/mail.ts`), aber für die Backstube
+  noch nicht gebaut. Alte Warenkorb-Demo (`components/cart/*`, `lib/products.ts`) jetzt ungenutzt.
+- ✅ **Bestellzeilen-UI überarbeitet (2026-07-06/07, Kundenfeedback nach Live-Test):**
+  `components/backstube/BackstubeOrder.tsx` + `.order-item`/`.qty`/`.add-btn`/`.order-bar` in
+  `globals.css`. Menge ist jetzt ein editierbares Zahlenfeld (`inputmode="numeric"`, Fokus markiert
+  den Inhalt) statt nur ±1-Klicks — direktes Eintippen z. B. „10". Spalten-Layout neu: Titel größer/
+  fetter (`font-display`, 700), Beschreibung bricht sauber vor der Preis-Spalte um, Preis in eigener
+  fixer Spalte (`5rem`/mobil `4.5rem`, linksbündig), Bestell-Spalte (Button/Stepper) fix breit
+  (`12rem` Desktop) und beginnt bei **jeder** Zeile an derselben Linie — auch auf Mobile (eigene
+  Media-Query `max-width:640px` mit zweizeiligem Grid: Titel+Text oben, Preis+Aktion darunter auf
+  fester Spaltenlinie). Stepper-Buttons und Eingabefeld größer (36px/46px). Schwebende
+  Warenkorb-Leiste (`.order-bar`) vergrößert (mehr Padding, größere Schrift/Summe) + Hover-Anheb-
+  Effekt, damit der Klick zum Abschluss der Bestellung intuitiver wirkt. „+ Vorbestellen"-Button hat
+  jetzt sichtbaren Abstand zwischen Icon und Text. Mobile-Layout mit echter Device-Emulation (Chrome
+  DevTools Protocol, 390px) verifiziert — kein horizontaler Overflow.
 
 ### Menü-Verbesserungen
 - **„Empfehlung des Hauses":** hervorgehobener Sonder-Eintrag, der sonst **nicht** auf der Karte

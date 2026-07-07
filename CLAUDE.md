@@ -72,11 +72,21 @@ nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen
   `web/TODO.md` #1. Öffnungszeiten sind **nicht** „immer Sa/So", sondern konkrete Tage.
 - `wa.me`-Nummern brauchen internationales Format ohne führende Null; der
   Helfer leitet das aus `e164` ab.
-- **E-Mail-Versand (beschlossen 2026-07-05):** transaktionale Mails (Catering-Anfrage,
-  später Vorbestell-Bestätigung) laufen über **SMTP des bestehenden Postfachs
-  `kontakt@kurvenbeck.com` bei Hostinger** („Weg B"). SMTP-Zugangsdaten kommen
-  ausschließlich in `web/.env.local` (git-ignoriert) — **nie committen**. Zugangsdaten
-  liegen noch nicht vor → offen in `web/TODO.md` #2.
+- **E-Mail-Versand (beschlossen 2026-07-05, live seit 2026-07-06):** transaktionale
+  Mails laufen über **SMTP des bestehenden Postfachs `kontakt@kurvenbeck.com` bei
+  Hostinger** („Weg B", `smtp.hostinger.com:465`). SMTP-Zugangsdaten liegen in
+  `web/.env.local` (git-ignoriert) — **nie committen**. Zentraler Helper
+  `web/lib/mail.ts` (`nodemailer`): `sendNotificationMail()` an euch selbst
+  (`kontakt@kurvenbeck.com`) und `sendMailTo()` an einen beliebigen Empfänger (z. B.
+  Gast-Bestätigung). Absendername ist bewusst **„Kurvenbeck Homepage"** (zentral im
+  Helper gesetzt) — **jede neue Mail-Funktion muss über diesen Helper laufen**, nicht
+  eigene Transporter aufbauen, damit der Absendername überall konsistent bleibt.
+  Schlägt der Versand fehl oder ist SMTP nicht konfiguriert, wird nur geloggt — der
+  eigentliche Speichervorgang (z. B. Supabase-Insert) darf nie davon abhängen.
+  **Catering-Formular** verschickt bereits beide Mails (Admin-Benachrichtigung +
+  Gast-Bestätigung „Wir haben deine Anfrage erhalten"). **Backstube-Bestätigung an
+  den Gast ist technisch nicht mehr blockiert (SMTP steht), aber noch nicht gebaut**
+  — offen in `web/TODO.md` #3.
 
 ## Supabase & Menü-Backend
 
@@ -162,6 +172,13 @@ npm start        # Production-Server (http://localhost:3003)
 `http://localhost:3003` (in `web/package.json` per `-p 3003` fest verdrahtet,
 nicht der Next.js-Default 3000) — Screenshots, Tests und Browser-Checks immer
 gegen diesen Port fahren.
+
+⚠️ **`npm run build` nie parallel zu einem laufenden `npm run dev` ausführen** —
+beide teilen sich den `.next`-Ordner; ein Production-Build während der Dev-Server
+läuft, zerschießt dessen Chunks/Manifeste (sichtbares Symptom: Layout „springt",
+CSS wirkt kaputt, obwohl der Code korrekt ist). Für reine Typecheck-Zwecke
+stattdessen `npx tsc --noEmit` nutzen; falls doch gebaut werden muss, den
+Dev-Server vorher stoppen bzw. hinterher mit gelöschtem `.next` neu starten.
 
 ## Konventionen
 

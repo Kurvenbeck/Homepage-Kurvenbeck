@@ -92,6 +92,15 @@ export function BackstubeOrder({
       return next;
     });
 
+  const setQty = (id: string, value: number) =>
+    setCart((prev) => {
+      const next = { ...prev };
+      const qty = Math.max(0, Math.min(Math.round(value) || 0, 100));
+      if (qty <= 0) delete next[id];
+      else next[id] = qty;
+      return next;
+    });
+
   const count = Object.values(cart).reduce((a, b) => a + b, 0);
   const total = Object.entries(cart).reduce((sum, [id, qty]) => {
     const item = catalog.get(id);
@@ -142,6 +151,7 @@ export function BackstubeOrder({
                     qty={cart[item.id] || 0}
                     canOrder={canOrder}
                     onChange={changeQty}
+                    onSet={setQty}
                     highlight
                   />
                 ))}
@@ -160,6 +170,7 @@ export function BackstubeOrder({
                     qty={cart[item.id] || 0}
                     canOrder={canOrder}
                     onChange={changeQty}
+                    onSet={setQty}
                   />
                 ))}
               </div>
@@ -204,6 +215,7 @@ export function BackstubeOrder({
         done={done}
         onClose={() => setDrawerOpen(false)}
         onChangeQty={changeQty}
+        onSetQty={setQty}
         onSuccess={() => {
           setDone(true);
           clearCart();
@@ -224,12 +236,14 @@ function OrderRow({
   qty,
   canOrder,
   onChange,
+  onSet,
   highlight = false,
 }: {
   item: MenuItem;
   qty: number;
   canOrder: boolean;
   onChange: (id: string, delta: number) => void;
+  onSet: (id: string, value: number) => void;
   highlight?: boolean;
 }) {
   return (
@@ -267,7 +281,16 @@ function OrderRow({
             >
               –
             </button>
-            <span>{qty}</span>
+            <input
+              type="number"
+              inputMode="numeric"
+              min={1}
+              max={100}
+              value={qty}
+              onChange={(e) => onSet(item.id, Number(e.target.value))}
+              onFocus={(e) => e.target.select()}
+              aria-label={`Menge ${item.name}`}
+            />
             <button
               type="button"
               onClick={() => onChange(item.id, 1)}
@@ -283,7 +306,7 @@ function OrderRow({
             onClick={() => onChange(item.id, 1)}
             aria-label={`${item.name} vorbestellen`}
           >
-            + Vorbestellen
+            <span className="add-btn-icon">+</span>Vorbestellen
           </button>
         ))}
     </div>
@@ -300,6 +323,7 @@ function OrderDrawer({
   done,
   onClose,
   onChangeQty,
+  onSetQty,
   onSuccess,
   onReset,
 }: {
@@ -310,6 +334,7 @@ function OrderDrawer({
   done: boolean;
   onClose: () => void;
   onChangeQty: (id: string, delta: number) => void;
+  onSetQty: (id: string, value: number) => void;
   onSuccess: () => void;
   onReset: () => void;
 }) {
@@ -421,7 +446,16 @@ function OrderDrawer({
                         >
                           –
                         </button>
-                        <span>{qty}</span>
+                        <input
+                          type="number"
+                          inputMode="numeric"
+                          min={1}
+                          max={100}
+                          value={qty}
+                          onChange={(e) => onSetQty(item.id, Number(e.target.value))}
+                          onFocus={(e) => e.target.select()}
+                          aria-label={`Menge ${item.name}`}
+                        />
                         <button
                           type="button"
                           onClick={() => onChangeQty(item.id, 1)}

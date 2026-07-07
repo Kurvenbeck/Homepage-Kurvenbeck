@@ -75,10 +75,6 @@ export default async function CateringPage() {
                   Lachs-Praline bis Mini-Maultasche. Perfekt für Empfänge &
                   Vernissagen.
                 </p>
-                <span className="cat-meta">
-                  ab 18 € pro Person · ab 20 Gäste
-                </span>
-                <span className="cat-more">Menü ansehen →</span>
               </div>
             </div>
 
@@ -94,10 +90,6 @@ export default async function CateringPage() {
                   Maultaschen, Käsespätzle, Linsen mit Saitenwürstle,
                   Kartoffelsalat & Zwiebelrostbraten. Heimat zum Sattessen.
                 </p>
-                <span className="cat-meta">
-                  ab 26 € pro Person · ab 30 Gäste
-                </span>
-                <span className="cat-more">Menü ansehen →</span>
               </div>
             </div>
 
@@ -114,8 +106,6 @@ export default async function CateringPage() {
                   gestalten dein Fest mit Herz, gutem Essen und dem richtigen
                   Rahmen.
                 </p>
-                <span className="cat-meta">individuelles Angebot</span>
-                <span className="cat-more">Menü ansehen →</span>
               </div>
             </div>
 
@@ -131,8 +121,6 @@ export default async function CateringPage() {
                   Mehrgängig serviert, mit Service-Team und passendem Geschirr.
                   Der schönste Tag — kulinarisch begleitet.
                 </p>
-                <span className="cat-meta">individuelles Angebot</span>
-                <span className="cat-more">Menü ansehen →</span>
               </div>
             </div>
           </div>

@@ -13,6 +13,13 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > Änderung)** — Überblick auf einen Blick, was noch nicht live ist. Kategorie-Löschen fragt
 > jetzt mit **Anzahl der betroffenen Einträge** nach. „Bäcker"-Alt-Text von der Startseite
 > entfernt (Titelschutz, siehe unten).
+>
+> **✅ Erledigt — Kundenfeedback nach Live-Test (2026-07-06/07):** Catering-Kacheln bereinigt
+> (totes „Menü ansehen" + Preis/Gästezahl entfernt), Catering-**E-Mail-Versand** live (Admin-
+> Benachrichtigung + Gast-Bestätigung über Hostinger-SMTP, `lib/mail.ts`), Backstube-
+> Bestellzeilen-UI überarbeitet (editierbares Mengenfeld, feste Preis-/Aktions-Spalten,
+> größere Klickziele, Mobile verifiziert). Details siehe Punkte 2 und 3 unten sowie
+> HANDOFF.md §11.
 
 ---
 
@@ -87,11 +94,17 @@ Gewünscht: echter Versand als **schöne E-Mail an `kontakt@kurvenbeck.com`** + 
       (neu zuerst), als „erledigt" ↔ „neu" umschaltbar. Loader `lib/catering.ts`, Status-Action
       `app/admin/catering-actions.ts`, UI `components/admin/CateringInbox.tsx`, `AdminNav` erweitert.
 - [x] Spam-Schutz: **Honeypot-Feld** (`company`, visuell versteckt) in Formular + Server Action.
-- [ ] **E-Mail-Versand (offen — blockiert):** hübsches HTML-Template, Benachrichtigung an
-      `kontakt@kurvenbeck.com` + optional Empfangsbestätigung an den Absender. **Weg B = Hostinger-
-      SMTP** (`kontakt@kurvenbeck.com`); **SMTP-Zugangsdaten liegen noch nicht vor** → nur in
-      `web/.env.local`, nie committen. Haken sitzt in `submitCateringRequest` (markierter TODO).
+- [x] **E-Mail-Versand (erledigt 2026-07-06/07):** HTML-Templates (Escaping gegen Injection),
+      Benachrichtigung an `kontakt@kurvenbeck.com` **und** Empfangsbestätigung an den Absender
+      („Wir haben deine Anfrage erhalten"). **Weg B = Hostinger-SMTP** (`smtp.hostinger.com:465`,
+      `kontakt@kurvenbeck.com`) — Zugangsdaten liegen jetzt in `web/.env.local` (git-ignoriert).
+      Zentraler Helper `lib/mail.ts` (`nodemailer`, Absendername „Kurvenbeck Homepage", einheitlich
+      für alle künftigen Mail-Funktionen zu nutzen). SMTP-Verbindung + Testversand verifiziert.
 - [ ] Optional härter: serverseitige **Rate-Limit-Prüfung** (Honeypot deckt einfache Bots ab).
+- [x] **Catering-Kacheln bereinigt (2026-07-06):** „Menü ansehen →" entfernt (führte ins Leere,
+      wird es nie geben), Preis-pro-Person/Mindestgästezahl entfernt — Kacheln zeigen nur noch
+      Foto/Titel/Beschreibung, einzige Aktion ist das Formular unten. Hover-Effekt an `.hcard`
+      angeglichen.
 
 ## 3. Backstube: echtes Online-Vorbestellen  ✅ (gebaut 2026-07-05)
 
@@ -126,11 +139,18 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
       Einzelbestellungen mit Positionen + Status neu↔erledigt (`OrdersInbox`). Loader
       `lib/backstubeOrders.ts`, Actions `app/admin/order-actions.ts` (`updateBacktag`,
       `setBackstubeOrderStatus`).
-- [ ] **E-Mail-Bestätigung (offen — blockiert):** an den Gast, nur wenn E-Mail angegeben. Hängt wie
-      Catering an den **Hostinger-SMTP-Zugangsdaten** (`kontakt@kurvenbeck.com`, noch offen). Haken
-      sitzt markiert in `submitBackstubeOrder`.
+- [ ] **E-Mail-Bestätigung (nicht mehr blockiert, aber noch nicht gebaut):** an den Gast, nur wenn
+      E-Mail angegeben. SMTP steht seit 2026-07-06 (`lib/mail.ts`, siehe Catering-Umsetzung als
+      Vorlage) — für die Backstube-Bestellung selbst noch zu implementieren in
+      `submitBackstubeOrder`.
 - [x] Startseiten-Text „online vorbestellen" ist damit **wahr**. (Alte Warenkorb-Demo
       `components/cart/*` + `lib/products.ts` bleiben ungenutzt im Repo — später aufräumen.)
+- [x] **Bestellzeilen-UI überarbeitet (2026-07-06/07, Kundenfeedback):** Menge editierbar per
+      Zahlenfeld (statt nur ±1-Klicks), Titel größer/fetter, Beschreibung bricht vor der
+      Preis-Spalte um, feste Preis-/Aktions-Spalten (auch auf Mobile, eigenes Layout), größere
+      Klickziele bei Stepper/„+ Vorbestellen"-Button, größere schwebende Warenkorb-Leiste mit
+      Hover-Effekt. Mobile bei 390px mit Chrome-DevTools-Protocol-Emulation verifiziert (kein
+      horizontaler Overflow).
 
 ## 4. „Empfehlung des Hauses"
 
