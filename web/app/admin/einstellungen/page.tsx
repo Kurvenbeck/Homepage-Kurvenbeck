@@ -34,7 +34,7 @@ export default async function SettingsPage() {
   const isAdmin = Boolean(adminRow);
   const initial = isAdmin
     ? await getSiteSettingsForAdmin()
-    : { phoneDisplay: "", phoneE164: "", address: "" };
+    : { phoneDisplay: "", phoneE164: "", email: "", address: "" };
 
   return (
     <>

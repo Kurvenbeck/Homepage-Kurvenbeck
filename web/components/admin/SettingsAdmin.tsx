@@ -21,6 +21,7 @@ export function SettingsAdmin({ initial }: { initial: SettingsInput }) {
   const dirty =
     form.phoneDisplay.trim() !== saved.phoneDisplay.trim() ||
     form.phoneE164.trim() !== saved.phoneE164.trim() ||
+    form.email.trim() !== saved.email.trim() ||
     form.address.trim() !== saved.address.trim();
 
   function save() {
@@ -59,6 +60,21 @@ export function SettingsAdmin({ initial }: { initial: SettingsInput }) {
         <p className="admin-hint">
           Mit Ländervorwahl, ohne Leerzeichen — z. B. +49 für Deutschland statt der
           führenden 0. Wird für „Anrufen" und WhatsApp genutzt.
+        </p>
+      </div>
+
+      <div className="field">
+        <label htmlFor="email">E-Mail</label>
+        <input
+          id="email"
+          type="email"
+          value={form.email}
+          inputMode="email"
+          onChange={(e) => setForm({ ...form, email: e.target.value })}
+          placeholder="kontakt@kurvenbeck.com"
+        />
+        <p className="admin-hint">
+          Wird im Footer als Kontakt-Adresse angezeigt und verlinkt.
         </p>
       </div>
 

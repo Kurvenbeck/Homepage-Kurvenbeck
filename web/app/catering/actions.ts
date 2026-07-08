@@ -84,7 +84,7 @@ function renderCateringConfirmationMail(data: {
     <div style="font-family: sans-serif; font-size: 15px; color: #222;">
       <h2 style="margin: 0 0 16px;">Wir haben deine Anfrage erhalten</h2>
       <p>Hallo ${escapeHtml(data.name)},</p>
-      <p>danke für deine Anfrage! Wir haben sie erhalten und melden uns zeitnah bei dir. Hier nochmal deine Angaben:</p>
+      <p>danke für deine Anfrage! Wir haben sie erhalten und melden uns innerhalb von 48 Stunden bei dir. Hier nochmal deine Angaben:</p>
       <table cellpadding="6" cellspacing="0">
         ${rows
           .map(

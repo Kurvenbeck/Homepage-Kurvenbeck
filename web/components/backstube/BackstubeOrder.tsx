@@ -135,7 +135,12 @@ export function BackstubeOrder({
                 <strong>Aktuell kein Backtag angekündigt</strong>
                 <span>
                   Sobald der nächste Backtag feststeht, kannst du hier
-                  vorbestellen. Schau bald wieder vorbei.
+                  vorbestellen — schau bald wieder vorbei. Du hast schon jetzt
+                  einen Wunsch oder planst etwas Größeres? Schick uns deine{" "}
+                  <a href="/catering#anfrage" className="order-status-link">
+                    Anfrage übers Catering-Formular
+                  </a>{" "}
+                  — wir melden uns innerhalb von 48 Stunden bei dir.
                 </span>
               </div>
             </div>

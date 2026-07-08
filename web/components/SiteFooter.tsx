@@ -42,7 +42,7 @@ export function SiteFooter({
                 <a href={contact.telHref}>{contact.phoneDisplay}</a>
               </li>
               <li>
-                <a href="mailto:hallo@kurvenbeck.de">hallo@kurvenbeck.de</a>
+                <a href={contact.mailtoHref}>{contact.email}</a>
               </li>
             </ul>
           </div>

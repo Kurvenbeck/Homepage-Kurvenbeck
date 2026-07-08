@@ -1189,6 +1189,13 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
 .order-status span { font-size: var(--text-sm); color: var(--color-text-secondary); }
 .order-status--open { background: rgba(63,122,71,0.06); border-color: rgba(63,122,71,0.35); }
 .order-status--closed { background: var(--color-surface); }
+.order-status-link {
+  color: var(--color-accent);
+  text-decoration: underline;
+  text-underline-offset: 2px;
+  font-weight: 600;
+}
+.order-status-link:hover { text-decoration: none; }
 .order-status-dot {
   width: 10px; height: 10px; border-radius: 50%; margin-top: 6px; flex: none;
   background: #3f7a47; box-shadow: 0 0 0 4px rgba(63,122,71,0.18);

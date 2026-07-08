@@ -14,10 +14,12 @@ export type ActionResult = { ok: true } | { ok: false; error: string };
 export type SettingsInput = {
   phoneDisplay: string;
   phoneE164: string;
+  email: string;
   address: string;
 };
 
 const E164_RE = /^\+\d{6,15}$/;
+const EMAIL_RE = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
 
 async function getSupabase() {
   const supabase = await createClient();
@@ -46,6 +48,13 @@ export async function updateSiteSettings(
           "Bitte die internationale Nummer im Format +49… angeben (z. B. +4970711234560).",
       };
 
+    const email = input.email.trim();
+    if (!EMAIL_RE.test(email))
+      return {
+        ok: false,
+        error: "Bitte eine gültige E-Mail-Adresse angeben (z. B. kontakt@kurvenbeck.com).",
+      };
+
     const address = input.address.trim();
 
     const now = new Date().toISOString();
@@ -53,6 +62,7 @@ export async function updateSiteSettings(
       [
         { key: SETTINGS_KEYS.phoneDisplay, value: phoneDisplay, updated_at: now },
         { key: SETTINGS_KEYS.phoneE164, value: phoneE164, updated_at: now },
+        { key: SETTINGS_KEYS.email, value: email, updated_at: now },
         { key: SETTINGS_KEYS.address, value: address, updated_at: now },
       ],
       { onConflict: "key" },

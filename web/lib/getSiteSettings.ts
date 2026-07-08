@@ -26,6 +26,7 @@ export async function getSiteSettings(): Promise<SiteContact> {
       map.get(SETTINGS_KEYS.phoneDisplay)?.trim() || FALLBACK_SETTINGS.phoneDisplay,
     phoneE164:
       map.get(SETTINGS_KEYS.phoneE164)?.trim() || FALLBACK_SETTINGS.phoneE164,
+    email: map.get(SETTINGS_KEYS.email)?.trim() || FALLBACK_SETTINGS.email,
     address: map.get(SETTINGS_KEYS.address) ?? FALLBACK_SETTINGS.address,
   });
 }
@@ -33,6 +34,7 @@ export async function getSiteSettings(): Promise<SiteContact> {
 export type SiteSettingsRaw = {
   phoneDisplay: string;
   phoneE164: string;
+  email: string;
   address: string;
 };
 
@@ -49,6 +51,7 @@ export async function getSiteSettingsForAdmin(): Promise<SiteSettingsRaw> {
     phoneDisplay:
       map.get(SETTINGS_KEYS.phoneDisplay) ?? FALLBACK_SETTINGS.phoneDisplay,
     phoneE164: map.get(SETTINGS_KEYS.phoneE164) ?? FALLBACK_SETTINGS.phoneE164,
+    email: map.get(SETTINGS_KEYS.email) ?? FALLBACK_SETTINGS.email,
     address: map.get(SETTINGS_KEYS.address) ?? FALLBACK_SETTINGS.address,
   };
 }

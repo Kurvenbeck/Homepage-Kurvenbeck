@@ -17,16 +17,20 @@ export type SiteContact = {
   phoneDisplay: string;
   /** E.164 für tel:-Links, z. B. "+4970711234560". */
   phoneE164: string;
+  /** Kontakt-E-Mail, z. B. "kontakt@kurvenbeck.com". */
+  email: string;
   /** Adresse zeilenweise (leere Zeilen entfernt). */
   addressLines: string[];
   telHref: string;
   whatsappHref: string;
+  mailtoHref: string;
 };
 
 /** DB-Schlüssel der Einstellungen (Single Source, geteilt mit Loader + Admin). */
 export const SETTINGS_KEYS = {
   phoneDisplay: "contact_phone_display",
   phoneE164: "contact_phone_e164",
+  email: "contact_email",
   address: "contact_address",
 } as const;
 
@@ -34,18 +38,21 @@ export const SETTINGS_KEYS = {
 export function buildContact(input: {
   phoneDisplay: string;
   phoneE164: string;
+  email: string;
   address: string;
 }): SiteContact {
   const digits = input.phoneE164.replace(/\D/g, ""); // wa.me: ohne + und ohne führende Null
   return {
     phoneDisplay: input.phoneDisplay,
     phoneE164: input.phoneE164,
+    email: input.email,
     addressLines: input.address
       .split("\n")
       .map((line) => line.trim())
       .filter(Boolean),
     telHref: `tel:${input.phoneE164}`,
     whatsappHref: `https://wa.me/${digits}`,
+    mailtoHref: `mailto:${input.email}`,
   };
 }
 
@@ -53,6 +60,7 @@ export function buildContact(input: {
 export const FALLBACK_SETTINGS = {
   phoneDisplay: "07071 / 12 34 56",
   phoneE164: "+4970711234560",
+  email: "kontakt@kurvenbeck.com",
   address: "Mühlweg 12\n72074 Musterstadt",
 } as const;
 
