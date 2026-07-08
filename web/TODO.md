@@ -54,16 +54,19 @@ soll sie selbst pflegen).
 
 - [x] Tabelle `site_settings` (`key`/`value`/`updated_at`) + RLS (public read, admin write via
       `is_admin()`). Migration `20260705130000_site_settings_schema.sql`, Keys `contact_phone_display`,
-      `contact_phone_e164` (E.164, für `wa.me`), `contact_address`; Seed = bisherige Platzhalter.
+      `contact_phone_e164` (E.164, für `wa.me`), `contact_address`; **`contact_email` ergänzt**
+      (Migration `20260707200000_site_settings_email.sql`, 2026-07-08).
 - [x] Loader getrennt: `lib/siteSettings.ts` (client-sicher: Typen, `FALLBACK_CONTACT`,
-      `buildContact` → `telHref`/`whatsappHref`) + `lib/getSiteSettings.ts` (server: `getSiteSettings()`,
-      `getSiteSettingsForAdmin()`). Fallback verhindert leere `tel:`/`wa.me`-Links.
+      `buildContact` → `telHref`/`whatsappHref`/`mailtoHref`) + `lib/getSiteSettings.ts` (server:
+      `getSiteSettings()`, `getSiteSettingsForAdmin()`). Fallback verhindert leere Links.
 - [x] Admin-UI: Tab „Einstellungen" (`/admin/einstellungen`, `components/admin/SettingsAdmin.tsx`)
-      zum Pflegen von Telefon (Anzeige + international) & Adresse; grün/rot Save; `AdminNav` erweitert.
-- [x] Verbraucher umgestellt: `SiteFooter` (contact-Prop mit Fallback), Home/Biergarten/Backstube/
-      Catering laden `getSiteSettings()` und reichen es durch; Biergarten-/Backstube-CTAs nutzen es.
-      End-to-end verifiziert (DB-Wert → Footer + tel/wa.me). **⚠️ Echte Nummer + Adresse trägt der
-      Betreiber selbst im Admin ein** — Platzhalter bleibt bis dahin.
+      zum Pflegen von Telefon (Anzeige + international), **E-Mail** & Adresse; grün/rot Save;
+      `AdminNav` erweitert.
+- [x] Verbraucher umgestellt: `SiteFooter` (contact-Prop mit Fallback, **E-Mail nicht mehr
+      hartkodiert**), Home/Biergarten/Backstube/Catering laden `getSiteSettings()` und reichen es
+      durch; Biergarten-/Backstube-CTAs nutzen es. End-to-end verifiziert (DB-Wert → Footer +
+      tel/wa.me/mailto). **✅ Echte Nummer, Adresse + E-Mail sind im Backend gepflegt**
+      (Telefon `0151 / 2222 1396`, Im Hetzenloch 3, `kontakt@kurvenbeck.com`, Stand 2026-07-06/08).
 
 ### 1b. Öffnungszeiten (Besenwirtschaft) — konkretes Modell
 Der Biergarten ist eine **Besenwirtschaft** mit **unregelmäßigen** Öffnungstagen (nicht „immer
@@ -168,6 +171,9 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
       Betreiber deaktiviert den Backtag manuell, die Backliste im Admin genügt dafür.
 - [x] Startseiten-Text „online vorbestellen" ist damit **wahr**. (Alte Warenkorb-Demo
       `components/cart/*` + `lib/products.ts` bleiben ungenutzt im Repo — später aufräumen.)
+- [x] **Fallback ohne Backtag (2026-07-08):** Der „kein Backtag"-Hinweis
+      (`components/backstube/BackstubeOrder.tsx`) verlinkt auf `/catering#anfrage` (direkt zum
+      Formular) mit 48-Stunden-Zusage — konsistent mit Catering-Seite/Formular/Bestätigungsmail.
 - [x] **Bestellzeilen-UI überarbeitet (2026-07-06/07, Kundenfeedback):** Menge editierbar per
       Zahlenfeld (statt nur ±1-Klicks), Titel größer/fetter, Beschreibung bricht vor der
       Preis-Spalte um, feste Preis-/Aktions-Spalten (auch auf Mobile, eigenes Layout), größere

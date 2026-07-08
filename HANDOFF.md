@@ -94,9 +94,13 @@ web/
   (Namen/Maße: `web/public/images/README.md`), dann Slot in `web/lib/images.ts`
   von `null` auf `{ src, alt }` setzen. Leere Slots zeigen den Platzhalter →
   keine kaputten Bilder.
-- **Kontaktdaten:** Telefonnummer **nicht hardcoden** — einzige Quelle
-  `web/lib/siteSettings.ts`. `telHref`/`whatsappHref` werden daraus abgeleitet
-  (Footer + Biergarten-CTAs + Backstube-Banner nutzen sie).
+- **Kontaktdaten:** Telefon, Adresse **und E-Mail** **nicht hardcoden** — einzige Quelle
+  ist die Supabase-Tabelle `site_settings` (Keys `contact_phone_display`,
+  `contact_phone_e164`, `contact_email`, `contact_address`), geladen über
+  `lib/getSiteSettings.ts` / client-sicher `lib/siteSettings.ts`.
+  `telHref`/`whatsappHref`/`mailtoHref` werden daraus abgeleitet (Footer +
+  Biergarten-CTAs + Backstube-Banner nutzen sie). Im Admin unter `/admin/einstellungen`
+  pflegbar. Neue Kontaktangaben als weiteren `site_settings`-Key ergänzen.
 - **Warenkorb (Backstube):** Client-State via `CartContext` mit
   `localStorage`-Persistenz; Drawer öffnet automatisch beim Hinzufügen.
 
@@ -169,8 +173,11 @@ die im Datenschutztext hinterlegten echten Angaben übernehmen (Johannes Wehner,
 **Platzhalter:** noch fehlende Fotos (Biergarten/Home-Karten teils offen, siehe
 `web/public/images/README.md`), Inhalte (Adresse/Öffnungszeiten), Impressum + AGB
 (Datenschutz ist bereits echt, siehe §7).
-⚠️ **Telefonnummer in `web/lib/siteSettings.ts` ist ein Platzhalter (`07071 / 12 34 56`)
-und darf nicht live gehen** — echte Nummer bzw. Backend-Anbindung zuerst (§11, TODO #1).
+✅ **Echte Kontaktdaten stehen im Backend** (`site_settings`, Stand 2026-07-06/08): Telefon
+`0151 / 2222 1396`, Adresse Im Hetzenloch 3, 89558 Böhmenkirch-Schnittlingen, E-Mail
+`kontakt@kurvenbeck.com` — Footer/CTAs zeigen sie live. Der `FALLBACK_CONTACT` in
+`web/lib/siteSettings.ts` (`07071 / 12 34 56`, Musterstadt) greift nur, wenn die DB nicht
+erreichbar ist — er darf so bleiben, geht aber nicht live in Erscheinung.
 
 ## 8. Nächste Schritte
 
@@ -180,8 +187,8 @@ in **§11**. Kompakt (Stand 2026-07-07):
 1. **Impressum + AGB mit echten Angaben befüllen** (höchste Prio, blockiert Go-Live): müssen die im
    Datenschutztext hinterlegten echten Angaben übernehmen (Johannes Wehner, Im Hetzenloch 3, 89558
    Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`), sonst widersprechen sich die Rechtsseiten.
-2. **Echte Kontaktdaten eintragen:** Telefonnummer in `site_settings` ist noch Platzhalter
-   (`07071 / 12 34 56`) — ⚠️ darf so nicht live gehen. Adresse ebenso zu prüfen/pflegen.
+2. ✅ **Echte Kontaktdaten stehen im Backend** (Telefon `0151 / 2222 1396`, Adresse Im Hetzenloch 3,
+   E-Mail `kontakt@kurvenbeck.com`) — nur noch gegen die echten Angaben gegenprüfen, kein Blocker mehr.
 3. **Google-Business-Profil verlinken** (NAP-Konsistenz) — Kundentermin war am 2026-07-06.
 4. **Vercel-Deployment durchführen** (Hoster entschieden) + Supabase Auth-URLs von localhost auf
    die echte Domain umstellen (Go-Live-Checkliste, `web/TODO.md` #11).
@@ -382,6 +389,11 @@ verifiziert.
 - **Gast-Flow:** Warenkorb (menügetrieben, live aus der DB), Vorbestellung mit Name (E-Mail/Telefon
   optional) → „Bestellung eingegangen". **Kein WhatsApp.** Ist kein Backtag aktiv, zeigt die Seite
   „Aktuell kein Backtag" und niemand kann bestellen.
+- **Fallback ohne Backtag (2026-07-08):** Der „kein Backtag"-Hinweis auf der Backstube-Seite
+  verlinkt jetzt auf `/catering#anfrage` (springt direkt zum Anfrageformular) mit dem Text
+  „schick uns deine Anfrage … wir melden uns innerhalb von 48 Stunden". Die 48-Stunden-Zusage
+  ist konsistent mit Catering-Seite, Formular-Erfolgstext **und** Catering-Bestätigungsmail
+  (`app/catering/actions.ts`).
 - **Admin `/admin/bestellungen` — 3 Unter-Reiter** (`components/admin/BestellungenTabs.tsx`, seit
   2026-07-07): (1) **Backtag** (Backtag-Pflege, grün/rot Save) · (2) **Backliste & Zutaten** —
   aggregierte Backliste über alle offenen Bestellungen (das Killer-Feature) + je Backware

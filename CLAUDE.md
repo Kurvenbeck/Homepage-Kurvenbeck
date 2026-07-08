@@ -59,17 +59,22 @@ nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen
 
 ## Kontaktdaten & Konfiguration
 
-- Kontaktdaten (v. a. Telefonnummer) **nicht hardcoden**. Einzige Quelle:
-  `web/lib/siteSettings.ts` (`siteSettings.contactPhone` + Helfer `telHref`,
-  `whatsappHref`). Footer und Biergarten-CTAs lesen daraus.
-- ⚠️ **Die aktuelle Telefonnummer ist ein Platzhalter** (`07071 / 12 34 56`) und
-  **darf so nicht live gehen** — vorher durch die echte Nummer ersetzen bzw. aus
-  dem Backend laden.
-- **Geplant (beschlossen 2026-07-05):** Kontaktdaten (Telefon + Adresse) und
-  **Öffnungszeiten** in Supabase, vom Betreiber selbst im Admin pflegbar —
-  Telefon/Adresse über `site_settings`, Öffnungszeiten über eine Termin-Tabelle
-  (`opening_days`: Datum + Uhrzeit von–bis, Besenwirtschaft-Modell). Details/Schritte:
-  `web/TODO.md` #1. Öffnungszeiten sind **nicht** „immer Sa/So", sondern konkrete Tage.
+- Kontaktdaten (Telefon, Adresse, **E-Mail**) **nicht hardcoden**. Einzige Quelle:
+  die Supabase-Tabelle `site_settings`, geladen über `web/lib/getSiteSettings.ts`
+  (server) bzw. client-sicher über `web/lib/siteSettings.ts` (Typen, `FALLBACK_CONTACT`,
+  `buildContact` → `telHref`/`whatsappHref`/`mailtoHref`). Footer und Biergarten-/
+  Backstube-CTAs lesen daraus. Keys: `contact_phone_display`, `contact_phone_e164`,
+  `contact_email`, `contact_address`. **Neue Kontaktangaben immer als weiteren
+  `site_settings`-Key ergänzen** (nicht im Markup hartkodieren).
+- ⚠️ **Telefon/Adresse/E-Mail sind live im Backend gepflegt** (echte Nummer
+  `0151 / 2222 1396`, Adresse Im Hetzenloch 3, E-Mail `kontakt@kurvenbeck.com`), aber
+  der `FALLBACK_CONTACT` in `siteSettings.ts` enthält noch **Platzhalter**
+  (`07071 / 12 34 56`, Musterstadt) — der greift nur, wenn die DB nicht erreichbar ist.
+- **Umgesetzt (beschlossen 2026-07-05):** Kontaktdaten (Telefon + Adresse + E-Mail) und
+  **Öffnungszeiten** liegen in Supabase, vom Betreiber selbst im Admin pflegbar —
+  Kontakt über `site_settings` (`/admin/einstellungen`), Öffnungszeiten über
+  `opening_days` (Datum + Uhrzeit von–bis, Besenwirtschaft-Modell). Öffnungszeiten
+  sind **nicht** „immer Sa/So", sondern konkrete Tage.
 - `wa.me`-Nummern brauchen internationales Format ohne führende Null; der
   Helfer leitet das aus `e164` ab.
 - **E-Mail-Versand (beschlossen 2026-07-05, live seit 2026-07-06):** transaktionale
