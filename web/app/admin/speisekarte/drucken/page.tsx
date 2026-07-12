@@ -109,7 +109,29 @@ export default async function PrintMenuPage() {
                         <span className="mi-desc">{item.description}</span>
                       )}
                     </span>
-                    <span className="mi-price">{item.price}</span>
+                    <span className="mi-price">
+                      {item.secondSize ? (
+                        <>
+                          <span className="mi-price-line">
+                            {item.sizeLabel && (
+                              <span className="mi-price-size">{item.sizeLabel}</span>
+                            )}
+                            {item.price}
+                          </span>
+                          <span className="mi-price-line">
+                            <span className="mi-price-size">{item.secondSize.label}</span>
+                            {item.secondSize.price}
+                          </span>
+                        </>
+                      ) : item.sizeLabel ? (
+                        <span className="mi-price-line">
+                          <span className="mi-price-size">{item.sizeLabel}</span>
+                          {item.price}
+                        </span>
+                      ) : (
+                        item.price
+                      )}
+                    </span>
                   </div>
                 ))}
               </div>

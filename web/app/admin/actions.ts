@@ -193,6 +193,11 @@ export type ItemInput = {
   name: string;
   description: string;
   price: string;
+  /** Label zur Basis-Größe (nur Getränke), z. B. "0,2 l". Leer = ungenutzt. */
+  sizeLabel: string;
+  /** Zweite Größe (nur Getränke): Label + Preis. Beide leer = ungenutzt. */
+  size2Label: string;
+  size2Price: string;
   tags: string[];
   isAvailable: boolean;
   isRecommendation: boolean;
@@ -217,12 +222,32 @@ export async function updateItem(
     if (price === null)
       return { ok: false, error: "Bitte einen gültigen Preis eingeben (z. B. 12,90)." };
 
+    const sizeLabel = input.sizeLabel.trim();
+    const size2Label = input.size2Label.trim();
+    const size2PriceRaw = input.size2Price.trim();
+    if ((size2Label === "") !== (size2PriceRaw === "")) {
+      return {
+        ok: false,
+        error:
+          "Bitte für die zweite Größe sowohl Bezeichnung als auch Preis angeben (oder beides leer lassen).",
+      };
+    }
+    let size2Price: number | null = null;
+    if (size2PriceRaw !== "") {
+      size2Price = parsePrice(size2PriceRaw);
+      if (size2Price === null)
+        return { ok: false, error: "Bitte einen gültigen Preis für die zweite Größe eingeben (z. B. 4,50)." };
+    }
+
     const { error: itemError } = await supabase
       .from("menu_items")
       .update({
         name,
         description: input.description.trim() || null,
         price,
+        size1_label: sizeLabel || null,
+        size2_label: size2Label || null,
+        size2_price: size2Price,
         tags: input.tags,
         is_available: input.isAvailable,
         is_recommendation: input.isRecommendation,

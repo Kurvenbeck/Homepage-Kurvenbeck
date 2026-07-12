@@ -19,7 +19,29 @@ export function MenuRecommendations({ items }: { items: MenuItem[] }) {
           </p>
           <div className="menu-recommendation-head">
             <span className="menu-recommendation-name">{item.name}</span>
-            <span className="menu-recommendation-price">{item.price}</span>
+            <span className="menu-recommendation-price">
+              {item.secondSize ? (
+                <>
+                  <span className="mi-price-line">
+                    {item.sizeLabel && (
+                      <span className="mi-price-size">{item.sizeLabel}</span>
+                    )}
+                    {item.price}
+                  </span>
+                  <span className="mi-price-line">
+                    <span className="mi-price-size">{item.secondSize.label}</span>
+                    {item.secondSize.price}
+                  </span>
+                </>
+              ) : item.sizeLabel ? (
+                <span className="mi-price-line">
+                  <span className="mi-price-size">{item.sizeLabel}</span>
+                  {item.price}
+                </span>
+              ) : (
+                item.price
+              )}
+            </span>
           </div>
           {item.description && (
             <p className="menu-recommendation-desc">{item.description}</p>

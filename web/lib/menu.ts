@@ -16,6 +16,10 @@ export type MenuItem = {
   price: string;
   /** Numerischer Preis (Euro) für Warenkorb-Summen, z. B. 12.9. */
   priceValue: number;
+  /** Label zum Basis-Preis (nur Getränke mit Größen), z. B. "0,2 l". */
+  sizeLabel: string | null;
+  /** Zweite Größe (nur Getränke), falls gepflegt. */
+  secondSize: { label: string; price: string; priceValue: number } | null;
   tags: string[];
   /** Als „Empfehlung des Hauses" hervorgehoben. */
   isRecommendation: boolean;
@@ -55,6 +59,9 @@ type CategoryRow = {
     name: string;
     description: string | null;
     price: number | string;
+    size1_label: string | null;
+    size2_label: string | null;
+    size2_price: number | string | null;
     tags: string[] | null;
     sort_order: number;
     is_available: boolean;
@@ -91,6 +98,11 @@ export type AdminMenuItem = {
   description: string | null;
   /** Preis als deutsches Eingabeformat, z. B. "12,90". */
   price: string;
+  /** Label zur Basis-Größe (nur Getränke), z. B. "0,2 l". Leer = ungenutzt. */
+  sizeLabel: string;
+  /** Zweite Größe (nur Getränke): Label + Preis als Eingabe-Strings. Leer = ungenutzt. */
+  size2Label: string;
+  size2Price: string;
   tags: string[];
   isAvailable: boolean;
   isRecommendation: boolean;
@@ -122,7 +134,8 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
         .select(
           `id, title, sort_order,
            menu_items (
-             id, name, description, price, tags, sort_order, is_available, is_recommendation,
+             id, name, description, price, size1_label, size2_label, size2_price,
+             tags, sort_order, is_available, is_recommendation,
              menu_item_allergens ( allergen_code ),
              menu_item_ingredients ( ingredient_id, amount, sort_order )
            )`,
@@ -146,6 +159,9 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
       name: item.name,
       description: item.description,
       price: formatPrice(item.price),
+      sizeLabel: item.size1_label ?? "",
+      size2Label: item.size2_label ?? "",
+      size2Price: item.size2_price == null ? "" : formatPrice(item.size2_price),
       tags: item.tags ?? [],
       isAvailable: item.is_available,
       isRecommendation: item.is_recommendation,
@@ -179,7 +195,8 @@ export async function getMenu(area: string): Promise<Menu> {
         .select(
           `id, title, sort_order,
            menu_items (
-             id, name, description, price, tags, sort_order, is_available, is_recommendation,
+             id, name, description, price, size1_label, size2_label, size2_price,
+             tags, sort_order, is_available, is_recommendation,
              menu_item_allergens ( allergen_code )
            )`,
         )
@@ -210,6 +227,18 @@ export async function getMenu(area: string): Promise<Menu> {
       price: formatPrice(item.price),
       priceValue:
         typeof item.price === "string" ? Number(item.price) : item.price,
+      sizeLabel: item.size1_label ?? null,
+      secondSize:
+        item.size2_label && item.size2_price != null
+          ? {
+              label: item.size2_label,
+              price: formatPrice(item.size2_price),
+              priceValue:
+                typeof item.size2_price === "string"
+                  ? Number(item.size2_price)
+                  : item.size2_price,
+            }
+          : null,
       tags: item.tags ?? [],
       isRecommendation: item.is_recommendation,
       allergens: codes,

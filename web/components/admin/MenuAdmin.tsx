@@ -73,6 +73,9 @@ function sameItem(a: ItemInput, b: ItemInput): boolean {
     a.name.trim() === b.name.trim() &&
     a.description.trim() === b.description.trim() &&
     a.price.trim() === b.price.trim() &&
+    a.sizeLabel.trim() === b.sizeLabel.trim() &&
+    a.size2Label.trim() === b.size2Label.trim() &&
+    a.size2Price.trim() === b.size2Price.trim() &&
     a.isAvailable === b.isAvailable &&
     a.isRecommendation === b.isRecommendation &&
     sameSet(a.tags, b.tags) &&
@@ -264,6 +267,7 @@ function CategoryBlock({
             area={area}
             noun={noun}
             categoryId={category.id}
+            categoryTitle={category.title}
             allergens={allergens}
             ingredients={ingredients}
             isFirst={index === 0}
@@ -295,6 +299,7 @@ function ItemEditor({
   area,
   noun,
   categoryId,
+  categoryTitle,
   allergens,
   ingredients,
   isFirst,
@@ -306,6 +311,7 @@ function ItemEditor({
   area: MenuArea;
   noun: string;
   categoryId: string;
+  categoryTitle: string;
   allergens: Allergen[];
   ingredients: Ingredient[];
   isFirst: boolean;
@@ -313,10 +319,14 @@ function ItemEditor({
   parentDisabled: boolean;
   onRun: (action: () => Promise<ActionResult>) => void;
 }) {
+  const hasSizes = categoryTitle === "Getränke";
   const live: ItemInput = {
     name: item.name,
     description: item.description ?? "",
     price: item.price,
+    sizeLabel: item.sizeLabel,
+    size2Label: item.size2Label,
+    size2Price: item.size2Price,
     tags: item.tags,
     isAvailable: item.isAvailable,
     isRecommendation: item.isRecommendation,
@@ -374,16 +384,56 @@ function ItemEditor({
             onChange={(e) => setForm({ ...form, name: e.target.value })}
           />
         </div>
-        <div className="field admin-price">
-          <label>Preis (€)</label>
-          <input
-            value={form.price}
-            inputMode="decimal"
-            onChange={(e) => setForm({ ...form, price: e.target.value })}
-            placeholder="12,90"
-          />
-        </div>
+        {!hasSizes && (
+          <div className="field admin-price">
+            <label>Preis (€)</label>
+            <input
+              value={form.price}
+              inputMode="decimal"
+              onChange={(e) => setForm({ ...form, price: e.target.value })}
+              placeholder="12,90"
+            />
+          </div>
+        )}
       </div>
+      {hasSizes && (
+        <div className="admin-price-sizes">
+          <div className="field admin-price">
+            <label>Größe 1</label>
+            <input
+              value={form.sizeLabel}
+              onChange={(e) => setForm({ ...form, sizeLabel: e.target.value })}
+              placeholder="0,2 l"
+            />
+          </div>
+          <div className="field admin-price">
+            <label>Preis Größe 1 (€)</label>
+            <input
+              value={form.price}
+              inputMode="decimal"
+              onChange={(e) => setForm({ ...form, price: e.target.value })}
+              placeholder="2,50"
+            />
+          </div>
+          <div className="field admin-price">
+            <label>Größe 2 (optional)</label>
+            <input
+              value={form.size2Label}
+              onChange={(e) => setForm({ ...form, size2Label: e.target.value })}
+              placeholder="0,4 l"
+            />
+          </div>
+          <div className="field admin-price">
+            <label>Preis Größe 2 (€)</label>
+            <input
+              value={form.size2Price}
+              inputMode="decimal"
+              onChange={(e) => setForm({ ...form, size2Price: e.target.value })}
+              placeholder="4,50"
+            />
+          </div>
+        </div>
+      )}
 
       <div className="field">
         <label>Beschreibung</label>
