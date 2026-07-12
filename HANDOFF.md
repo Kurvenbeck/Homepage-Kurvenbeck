@@ -101,6 +101,16 @@ web/
   `telHref`/`whatsappHref`/`mailtoHref` werden daraus abgeleitet (Footer +
   Biergarten-CTAs + Backstube-Banner nutzen sie). Im Admin unter `/admin/einstellungen`
   pflegbar. Neue Kontaktangaben als weiteren `site_settings`-Key ergänzen.
+- **Footer-Einbindung — verbindliche Regel (seit 2026-07-09):** Jede Server-Komponenten-Seite
+  bindet den Footer über **`<SiteFooterServer />`** (`components/SiteFooterServer.tsx`) ein,
+  **nie** `<SiteFooter />` direkt ohne `contact`-Prop. `SiteFooterServer` zieht die
+  Kontaktdaten selbst über `getSiteSettings()` (jetzt mit `cache()` gewrappt, damit mehrere
+  Aufrufe pro Request nicht mehrfach die DB treffen). Grund: Bug am 2026-07-09 gefunden —
+  Impressum/Datenschutz/AGB (`LegalPage.tsx`) riefen `<SiteFooter />` ohne `contact` auf und
+  zeigten dadurch die Platzhalter-Adresse/-Telefonnummer statt der echten Daten. Einzige
+  Ausnahme: `app/admin/login/page.tsx` ist eine Client-Komponente (`"use client"`) und kann
+  `SiteFooterServer` (async Server-Komponente) nicht direkt rendern — dort bleibt
+  `<SiteFooter />` mit Fallback-Kontaktdaten bestehen.
 - **Warenkorb (Backstube):** Client-State via `CartContext` mit
   `localStorage`-Persistenz; Drawer öffnet automatisch beim Hinzufügen.
 
@@ -161,9 +171,21 @@ betroffenen Personen". **Löschfristen automatisiert:** Migration
 `20260706150000_retention_cron_jobs.sql` — zwei `pg_cron`-Jobs löschen täglich nachts
 Catering-Anfragen 60 Tage nach Wunschdatum bzw. Backstube-Bestellungen 7 Tage nach Backtag
 (Fallback jeweils Eingangsdatum, falls kein Datum gesetzt ist); in `cron.job` als aktiv
-verifiziert. **Offen:** Impressum + AGB sind noch Platzhalter — Impressum muss insbesondere
-die im Datenschutztext hinterlegten echten Angaben übernehmen (Johannes Wehner, Im Hetzenloch 3,
-89558 Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`), sonst widersprechen sich beide Seiten.
+verifiziert. **Impressum (live, Stand 2026-07-08):** `app/impressum/page.tsx` mit echten Angaben — Kurvenbeck
+GmbH, Im Hetzenloch 3, 89558 Böhmenkirch-Schnittlingen, Geschäftsführer Johannes Wehner,
+USt-IdNr. `DE455026608`, `kontakt@kurvenbeck.com`. **Offen:** Handelsregisternummer +
+Registergericht fehlen noch (im Text als „wird nachgetragen" markiert) — sobald der Eintrag
+vorliegt, in `app/impressum/page.tsx` ergänzen.
+
+**AGB (live, Stand 2026-07-08):** `app/agb/page.tsx` mit dem Text aus
+`Rechtliche Dokumente/AGB_Kurvenbeck_Anwaltsversion_V2.docx` (15 Paragrafen: Anbieter,
+Geltungsbereich, Catering-Vertragsschluss, Leistungsumfang, Personenzahl, Preise/Zahlung,
+Stornierungsstaffel, Leihgeschirr, Backstube-Vorbestellung, Widerrufsausschluss, Allergene,
+höhere Gewalt, Fotoaufnahmen, Haftung, Schlussbestimmungen). **Bewusst nicht übernommen:** der
+Dokument-Abschnitt „Hinweise für die anwaltliche Prüfung" (interne Prüfhinweise für den Anwalt,
+nicht für die öffentliche Seite bestimmt). ⚠️ **Das Ausgangsdokument ist als „Entwurf zur
+anwaltlichen Prüfung" gekennzeichnet** — vor Go-Live sollte der Kunde bestätigen, dass die
+anwaltliche Prüfung abgeschlossen ist.
 
 **Demos (noch ohne Backend):**
 - **Backstube-Warenkorb-Komponenten** (`components/cart/*`) — voll bedienbar inkl.
@@ -184,9 +206,10 @@ erreichbar ist — er darf so bleiben, geht aber nicht live in Erscheinung.
 Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen Entscheidungen stehen
 in **§11**. Kompakt (Stand 2026-07-07):
 
-1. **Impressum + AGB mit echten Angaben befüllen** (höchste Prio, blockiert Go-Live): müssen die im
-   Datenschutztext hinterlegten echten Angaben übernehmen (Johannes Wehner, Im Hetzenloch 3, 89558
-   Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`), sonst widersprechen sich die Rechtsseiten.
+1. ✅ **Impressum + AGB mit echten Angaben live** (2026-07-08) — beim Impressum fehlt nur noch
+   **Handelsregisternummer + Registergericht** (nachtragen, sobald der Eintrag vorliegt); die
+   AGB stammen aus dem Anwaltsentwurf (`Rechtliche Dokumente/`) und sind laut Dokument noch als
+   **Entwurf zur anwaltlichen Prüfung** gekennzeichnet — Freigabe beim Kunden erfragen.
 2. ✅ **Echte Kontaktdaten stehen im Backend** (Telefon `0151 / 2222 1396`, Adresse Im Hetzenloch 3,
    E-Mail `kontakt@kurvenbeck.com`) — nur noch gegen die echten Angaben gegenprüfen, kein Blocker mehr.
 3. **Google-Business-Profil verlinken** (NAP-Konsistenz) — Kundentermin war am 2026-07-06.
@@ -247,11 +270,12 @@ NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY=sb_publishable_…   # Dashboard → Settin
   Dashboard-Config erledigt: Site URL `http://localhost:3003`, Redirect URLs
   `http://localhost:3003/**`, Magic-Link-Template auf token_hash umgestellt
   (`{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email` — nötig, weil
-  `@supabase/ssr` PKCE nutzt), öffentliche Registrierung aus. **Auth-User:** genau ein Konto
-  (`ihringmichael@gmail.com`); `kontakt@kurvenbeck.com` ist in `admins`, hat aber noch kein
-  Auth-Konto. Detail-Fallstrick in Projekt-Memory `kurvenbeck-admin-auth`: Auth-User **nie**
-  manuell per SQL in `auth.users` anlegen (GoTrue braucht leere Strings statt NULL in den
-  Token-Spalten → sonst „500: Database error finding user"); nutze Dashboard → Auth → Users.
+  `@supabase/ssr` PKCE nutzt), öffentliche Registrierung aus. **Auth-User (Stand 2026-07-09):**
+  zwei Konten — `ihringmichael@gmail.com` und `kontakt@kurvenbeck.com` (beide in `admins`,
+  beide confirmed, Login getestet). Detail-Fallstrick in Projekt-Memory `kurvenbeck-admin-auth`:
+  Auth-User **nie** manuell per SQL in `auth.users` anlegen (GoTrue braucht leere Strings statt
+  NULL in den Token-Spalten → sonst „500: Database error finding user"); nutze Dashboard → Auth
+  → Users.
 
 - ✅ **Phase 5 — verifiziert** — Admin-Oberfläche unter `/admin`. Loader `getMenuForAdmin(area)`
   (`lib/menu.ts`) lädt alle Gerichte inkl. nicht-verfügbarer + Allergen-Stammdaten. Server

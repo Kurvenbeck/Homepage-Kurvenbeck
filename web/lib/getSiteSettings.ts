@@ -1,3 +1,4 @@
+import { cache } from "react";
 import { createClient } from "@/utils/supabase/server";
 import {
   buildContact,
@@ -9,9 +10,11 @@ import {
 /**
  * Server-Loader für die Kontaktdaten aus `site_settings` (öffentlich lesbar via
  * Publishable-Key + RLS). Fällt bei fehlenden/leeren Werten auf die Platzhalter
- * zurück, damit nie ein leerer tel:/wa.me-Link entsteht.
+ * zurück, damit nie ein leerer tel:/wa.me-Link entsteht. Mit `cache()` gewrappt,
+ * damit mehrere Aufrufe pro Request (z. B. Seite + `SiteFooterServer`) nur eine
+ * DB-Anfrage auslösen.
  */
-export async function getSiteSettings(): Promise<SiteContact> {
+export const getSiteSettings = cache(async (): Promise<SiteContact> => {
   const supabase = await createClient();
   const { data, error } = await supabase
     .from("site_settings")
@@ -29,7 +32,7 @@ export async function getSiteSettings(): Promise<SiteContact> {
     email: map.get(SETTINGS_KEYS.email)?.trim() || FALLBACK_SETTINGS.email,
     address: map.get(SETTINGS_KEYS.address) ?? FALLBACK_SETTINGS.address,
   });
-}
+});
 
 export type SiteSettingsRaw = {
   phoneDisplay: string;

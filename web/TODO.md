@@ -265,10 +265,11 @@ Termine/Druckränder feinjustieren. Backstube-Druckkarte später über denselben
       umgesetzt:** Migration `20260706150000_retention_cron_jobs.sql` — zwei `pg_cron`-Jobs
       (`delete-old-catering-requests`, `delete-old-backstube-orders`), täglich nachts, verifiziert
       aktiv in `cron.job`.
-- [ ] **Impressum & AGB noch Platzhalter** (`app/impressum`, `app/agb`). Impressum muss insbesondere
-      die im Datenschutztext hinterlegten echten Angaben (Johannes Wehner, Im Hetzenloch 3, 89558
-      Böhmenkirch-Schnittlingen, `kontakt@kurvenbeck.com`) übernehmen — sonst widersprechen sich
-      beide Rechtsseiten.
+- [x] **Impressum & AGB mit echten Angaben (2026-07-08/09):** `app/impressum/page.tsx`
+      (Kurvenbeck GmbH, Johannes Wehner, USt-IdNr. `DE455026608` — Handelsregisternummer/
+      Registergericht noch offen, im Text als „wird nachgetragen" markiert) und
+      `app/agb/page.tsx` (Text aus dem Anwaltsentwurf `Rechtliche Dokumente/`, Hinweis: laut
+      Dokument noch „Entwurf zur anwaltlichen Prüfung" — Freigabe beim Kunden erfragen).
 
 ## 6. Local-SEO
 

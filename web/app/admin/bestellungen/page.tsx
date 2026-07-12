@@ -6,7 +6,7 @@ import { getBackstubeOrders } from "@/lib/backstubeOrders";
 import { BestellungenTabs } from "@/components/admin/BestellungenTabs";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 
 export const dynamic = "force-dynamic";
 
@@ -89,7 +89,7 @@ export default async function OrdersAdminPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooterServer />
     </>
   );
 }

@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { IconPhone, IconBrandWhatsapp } from "@tabler/icons-react";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { getSiteSettings } from "@/lib/getSiteSettings";
@@ -200,7 +200,7 @@ export default async function BiergartenPage() {
         </div>
       </section>
 
-      <SiteFooter contact={contact} />
+      <SiteFooterServer />
     </>
   );
 }

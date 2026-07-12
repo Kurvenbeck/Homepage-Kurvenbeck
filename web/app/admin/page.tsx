@@ -8,7 +8,7 @@ import { MenuAdmin } from "@/components/admin/MenuAdmin";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { MENU_AREAS, type MenuArea } from "@/lib/menuAreas";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 
 export const dynamic = "force-dynamic";
 
@@ -121,7 +121,7 @@ export default async function AdminPage({
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooterServer />
     </>
   );
 }

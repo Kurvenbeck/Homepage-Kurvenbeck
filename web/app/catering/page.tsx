@@ -1,5 +1,5 @@
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { CateringForm } from "@/components/CateringForm";
@@ -214,7 +214,7 @@ export default async function CateringPage() {
         </div>
       </section>
 
-      <SiteFooter contact={contact} />
+      <SiteFooterServer />
     </>
   );
 }

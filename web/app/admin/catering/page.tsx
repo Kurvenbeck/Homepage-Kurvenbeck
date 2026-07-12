@@ -5,7 +5,7 @@ import { getCateringRequests } from "@/lib/catering";
 import { CateringInbox } from "@/components/admin/CateringInbox";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 
 export const dynamic = "force-dynamic";
 
@@ -88,7 +88,7 @@ export default async function CateringInboxPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooterServer />
     </>
   );
 }

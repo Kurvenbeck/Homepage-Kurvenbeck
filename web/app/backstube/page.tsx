@@ -4,7 +4,7 @@ import { getSiteSettings } from "@/lib/getSiteSettings";
 import { Photo } from "@/components/Photo";
 import { backstubePhotos } from "@/lib/images";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 import { getMenu } from "@/lib/menu";
 import { getBacktag } from "@/lib/getBacktag";
 import { BackstubeOrder } from "@/components/backstube/BackstubeOrder";
@@ -85,7 +85,7 @@ export default async function BackstubePage() {
 
       <BackstubeOrder menu={menu} backtag={backtag} />
 
-      <SiteFooter contact={contact} />
+      <SiteFooterServer />
     </>
   );
 }

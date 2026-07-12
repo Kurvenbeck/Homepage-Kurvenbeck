@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Image from "next/image";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { getOpeningStatus } from "@/lib/openingHours";
@@ -161,7 +161,7 @@ export default async function HomePage() {
         </div>
       </section>
 
-      <SiteFooter contact={contact} />
+      <SiteFooterServer />
     </div>
   );
 }

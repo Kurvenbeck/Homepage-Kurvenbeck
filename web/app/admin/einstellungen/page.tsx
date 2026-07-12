@@ -5,7 +5,7 @@ import { getSiteSettingsForAdmin } from "@/lib/getSiteSettings";
 import { SettingsAdmin } from "@/components/admin/SettingsAdmin";
 import { AdminNav } from "@/components/admin/AdminNav";
 import { SiteHeader } from "@/components/SiteHeader";
-import { SiteFooter } from "@/components/SiteFooter";
+import { SiteFooterServer } from "@/components/SiteFooterServer";
 
 export const dynamic = "force-dynamic";
 
@@ -98,7 +98,7 @@ export default async function SettingsPage() {
         </div>
       </section>
 
-      <SiteFooter />
+      <SiteFooterServer />
     </>
   );
 }

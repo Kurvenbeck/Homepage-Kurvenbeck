@@ -1,9 +1,8 @@
 import { SiteHeader } from "./SiteHeader";
-import { SiteFooter } from "./SiteFooter";
+import { SiteFooterServer } from "./SiteFooterServer";
 
 /**
  * Schlichtes Chrome für Rechts-/Standardseiten (README §12.5).
- * Inhalte sind Platzhalter und vor Live-Gang vom Betreiber zu befüllen.
  */
 export function LegalPage({
   eyebrow,
@@ -28,7 +27,7 @@ export function LegalPage({
           {children}
         </div>
       </section>
-      <SiteFooter />
+      <SiteFooterServer />
     </>
   );
 }
