@@ -218,6 +218,18 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
 > **Entscheidung (2026-07-05):** Kennzeichnungen (vegetarisch/vegan/alkoholfrei) bleiben
 > **Text** — es wird **keine** Icon-Darstellung geben.
 
+## 4a. Getränke: zwei Größen mit eigenem Preis  ✅ (gebaut 2026-07-12)
+
+- [x] Statt jede Größe als eigenen Menüeintrag anzulegen (z. B. „Spezi 0,2 l" /
+      „Spezi 0,4 l"), bekommt jedes Getränk in der Kategorie „Getränke" optional zwei
+      Größen-Spalten mit frei editierbarem Label (z. B. „0,2 l" / „0,4 l") und je eigenem
+      Preis. Migration `20260712080000_menu_item_drink_sizes.sql` (3 nullable Spalten
+      `size1_label`/`size2_label`/`size2_price` auf `menu_items`). Nur in der Kategorie
+      „Getränke" sichtbar (Titel-Check im Admin-Editor); Einträge ohne zweite Größe sehen
+      exakt wie vorher aus. Anzeige aktualisiert auf `/biergarten`, Druck-Speisekarte und
+      „Empfehlung des Hauses". End-to-end verifiziert (Testdatensatz gesetzt/geprüft/
+      zurückgesetzt), `npm run build` grün.
+
 ## 4b. Druckbare Tisch-Speisekarte (Biergarten)  🖨️
 
 **Problem:** Gäste am Tisch haben keine Karte. **Ziel:** Der Betreiber druckt aus dem Admin

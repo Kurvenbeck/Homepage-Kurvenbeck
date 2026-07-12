@@ -341,6 +341,18 @@ nur die App liest über den Publishable-Key.
   (`components/MenuRecommendations.tsx`).
 - **Sicherheitsupdate:** **Next 15.1.6 → 15.5.20** + postcss-`overrides` → `npm audit` = 0.
 
+**Erledigt (2026-07-12):**
+- **Getränke mit zwei Größen (eine Zeile statt Dopplung):** Statt „Spezi 0,2 l" und
+  „Spezi 0,4 l" als zwei Menüeinträge anzulegen, bekommt jedes Getränk in der Kategorie
+  „Getränke" optional zwei Größen-Spalten mit frei editierbarem Label (z. B. „0,2 l" /
+  „0,4 l") und je eigenem Preis. Migration `20260712080000_menu_item_drink_sizes.sql`
+  (3 nullable Spalten `size1_label`/`size2_label`/`size2_price` auf `menu_items`, keine
+  RLS-Änderung nötig). Nur in der Kategorie „Getränke" sichtbar (Titel-Check im Admin-
+  Editor); Einträge/Kategorien ohne zweite Größe sehen exakt wie vorher aus (Ein-Preis-
+  Fallback). Anzeige auf `/biergarten`, der Druck-Speisekarte und bei „Empfehlung des
+  Hauses" aktualisiert. `lib/menu.ts` (`MenuItem`/`AdminMenuItem` um `sizeLabel`/
+  `secondSize` erweitert), `app/admin/actions.ts` (`updateItem`), `MenuAdmin.tsx`.
+
 ---
 
 ## 11. Beschlossene Roadmap & Entscheidungen (Durchsprache 2026-07-05)
