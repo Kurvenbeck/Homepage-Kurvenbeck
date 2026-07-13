@@ -130,7 +130,7 @@ Einträge nach.
 
 **Catering-Anfragen (live, Stand 2026-07-06/07):** Formular speichert echt in Supabase
 (`catering_requests`, RLS: anon nur INSERT, Lesen/Ändern nur Admin) + Honeypot-Spamschutz;
-Posteingang unter `/admin/catering` (Tab „Anfragen", neu↔erledigt). **E-Mail-Versand live:**
+Posteingang unter `/admin/catering` (Tab „Anfragen - Catering", neu↔erledigt). **E-Mail-Versand live:**
 Benachrichtigung an `kontakt@kurvenbeck.com` + Bestätigungsmail an den Gast (Hostinger-SMTP,
 `lib/mail.ts`). Die 4 Beispiel-Kacheln auf der Seite zeigen nur noch Foto/Titel/Beschreibung
 (kein „Menü ansehen", kein Preis/Gästezahl-Hinweis mehr).
@@ -398,7 +398,7 @@ stehen in `web/TODO.md`; hier die **Entscheidungen und ihr Warum**.
 ✅ **Gebaut (2026-07-05):** Server Action `app/catering/actions.ts` (`submitCateringRequest`) mit
 serverseitiger Validierung + Honeypot; Anfrage in Supabase (`catering_requests`, RLS: anon nur
 INSERT mit gehärtetem `WITH CHECK`, Lesen/Ändern nur `is_admin()`). **Posteingang im Admin**
-`/admin/catering` (Tab „Anfragen", neu↔erledigt) — Loader `lib/catering.ts`, Status-Action
+`/admin/catering` (Tab „Anfragen - Catering", neu↔erledigt) — Loader `lib/catering.ts`, Status-Action
 `app/admin/catering-actions.ts`, UI `components/admin/CateringInbox.tsx`. Build grün, RLS + Advisors
 verifiziert.
 - ✅ **E-Mail-Versand (gebaut 2026-07-06/07):** SMTP-Zugangsdaten liegen jetzt vor

@@ -158,7 +158,7 @@ tabelle nötig → **keine** Abhängigkeit zu 1b mehr.
       read-only Karte; „So funktioniert's" + Header-CTA auf echten Ablauf umgestellt (kein WhatsApp).
       Zeigt bei aktivem Backtag den grünen Status („Vorbestellen für … · Bestellschluss …"), sonst
       „Aktuell kein Backtag".
-- [x] **Admin `/admin/bestellungen`** (Tab „Bestellungen", `AdminNav` erweitert): Backtag pflegen
+- [x] **Admin `/admin/bestellungen`** (Tab „Backstube", `AdminNav` erweitert): Backtag pflegen
       (`BacktagAdmin`, grün/rot Save), **aggregierte Backliste** über alle offenen Bestellungen,
       Einzelbestellungen mit Positionen + Status neu↔erledigt (`OrdersInbox`). Loader
       `lib/backstubeOrders.ts`, Actions `app/admin/order-actions.ts` (`updateBacktag`,
