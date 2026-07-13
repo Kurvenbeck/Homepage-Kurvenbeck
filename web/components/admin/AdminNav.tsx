@@ -20,21 +20,21 @@ export function AdminNav({
         className={`admin-nav-link${active === "hours" ? " is-active" : ""}`}
         aria-current={active === "hours" ? "page" : undefined}
       >
-        Öffnungszeiten
+        Öffnungszeiten - Biergarten
       </Link>
       <Link
         href="/admin/bestellungen"
         className={`admin-nav-link${active === "orders" ? " is-active" : ""}`}
         aria-current={active === "orders" ? "page" : undefined}
       >
-        Bestellungen
+        Backstube
       </Link>
       <Link
         href="/admin/catering"
         className={`admin-nav-link${active === "catering" ? " is-active" : ""}`}
         aria-current={active === "catering" ? "page" : undefined}
       >
-        Anfragen
+        Anfragen - Catering
       </Link>
       <Link
         href="/admin/einstellungen"
