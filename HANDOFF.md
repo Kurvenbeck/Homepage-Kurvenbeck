@@ -48,8 +48,11 @@ statisch prerendered.
 
 ## 4. Repository & Zugang
 
-- Aktuell: **privates Repo** `ihringmichael-max/Homepage-Kurvenbeck`, Branch `main`.
-- Zielzustand: Umzug in die Org **`Kurvenbeck`** — Schritte in `web/TODO.md` (Punkt 7).
+- **Seit 2026-07-14: `Kurvenbeck/Homepage-Kurvenbeck`** (eigener GitHub-Account des Kunden),
+  Branch `main` — lokaler Remote `origin` zeigt hierhin, `git push`/`git pull` gehen automatisch
+  dorthin. Das alte private Repo `ihringmichael-max/Homepage-Kurvenbeck` bleibt als Backup unter
+  dem Remote-Namen `ihringmichael-backup` bestehen, bekommt aber keine neuen Commits mehr.
+  Details: `web/TODO.md` Punkt 9.
 
 ## 5. Struktur
 

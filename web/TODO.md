@@ -339,14 +339,18 @@ Biergarten-Intro (`garten.webp`).
       per `overrides: { "postcss": "^8.5.10" }` gelöst → **`npm audit` = 0 vulnerabilities**.
       `npm run build` grün, alle Routen im Dev-Smoke-Test 200 (bzw. 307 Login-Schutz).
 
-## 9. Repo auf Kurvenbeck-Org umziehen
+## 9. Repo auf Kurvenbeck-Org umziehen ✅ (erledigt 2026-07-14)
 
-**Stand:** Code im privaten Repo `ihringmichael-max/Homepage-Kurvenbeck` (Account ist kein
-Org-Mitglied → direkter Push nach `Kurvenbeck/…` bisher nicht möglich).
-
-- [ ] Zugang klären (`ihringmichael-max` in Org **Kurvenbeck** einladen **oder** Org-Account nutzen).
-- [ ] Umzug: GitHub **Transfer ownership** oder Org-Repo + Remote umhängen
-      (`git remote set-url origin …Kurvenbeck/Homepage-Kurvenbeck.git`).
+**Umgesetzt:** Der Kunde hat einen eigenen GitHub-Account **`Kurvenbeck`** (zweiter Account,
+nicht Org — für die spätere unabhängige Pflege durch den Kunden selbst) angelegt und dort
+`Kurvenbeck/Homepage-Kurvenbeck` erstellt (zunächst leer). `ihringmichael-max` wurde dort als
+Collaborator eingeladen und hat angenommen; der komplette Stand (`main`, volle Historie, Commit
+`6b7db4a`) wurde per `git push` direkt hochgeladen (kein PR nötig/möglich — Ziel war leer, keine
+gemeinsame Historie zum Vergleichen). Lokaler Remote danach umbenannt: **`origin` zeigt jetzt auf
+`Kurvenbeck/Homepage-Kurvenbeck`** (künftige Pushes gehen automatisch dorthin), das alte private
+Repo bleibt unter `ihringmichael-backup` als Referenz/Backup bestehen, bekommt aber keine neuen
+Commits mehr. **Offen:** Vercel muss beim Deployment auf das neue `Kurvenbeck`-Repo zeigen (nicht
+mehr auf `ihringmichael-max/…`), siehe §9 „Deployment" in HANDOFF.md.
 
 ## 10. Feinschliff (optional)
 
