@@ -107,10 +107,14 @@ web/
   Kontaktdaten selbst über `getSiteSettings()` (jetzt mit `cache()` gewrappt, damit mehrere
   Aufrufe pro Request nicht mehrfach die DB treffen). Grund: Bug am 2026-07-09 gefunden —
   Impressum/Datenschutz/AGB (`LegalPage.tsx`) riefen `<SiteFooter />` ohne `contact` auf und
-  zeigten dadurch die Platzhalter-Adresse/-Telefonnummer statt der echten Daten. Einzige
-  Ausnahme: `app/admin/login/page.tsx` ist eine Client-Komponente (`"use client"`) und kann
-  `SiteFooterServer` (async Server-Komponente) nicht direkt rendern — dort bleibt
-  `<SiteFooter />` mit Fallback-Kontaktdaten bestehen.
+  zeigten dadurch die Platzhalter-Adresse/-Telefonnummer statt der echten Daten.
+  **Nachgezogen (2026-07-14):** derselbe Bug war auch auf `/admin/login` — die Seite ist eine
+  Client-Komponente (`"use client"`, wegen `signInWithOtp`) und konnte `SiteFooterServer`
+  (async Server-Komponente) nicht direkt rendern, zeigte also die Platzhalter-Kontaktdaten
+  selbst nach dem Login. Fix: `app/admin/login/page.tsx` ist jetzt ein schlanker async
+  Server-Wrapper, der `getSiteSettings()` lädt und an die neue Client-Komponente
+  `components/admin/AdminLoginForm.tsx` (enthält das Formular + `<SiteFooter contact={…} />`)
+  durchreicht — keine Client-Komponente mehr, die `<SiteFooter />` ohne `contact` rendert.
 - **Warenkorb (Backstube):** Client-State via `CartContext` mit
   `localStorage`-Persistenz; Drawer öffnet automatisch beim Hinzufügen.
 

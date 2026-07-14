@@ -31,6 +31,27 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > offen oben, erledigt unten). Migration `20260707100000_backstube_recipes_schema.sql`
 > (2 Tabellen, RLS admin-only — Rezepte sind interne Betriebsdaten). Details Abschnitt 3.
 >
+> **✅ Erledigt — Kategorien ein-/ausblendbar (2026-07-14):** Leere Kategorien (alle Einträge
+> deaktiviert) wurden bisher trotzdem mit Überschrift auf der Karte angezeigt — Bug. Zusätzlich
+> gewünscht: eine ganze Kategorie soll sich unabhängig von den einzelnen Einträgen komplett
+> aus-/einblenden lassen (z. B. Saison-Kategorie). Neue Spalte `menu_categories.is_available`
+> (Migration `20260714090000_menu_category_availability.sql`, Default `true`). Admin-UI: Augen-
+> Icon-Button im Kategorie-Header (`components/admin/MenuAdmin.tsx`, neben Hoch/Runter/Löschen),
+> wirkt sofort wie Verschieben/Löschen (kein separater Save-Schritt), Kategorie wird im Admin
+> gedimmt/gestrichelt dargestellt (`.admin-category.is-hidden`, analog zum Artikel-Muster).
+> `getMenu()` (`lib/menu.ts`) zeigt öffentlich nur Kategorien mit `is_available = true` **und**
+> mindestens einem verfügbaren Eintrag — deckt Bug und Feature gleichzeitig ab. Gilt für
+> Biergarten **und** Backstube (gleiche Tabelle) sowie automatisch für die Druck-Speisekarte
+> (nutzt dieselbe `getMenu()`-Quelle).
+>
+> **✅ Erledigt — Header-CTA „Tisch reservieren" korrigiert (2026-07-14):** Der Button im
+> Biergarten-Header verlinkte fälschlich auf `/catering` (Anfrageformular) statt eine
+> Reservierung zu ermöglichen. Ersetzt durch zwei runde Icon-Buttons (Telefon + grünes
+> WhatsApp-Icon, `.icon-cta`/`.icon-cta--phone`/`.icon-cta--whatsapp` in `globals.css`),
+> je 44×44px für große Klickfläche, 1 Tap direkt zu `tel:`/`wa.me` — keine Zwischenseite.
+> Nur auf der Biergarten-Seite (`app/biergarten/page.tsx`, `SiteHeader action`-Prop); die
+> größeren Tel/WhatsApp-Buttons in der Intro-Sektion bleiben zusätzlich bestehen.
+>
 > **✅ Erledigt — Backstube-Bestätigungsmail + CSS-Token-Fix (2026-07-07):** Gast bekommt nach
 > einer Vorbestellung (falls E-Mail angegeben) eine Bestätigungsmail mit Positionen, Summe und
 > Abholtag — analog zum Catering-Vorlage, aber **bewusst ohne** Admin-Mail pro Bestellung (zu

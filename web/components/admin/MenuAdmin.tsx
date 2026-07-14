@@ -10,6 +10,8 @@ import {
   IconDeviceFloppy,
   IconCheck,
   IconX,
+  IconEye,
+  IconEyeOff,
 } from "@tabler/icons-react";
 import type { AdminMenu, AdminMenuCategory, AdminMenuItem } from "@/lib/menu";
 import {
@@ -17,6 +19,7 @@ import {
   renameCategory,
   deleteCategory,
   moveCategory,
+  setCategoryAvailability,
   createItem,
   updateItem,
   deleteItem,
@@ -200,7 +203,7 @@ function CategoryBlock({
   const [title, setTitle] = useState(category.title);
 
   return (
-    <section className="admin-category">
+    <section className={`admin-category${category.isAvailable ? "" : " is-hidden"}`}>
       <header className="admin-category-head">
         <input
           className="admin-category-title"
@@ -214,6 +217,25 @@ function CategoryBlock({
           aria-label="Kategorie-Titel"
         />
         <div className="admin-actions">
+          <button
+            type="button"
+            className="admin-icon-btn"
+            title={
+              category.isAvailable
+                ? "Kategorie ausblenden (öffentlich nicht mehr sichtbar)"
+                : "Kategorie einblenden (öffentlich wieder sichtbar)"
+            }
+            disabled={disabled}
+            onClick={() =>
+              onRun(() => setCategoryAvailability(area, category.id, !category.isAvailable))
+            }
+          >
+            {category.isAvailable ? (
+              <IconEye size={18} stroke={1.75} aria-hidden />
+            ) : (
+              <IconEyeOff size={18} stroke={1.75} aria-hidden />
+            )}
+          </button>
           <button
             type="button"
             className="admin-icon-btn"

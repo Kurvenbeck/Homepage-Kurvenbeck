@@ -32,9 +32,20 @@ export default async function BiergartenPage() {
         active="biergarten"
         logoSuffix="Tradition"
         action={
-          <Link href="/catering" className="btn btn-ghost">
-            Tisch reservieren
-          </Link>
+          <>
+            <a href={contact.telHref} className="icon-cta icon-cta--phone" aria-label="Tisch reservieren – anrufen">
+              <IconPhone size={20} stroke={1.75} aria-hidden />
+            </a>
+            <a
+              href={contact.whatsappHref}
+              className="icon-cta icon-cta--whatsapp"
+              target="_blank"
+              rel="noopener noreferrer"
+              aria-label="Tisch reservieren – per WhatsApp"
+            >
+              <IconBrandWhatsapp size={20} stroke={1.75} aria-hidden />
+            </a>
+          </>
         }
       />
 

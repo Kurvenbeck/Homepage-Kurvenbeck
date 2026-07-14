@@ -31,7 +31,7 @@ export default async function BackstubePage() {
         active="backstube"
         logoSuffix="Backstube"
         action={
-          <a href="#bestellen" className="btn btn-ghost">
+          <a href="#bestellen" className="btn btn-outline-accent">
             <IconShoppingBag size={18} stroke={1.75} aria-hidden />
             Vorbestellen
           </a>

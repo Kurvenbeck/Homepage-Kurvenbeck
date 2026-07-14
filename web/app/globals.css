@@ -140,6 +140,8 @@ img { display: block; max-width: 100%; }
 .btn-ghost:hover { box-shadow: 0 6px 16px rgba(86,86,85,0.20); }
 .btn-ghost--inverted { background: transparent; color: #fff; border: 1px solid rgba(255,255,255,0.4); }
 .btn-ghost--inverted:hover { box-shadow: 0 6px 16px rgba(255,255,255,0.15); }
+.btn-outline-accent { background: transparent; color: var(--color-accent); border: 1px solid var(--color-accent); }
+.btn-outline-accent:hover { background: var(--color-accent); color: #fff; }
 
 /* ---- Image-Placeholder (bis echte Fotos vorliegen) ---- */
 .ph {
@@ -247,6 +249,23 @@ a.text-link:hover { color: var(--color-accent); }
   margin-top: 4px;
 }
 .header-actions { display: flex; align-items: center; gap: var(--space-4); }
+
+/* Icon-only Kontakt-CTAs im Header (Telefon/WhatsApp) — großzügige Klickfläche */
+.icon-cta {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  flex: none;
+  transition: box-shadow var(--transition-fast), transform var(--transition-fast);
+}
+.icon-cta:hover { transform: translateY(-1px); }
+.icon-cta--phone { background: #fff; color: var(--color-accent); border: 1px solid rgba(171,13,14,0.3); }
+.icon-cta--phone:hover { box-shadow: 0 6px 16px rgba(171,13,14,0.25); }
+.icon-cta--whatsapp { background: #fff; color: #25d366; border: 1px solid rgba(37,211,102,0.35); }
+.icon-cta--whatsapp:hover { box-shadow: 0 6px 16px rgba(37,211,102,0.3); }
 
 /* Hamburger (Mobile-Navigation — im Prototyp offener Punkt, hier ergänzt) */
 .nav-toggle {
@@ -948,6 +967,7 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
   border: 1px solid var(--color-border); border-radius: var(--radius-lg);
   background: #fff; padding: var(--space-6);
 }
+.admin-category.is-hidden { opacity: 0.6; border-style: dashed; }
 .admin-category-head {
   display: flex; justify-content: space-between; align-items: center;
   gap: var(--space-4); margin-bottom: var(--space-5);

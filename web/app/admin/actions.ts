@@ -108,6 +108,28 @@ export async function renameCategory(
   }
 }
 
+export async function setCategoryAvailability(
+  area: string,
+  id: string,
+  isAvailable: boolean,
+): Promise<ActionResult> {
+  try {
+    const menuArea = assertArea(area);
+    const supabase = await getSupabase();
+
+    const { error } = await supabase
+      .from("menu_categories")
+      .update({ is_available: isAvailable })
+      .eq("id", id);
+    if (error) throw error;
+
+    revalidate(menuArea);
+    return { ok: true };
+  } catch (e) {
+    return fail(e);
+  }
+}
+
 export async function deleteCategory(
   area: string,
   id: string,

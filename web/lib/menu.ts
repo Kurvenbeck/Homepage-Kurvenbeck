@@ -54,6 +54,7 @@ type CategoryRow = {
   id: string;
   title: string;
   sort_order: number;
+  is_available: boolean;
   menu_items: {
     id: string;
     name: string;
@@ -79,6 +80,7 @@ type AdminCategoryRow = {
   id: string;
   title: string;
   sort_order: number;
+  is_available: boolean;
   menu_items: (CategoryRow["menu_items"][number] & {
     menu_item_ingredients:
       | { ingredient_id: string; amount: number | string; sort_order: number }[]
@@ -116,6 +118,8 @@ export type AdminMenuCategory = {
   id: string;
   title: string;
   sortOrder: number;
+  /** Ganze Kategorie öffentlich sichtbar? Unabhängig vom Verfügbar-Status der Einträge. */
+  isAvailable: boolean;
   items: AdminMenuItem[];
 };
 
@@ -132,7 +136,7 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
       supabase
         .from("menu_categories")
         .select(
-          `id, title, sort_order,
+          `id, title, sort_order, is_available,
            menu_items (
              id, name, description, price, size1_label, size2_label, size2_price,
              tags, sort_order, is_available, is_recommendation,
@@ -154,6 +158,7 @@ export async function getMenuForAdmin(area: string): Promise<AdminMenu> {
     id: cat.id,
     title: cat.title,
     sortOrder: cat.sort_order,
+    isAvailable: cat.is_available,
     items: cat.menu_items.map((item) => ({
       id: item.id,
       name: item.name,
@@ -193,7 +198,7 @@ export async function getMenu(area: string): Promise<Menu> {
       supabase
         .from("menu_categories")
         .select(
-          `id, title, sort_order,
+          `id, title, sort_order, is_available,
            menu_items (
              id, name, description, price, size1_label, size2_label, size2_price,
              tags, sort_order, is_available, is_recommendation,
@@ -246,21 +251,26 @@ export async function getMenu(area: string): Promise<Menu> {
   };
 
   // Empfehlungen werden aus der normalen Kategorieliste herausgelöst und oben
-  // hervorgehoben (stehen „sonst nicht auf der Karte").
-  const mappedCategories: MenuCategory[] = (categories ?? []).map((cat) => ({
-    id: cat.id,
-    title: cat.title,
-    items: cat.menu_items
-      .filter((item) => item.is_available)
-      .map(toMenuItem)
-      .filter((item) => {
-        if (item.isRecommendation) {
-          recommendations.push(item);
-          return false;
-        }
-        return true;
-      }),
-  }));
+  // hervorgehoben (stehen „sonst nicht auf der Karte"). Kategorien, die der
+  // Betreiber deaktiviert hat, oder die (nach dem Verfügbar-Filter der
+  // Einträge) leer sind, tauchen öffentlich gar nicht erst auf.
+  const mappedCategories: MenuCategory[] = (categories ?? [])
+    .filter((cat) => cat.is_available)
+    .map((cat) => ({
+      id: cat.id,
+      title: cat.title,
+      items: cat.menu_items
+        .filter((item) => item.is_available)
+        .map(toMenuItem)
+        .filter((item) => {
+          if (item.isRecommendation) {
+            recommendations.push(item);
+            return false;
+          }
+          return true;
+        }),
+    }))
+    .filter((cat) => cat.items.length > 0);
 
   const legend = (allergens ?? [])
     .filter((a) => usedCodes.has(a.code))

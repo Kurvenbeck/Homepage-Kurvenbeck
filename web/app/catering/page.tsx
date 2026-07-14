@@ -23,7 +23,7 @@ export default async function CateringPage() {
         active="catering"
         logoSuffix="Tradition"
         action={
-          <a href="#anfrage" className="btn btn-primary">
+          <a href="#anfrage" className="btn btn-outline-accent">
             Anfrage senden
           </a>
         }
