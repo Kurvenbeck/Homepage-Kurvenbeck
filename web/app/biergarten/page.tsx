@@ -10,6 +10,7 @@ import { getMenu } from "@/lib/menu";
 import { getOpeningStatus } from "@/lib/openingHours";
 import { OpeningStatusView } from "@/components/OpeningStatusView";
 import { MenuRecommendations } from "@/components/MenuRecommendations";
+import { RoutePill } from "@/components/RoutePill";
 
 export const metadata: Metadata = {
   title: "Biergarten",
@@ -66,6 +67,7 @@ export default async function BiergartenPage() {
                 Ein kühles Glas in der Sonne, ein lauschiges Eck im Schatten und
                 schwäbische Küche, die noch von Hand entsteht.
               </p>
+              <RoutePill contact={contact} />
             </div>
           </div>
         </Photo>

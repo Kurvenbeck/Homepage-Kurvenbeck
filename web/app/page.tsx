@@ -8,6 +8,7 @@ import { getOpeningStatus } from "@/lib/openingHours";
 import { getSiteSettings } from "@/lib/getSiteSettings";
 import { OpeningStatusView } from "@/components/OpeningStatusView";
 import { EventBanner } from "@/components/EventBanner";
+import { RoutePill } from "@/components/RoutePill";
 import { buildFoodEstablishmentJsonLd } from "@/lib/structuredData";
 
 // Dynamisch rendern, damit der Öffnungs-Status auf der Startseite tagesaktuell ist.
@@ -54,6 +55,7 @@ export default async function HomePage() {
               <h1>Drei Leidenschaften. Ein Haus.</h1>
               <p className="tagline">{"„Frisch, ehrlich, von hier.“"}</p>
               {/* CTA-Buttons auf Wunsch entfernt */}
+              <RoutePill contact={contact} />
               <OpeningStatusView status={opening} variant="hero" />
               <EventBanner events={opening.events} />
             </div>

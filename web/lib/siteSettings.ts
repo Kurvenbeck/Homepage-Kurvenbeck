@@ -24,6 +24,8 @@ export type SiteContact = {
   telHref: string;
   whatsappHref: string;
   mailtoHref: string;
+  /** Reiner Link zu Google Maps (kein iframe) — keine Drittanbieter-Anfrage vor dem Klick. */
+  mapsHref: string;
 };
 
 /** DB-Schlüssel der Einstellungen (Single Source, geteilt mit Loader + Admin). */
@@ -42,17 +44,19 @@ export function buildContact(input: {
   address: string;
 }): SiteContact {
   const digits = input.phoneE164.replace(/\D/g, ""); // wa.me: ohne + und ohne führende Null
+  const addressLines = input.address
+    .split("\n")
+    .map((line) => line.trim())
+    .filter(Boolean);
   return {
     phoneDisplay: input.phoneDisplay,
     phoneE164: input.phoneE164,
     email: input.email,
-    addressLines: input.address
-      .split("\n")
-      .map((line) => line.trim())
-      .filter(Boolean),
+    addressLines,
     telHref: `tel:${input.phoneE164}`,
     whatsappHref: `https://wa.me/${digits}`,
     mailtoHref: `mailto:${input.email}`,
+    mapsHref: `https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(addressLines.join(", "))}`,
   };
 }
 

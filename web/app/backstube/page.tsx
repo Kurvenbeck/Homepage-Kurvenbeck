@@ -8,6 +8,7 @@ import { SiteFooterServer } from "@/components/SiteFooterServer";
 import { getMenu } from "@/lib/menu";
 import { getBacktag } from "@/lib/getBacktag";
 import { BackstubeOrder } from "@/components/backstube/BackstubeOrder";
+import { RoutePill } from "@/components/RoutePill";
 
 export const metadata: Metadata = {
   title: "Backstube",
@@ -57,6 +58,7 @@ export default async function BackstubePage() {
                 Backwaren aus, bestelle bis 18 Uhr am Vortag vor und hole sie am
                 nächsten Abholtag ab.
               </p>
+              <RoutePill contact={contact} />
             </div>
           </div>
         </Photo>

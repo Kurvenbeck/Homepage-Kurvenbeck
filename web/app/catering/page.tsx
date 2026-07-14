@@ -4,6 +4,7 @@ import { Photo } from "@/components/Photo";
 import { photos } from "@/lib/images";
 import { CateringForm } from "@/components/CateringForm";
 import { getSiteSettings } from "@/lib/getSiteSettings";
+import { RoutePill } from "@/components/RoutePill";
 import type { Metadata } from "next";
 
 export const metadata: Metadata = {
@@ -46,6 +47,7 @@ export default async function CateringPage() {
                 Von der kleinen Familienfeier bis zum Firmenevent mit 300 Gästen —
                 wir kochen, liefern und kümmern uns um alles, was schmeckt.
               </p>
+              <RoutePill contact={contact} />
             </div>
           </div>
         </Photo>

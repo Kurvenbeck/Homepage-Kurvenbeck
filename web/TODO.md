@@ -31,6 +31,16 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > offen oben, erledigt unten). Migration `20260707100000_backstube_recipes_schema.sql`
 > (2 Tabellen, RLS admin-only — Rezepte sind interne Betriebsdaten). Details Abschnitt 3.
 >
+> **✅ Erledigt — „Route planen"-Pille (2026-07-14):** Die Adresse stand bisher nur ganz unten im
+> Footer, kaum sichtbar. Jetzt zusätzlich als Pille (📍-Icon + „Route planen · Adresse") im Hero
+> aller vier Seiten (Start, Biergarten, Catering, Backstube) — auf der Startseite direkt zwischen
+> Tagline und Öffnungsstatus. Reiner Link zu Google Maps (`mapsHref` in `lib/siteSettings.ts`,
+> `?api=1&query=` mit der Adresse aus `site_settings`, dynamisch, kein Hardcoding), öffnet in
+> neuem Tab — **kein iframe**, damit keine Drittanbieter-Anfrage vor dem Klick entsteht (keine
+> Anpassung der Datenschutzerklärung nötig, Entscheidung analog zum bestehenden „kein
+> Cookie-Banner"-Ansatz). Component `components/RoutePill.tsx`, Styles `.route-pill` in
+> `globals.css` (angelehnt an die bestehende `.open-pill--hero`-Optik).
+>
 > **✅ Erledigt — Kategorien ein-/ausblendbar (2026-07-14):** Leere Kategorien (alle Einträge
 > deaktiviert) wurden bisher trotzdem mit Überschrift auf der Karte angezeigt — Bug. Zusätzlich
 > gewünscht: eine ganze Kategorie soll sich unabhängig von den einzelnen Einträgen komplett
