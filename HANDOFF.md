@@ -199,6 +199,23 @@ anwaltliche Prüfung abgeschlossen ist.
   Persistenz, aber auf der Seite **nicht mehr eingebunden** (Backstube ist jetzt Text-Menü);
   aufbewahrt für den späteren echten Checkout (TODO #4).
 
+**Kleinere UX-Fixes & Sichtbarkeit (2026-07-14):**
+- **Biergarten-Header „Tisch reservieren"** verlinkte fälschlich auf `/catering` statt eine
+  Reservierung zu ermöglichen — jetzt zwei runde Icon-Buttons (Telefon rot, WhatsApp grün,
+  je 44×44px) direkt zu `tel:`/`wa.me`. Catering-/Backstube-Header-CTA vereinheitlicht
+  (`.btn-outline-accent`, transparent mit rotem Rahmen — vorher inkonsistent rot/grau).
+- **Admin-Login zeigte Platzhalter-Kontaktdaten im Footer** (Client-Komponente konnte
+  `SiteFooterServer` nicht rendern) — behoben durch Aufteilung in Server-Wrapper
+  (`app/admin/login/page.tsx`) + Client-Formular (`components/admin/AdminLoginForm.tsx`).
+- **Menü-Kategorien komplett aus-/einblendbar** (Biergarten + Backstube), unabhängig vom
+  Verfügbar-Status einzelner Einträge — behebt auch den Bug, dass leere Kategorien weiter mit
+  Überschrift angezeigt wurden. Neue Spalte `menu_categories.is_available`, Migration
+  `20260714090000_menu_category_availability.sql`, Augen-Icon im Kategorie-Header.
+- **„Route planen"-Pille** auf allen vier Foto-Heroes (Start, Biergarten, Catering, Backstube) —
+  die Adresse stand bisher nur unauffällig im Footer. Reiner Link zu Google Maps (kein iframe,
+  `mapsHref` in `lib/siteSettings.ts`), dynamisch aus `site_settings`, keine Anpassung der
+  Datenschutzerklärung nötig.
+
 **Platzhalter:** noch fehlende Fotos (Biergarten/Home-Karten teils offen, siehe
 `web/public/images/README.md`), Inhalte (Adresse/Öffnungszeiten), Impressum + AGB
 (Datenschutz ist bereits echt, siehe §7).
@@ -211,25 +228,32 @@ erreichbar ist — er darf so bleiben, geht aber nicht live in Erscheinung.
 ## 8. Nächste Schritte
 
 Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen Entscheidungen stehen
-in **§11**. Kompakt (Stand 2026-07-07):
+in **§11**. Kompakt (Stand 2026-07-14):
 
-1. ✅ **Impressum + AGB mit echten Angaben live** (2026-07-08) — beim Impressum fehlt nur noch
-   **Handelsregisternummer + Registergericht** (nachtragen, sobald der Eintrag vorliegt); die
-   AGB stammen aus dem Anwaltsentwurf (`Rechtliche Dokumente/`) und sind laut Dokument noch als
-   **Entwurf zur anwaltlichen Prüfung** gekennzeichnet — Freigabe beim Kunden erfragen.
+1. ✅ **Impressum + AGB mit echten Angaben live** (2026-07-08). Handelsregisternummer +
+   Registergericht sind **beim Kunden angefragt** (Stand 2026-07-14, noch offen — kein
+   Go-Live-Blocker, wird nachgetragen sobald der Eintrag vorliegt). Die AGB wurden vom Kunden
+   als **inhaltlich passend bestätigt** (2026-07-14) — die formale anwaltliche Freigabe des
+   Entwurfs (`Rechtliche Dokumente/`) sollte trotzdem noch beim Kunden verifiziert werden.
 2. ✅ **Echte Kontaktdaten stehen im Backend** (Telefon `0151 / 2222 1396`, Adresse Im Hetzenloch 3,
-   E-Mail `kontakt@kurvenbeck.com`) — nur noch gegen die echten Angaben gegenprüfen, kein Blocker mehr.
-3. **Google-Business-Profil verlinken** (NAP-Konsistenz) — Kundentermin war am 2026-07-06.
-4. **Vercel-Deployment durchführen** (Hoster entschieden) + Supabase Auth-URLs von localhost auf
-   die echte Domain umstellen (Go-Live-Checkliste, `web/TODO.md` #11).
-5. Repo-Umzug in die Kurvenbeck-Org, restliche Fotos, kleinere Feinschliff-Punkte.
+   E-Mail `kontakt@kurvenbeck.com`) — kein Blocker mehr.
+3. ✅ **Repo-Umzug abgeschlossen** (2026-07-14) — `Kurvenbeck/Homepage-Kurvenbeck` ist jetzt
+   `origin`. Details §4.
+4. **Google-Business-Profil verlinken** (NAP-Konsistenz) — macht der Kunde **bewusst erst nach
+   dem Go-Live** selbst (Entscheidung 2026-07-14), kein Blocker für das Deployment.
+5. **Als Nächstes: Vercel-Deployment durchführen** (Hoster entschieden, noch nicht gestartet) +
+   Supabase Auth-URLs von `localhost` auf die echte Domain umstellen (Go-Live-Checkliste,
+   `web/TODO.md` #11) — das sind die letzten beiden echten Blocker vor dem Go-Live.
+6. Restliche Fotos, kleinere Feinschliff-Punkte (`web/TODO.md` #10).
 
 **Bereits erledigt (nicht mehr offen):** Kontaktdaten-/Öffnungszeiten-Backend, Catering-Formular
 inkl. **E-Mail-Versand** (Admin-Benachrichtigung + Gast-Bestätigung, seit 2026-07-06/07 live),
 Backstube-Vorbestellen inkl. UI-Feinschliff **und Gast-Bestätigungsmail** (2026-07-07),
 „Empfehlung des Hauses", Titelschutz, „seit 1978" entfernt, Datenschutzerklärung mit
 automatischer Löschung, Local-SEO (JSON-LD, Sitemap, Robots), Catering-Kacheln bereinigt (kein
-totes „Menü ansehen" mehr).
+totes „Menü ansehen" mehr), Repo-Umzug zu `Kurvenbeck/Homepage-Kurvenbeck` (2026-07-14),
+Header-CTA-Fixes, Admin-Login-Footer-Fix, Menü-Kategorie-Sichtbarkeit, „Route planen"-Pille
+(alle 2026-07-14).
 
 ## 9. Deployment (Hoster entschieden, Deployment noch offen)
 
