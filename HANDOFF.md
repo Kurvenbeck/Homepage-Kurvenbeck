@@ -228,23 +228,25 @@ erreichbar ist — er darf so bleiben, geht aber nicht live in Erscheinung.
 ## 8. Nächste Schritte
 
 Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen Entscheidungen stehen
-in **§11**. Kompakt (Stand 2026-07-14):
+in **§11**. Kompakt (Stand 2026-07-16):
 
-1. ✅ **Impressum + AGB mit echten Angaben live** (2026-07-08). Handelsregisternummer +
-   Registergericht sind **beim Kunden angefragt** (Stand 2026-07-14, noch offen — kein
-   Go-Live-Blocker, wird nachgetragen sobald der Eintrag vorliegt). Die AGB wurden vom Kunden
-   als **inhaltlich passend bestätigt** (2026-07-14) — die formale anwaltliche Freigabe des
-   Entwurfs (`Rechtliche Dokumente/`) sollte trotzdem noch beim Kunden verifiziert werden.
+1. ✅ **Impressum + AGB vollständig live** (2026-07-16) — Handelsregisternummer `B 749785` +
+   Registergericht Amtsgericht Ulm ergänzt, AGB vom Kunden inhaltlich final bestätigt. Kein
+   offener Punkt mehr.
 2. ✅ **Echte Kontaktdaten stehen im Backend** (Telefon `0151 / 2222 1396`, Adresse Im Hetzenloch 3,
    E-Mail `kontakt@kurvenbeck.com`) — kein Blocker mehr.
 3. ✅ **Repo-Umzug abgeschlossen** (2026-07-14) — `Kurvenbeck/Homepage-Kurvenbeck` ist jetzt
-   `origin`. Details §4.
+   `origin`, seit 2026-07-16 bewusst **public** (Details §9). Details §4.
 4. **Google-Business-Profil verlinken** (NAP-Konsistenz) — macht der Kunde **bewusst erst nach
    dem Go-Live** selbst (Entscheidung 2026-07-14), kein Blocker für das Deployment.
-5. **Als Nächstes: Vercel-Deployment durchführen** (Hoster entschieden, noch nicht gestartet) +
-   Supabase Auth-URLs von `localhost` auf die echte Domain umstellen (Go-Live-Checkliste,
-   `web/TODO.md` #11) — das sind die letzten beiden echten Blocker vor dem Go-Live.
-6. Restliche Fotos, kleinere Feinschliff-Punkte (`web/TODO.md` #10).
+5. ✅ **Vercel-Deployment + Domain live** (2026-07-16) — `kurvenbeck.com` läuft produktiv über
+   Vercel, Continuous Deployment aktiv. Details §9.
+6. **Letzter echter Go-Live-Blocker: Supabase Auth-URLs** von `localhost:3003` auf
+   `https://kurvenbeck.com` umstellen (`web/TODO.md` #11) — sonst funktioniert der
+   Magic-Link-Admin-Login auf der Live-Domain nicht.
+7. **Neu entdeckt & behoben (2026-07-16):** SEO-Metadaten (Sitemap/robots/JSON-LD/
+   `metadataBase`) zeigten auf die falsche Domain `kurvenbeck.de` statt `.com` — korrigiert.
+8. Restliche Fotos, kleinere Feinschliff-Punkte (`web/TODO.md` #10).
 
 **Bereits erledigt (nicht mehr offen):** Kontaktdaten-/Öffnungszeiten-Backend, Catering-Formular
 inkl. **E-Mail-Versand** (Admin-Benachrichtigung + Gast-Bestätigung, seit 2026-07-06/07 live),
@@ -253,13 +255,38 @@ Backstube-Vorbestellen inkl. UI-Feinschliff **und Gast-Bestätigungsmail** (2026
 automatischer Löschung, Local-SEO (JSON-LD, Sitemap, Robots), Catering-Kacheln bereinigt (kein
 totes „Menü ansehen" mehr), Repo-Umzug zu `Kurvenbeck/Homepage-Kurvenbeck` (2026-07-14),
 Header-CTA-Fixes, Admin-Login-Footer-Fix, Menü-Kategorie-Sichtbarkeit, „Route planen"-Pille
-(alle 2026-07-14).
+(2026-07-14), Impressum-Registereintrag + KI-Bildhinweis im Footer, Vercel-Deployment +
+Domain-Anbindung `kurvenbeck.com` (2026-07-16).
 
-## 9. Deployment (Hoster entschieden, Deployment noch offen)
+## 9. Deployment ✅ live (Stand 2026-07-16)
 
-**Entscheidung (2026-07-06): Vercel.** Deployment selbst steht noch aus. Vor dem ersten Deploy:
-die Supabase-ENV (siehe §10) im Host hinterlegen; `.env.local` ist git-ignoriert — Keys niemals
-committen.
+**Entscheidung (2026-07-06): Vercel.** Projekt `homepage-kurvenbeck` im Vercel-Team „Kurvenbeck"
+(Account Johannes Wehner, Hobby-Plan), Git-verknüpft mit `Kurvenbeck/Homepage-Kurvenbeck`
+(Root Directory `web`, Framework Next.js automatisch erkannt) — jeder Push auf `main` deployed
+automatisch (Continuous Deployment). Environment Variables (`NEXT_PUBLIC_SUPABASE_URL`,
+`NEXT_PUBLIC_SUPABASE_PUBLISHABLE_KEY`, `SMTP_HOST`/`SMTP_PORT`/`SMTP_USER`/`SMTP_PASSWORD`) für
+alle drei Environments (Production/Preview/Development) hinterlegt.
+
+**Domain:** `kurvenbeck.com` bei Hostinger registriert, DNS auf Vercel umgestellt — A-Record
+`@ → 216.198.79.1` (Vercels aktuelle Anycast-IP, nicht die ältere `76.76.21.21` aus der
+allgemeinen Doku), `www` lief bereits über einen von Hostinger vorbelegten Verweis auf `@` und
+zeigte direkt „Valid Configuration". MX-Record für `kontakt@kurvenbeck.com` bewusst unangetastet
+gelassen (E-Mail-Zustellung bleibt bei Hostinger). **Bugfix nebenbei gefunden:** `SITE_URL` war in
+`app/robots.ts`, `app/sitemap.ts`, `lib/structuredData.ts` und `app/layout.tsx` (`metadataBase`)
+auf die falsche TLD `kurvenbeck.de` statt `kurvenbeck.com` gesetzt — korrigiert (Commit `5205d2c`).
+
+**Repo-Sichtbarkeit bewusst auf „Public" gestellt (Entscheidung 2026-07-16):** Vercels Hobby-Plan
+blockiert Production-Deployments von Commit-Autoren ohne Vercel-Team-Mitgliedschaft bei **privaten**
+Repos („The Hobby Plan does not support collaboration for private repositories"). Da Michael
+(`ihringmichael-max`) als GitHub-Collaborator pusht, aber nicht im Vercel-Team ist, wurden seine
+Pushes blockiert. Statt eines kostenpflichtigen Pro-Upgrades wurde das Repo öffentlich gestellt —
+bewusster Trade-off, da keine Secrets im Code liegen (alle Zugangsdaten ausschließlich in
+Vercel-Environment-Variablen bzw. git-ignorierter `.env.local`). Repo bleibt dauerhaft public,
+kein Umschalten pro Push nötig.
+
+**Offen:** Supabase Auth-URLs (Site URL + Redirect URLs) noch von `localhost:3003` auf
+`https://kurvenbeck.com` umstellen (Dashboard → Authentication → URL Configuration) — sonst
+funktioniert der Magic-Link-Admin-Login auf der Live-Domain nicht.
 
 ## 10. Menü-Backend (in Arbeit)
 

@@ -371,7 +371,12 @@ mehr auf `ihringmichael-max/…`), siehe §9 „Deployment" in HANDOFF.md.
 
 ## 11. Go-Live-Checkliste
 
+- [x] **Vercel-Deployment + Domain live (2026-07-16):** Projekt `homepage-kurvenbeck` im
+      Vercel-Team „Kurvenbeck", Git-verknüpft (`Kurvenbeck/Homepage-Kurvenbeck`, Root
+      Directory `web`), Continuous Deployment aktiv. `kurvenbeck.com` per DNS (A-Record
+      `216.198.79.1`) verbunden. Repo bewusst **public** gestellt (Hobby-Plan-Workaround statt
+      Pro-Upgrade, keine Secrets im Code — Details HANDOFF.md §9).
 - [ ] **Supabase Auth URL Configuration umstellen:** Site URL + Redirect URLs im Supabase-Dashboard
       (Authentication → URL Configuration) von `localhost:3003` auf die echte Domain
       (`https://kurvenbeck.com`) setzen — sonst zeigt der Magic-Link-Login im Admin nach dem
-      Go-Live noch auf localhost und funktioniert nicht.
+      Go-Live noch auf localhost und funktioniert nicht. **Letzter offener Go-Live-Blocker.**
