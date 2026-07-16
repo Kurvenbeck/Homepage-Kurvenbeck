@@ -8,7 +8,7 @@ import type { OpeningStatus } from "./openingHours";
  * konkrete Termine statt wiederkehrender Wochentage).
  */
 
-const SITE_URL = "https://kurvenbeck.de";
+const SITE_URL = "https://kurvenbeck.com";
 
 /** "Mühlweg 12" / "72074 Musterstadt" → { straße, plz, ort }. */
 function parseAddress(lines: string[]) {

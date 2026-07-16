@@ -1,6 +1,6 @@
 import type { MetadataRoute } from "next";
 
-const SITE_URL = "https://kurvenbeck.de";
+const SITE_URL = "https://kurvenbeck.com";
 
 const ROUTES = [
   "",

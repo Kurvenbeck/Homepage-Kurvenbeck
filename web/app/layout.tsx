@@ -18,7 +18,7 @@ const dmSans = DM_Sans({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://kurvenbeck.de"),
+  metadataBase: new URL("https://kurvenbeck.com"),
   title: {
     default: "Kurvenbeck — Biergarten · Catering · Backstube",
     template: "%s — Kurvenbeck",
