@@ -55,6 +55,7 @@ export function SiteFooter({
             <Link href="/agb">AGB</Link>
           </span>
         </div>
+        <p className="footer-note">Bildmaterial teilweise KI-generiert und symbolisch.</p>
       </div>
     </footer>
   );

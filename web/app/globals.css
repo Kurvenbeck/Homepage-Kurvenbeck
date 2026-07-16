@@ -447,6 +447,11 @@ a.text-link:hover { color: var(--color-accent); }
 }
 .footer-legal a { transition: color var(--transition-fast); }
 .footer-legal a:hover { color: var(--color-accent); }
+.footer-note {
+  margin-top: var(--space-3);
+  color: var(--color-text-muted);
+  font-size: var(--text-xs);
+}
 @media (max-width: 860px) { .footer-grid { grid-template-columns: 1fr 1fr; } }
 @media (max-width: 480px) { .footer-grid { grid-template-columns: 1fr; gap: var(--space-8); } }
 

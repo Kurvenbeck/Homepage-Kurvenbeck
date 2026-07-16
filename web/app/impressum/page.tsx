@@ -30,9 +30,10 @@ export default function ImpressumPage() {
         </p>
 
         <h2>Registereintrag</h2>
-        <p style={{ color: "var(--color-text-secondary)" }}>
-          Registergericht und Handelsregisternummer werden nachgetragen, sobald der
-          Eintrag vorliegt.
+        <p>
+          Registergericht: Amtsgericht Ulm
+          <br />
+          Registernummer: B 749785
         </p>
 
         <h2>Umsatzsteuer-Identifikationsnummer</h2>
