@@ -376,7 +376,9 @@ mehr auf `ihringmichael-max/…`), siehe §9 „Deployment" in HANDOFF.md.
       Directory `web`), Continuous Deployment aktiv. `kurvenbeck.com` per DNS (A-Record
       `216.198.79.1`) verbunden. Repo bewusst **public** gestellt (Hobby-Plan-Workaround statt
       Pro-Upgrade, keine Secrets im Code — Details HANDOFF.md §9).
-- [ ] **Supabase Auth URL Configuration umstellen:** Site URL + Redirect URLs im Supabase-Dashboard
-      (Authentication → URL Configuration) von `localhost:3003` auf die echte Domain
-      (`https://kurvenbeck.com`) setzen — sonst zeigt der Magic-Link-Login im Admin nach dem
-      Go-Live noch auf localhost und funktioniert nicht. **Letzter offener Go-Live-Blocker.**
+- [x] **Supabase Auth URL Configuration umgestellt (2026-07-16):** Site URL + Redirect URLs im
+      Supabase-Dashboard von `localhost:3003` auf `https://kurvenbeck.com` gesetzt (localhost
+      zusätzlich in den Redirect URLs belassen für lokale Entwicklung). **Offen:** einmal live
+      mit echtem E-Mail-Empfang auf `kurvenbeck.com/admin/login` end-to-end verifizieren.
+
+**🎉 Go-Live-Checkliste komplett — alle Blocker behoben (2026-07-16).**

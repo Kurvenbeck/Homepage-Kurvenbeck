@@ -227,26 +227,19 @@ erreichbar ist — er darf so bleiben, geht aber nicht live in Erscheinung.
 
 ## 8. Nächste Schritte
 
-Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen Entscheidungen stehen
-in **§11**. Kompakt (Stand 2026-07-16):
+**🎉 Go-Live technisch abgeschlossen (2026-07-16):** `kurvenbeck.com` ist live, alle drei
+ursprünglichen Blocker (Impressum, Vercel-Deployment, Supabase Auth-URLs) sind behoben. Details
+zum Deployment: §9. Vollständig priorisiert in **`web/TODO.md`**; die durchgesprochenen
+Entscheidungen stehen in **§11**.
 
-1. ✅ **Impressum + AGB vollständig live** (2026-07-16) — Handelsregisternummer `B 749785` +
-   Registergericht Amtsgericht Ulm ergänzt, AGB vom Kunden inhaltlich final bestätigt. Kein
-   offener Punkt mehr.
-2. ✅ **Echte Kontaktdaten stehen im Backend** (Telefon `0151 / 2222 1396`, Adresse Im Hetzenloch 3,
-   E-Mail `kontakt@kurvenbeck.com`) — kein Blocker mehr.
-3. ✅ **Repo-Umzug abgeschlossen** (2026-07-14) — `Kurvenbeck/Homepage-Kurvenbeck` ist jetzt
-   `origin`, seit 2026-07-16 bewusst **public** (Details §9). Details §4.
-4. **Google-Business-Profil verlinken** (NAP-Konsistenz) — macht der Kunde **bewusst erst nach
-   dem Go-Live** selbst (Entscheidung 2026-07-14), kein Blocker für das Deployment.
-5. ✅ **Vercel-Deployment + Domain live** (2026-07-16) — `kurvenbeck.com` läuft produktiv über
-   Vercel, Continuous Deployment aktiv. Details §9.
-6. **Letzter echter Go-Live-Blocker: Supabase Auth-URLs** von `localhost:3003` auf
-   `https://kurvenbeck.com` umstellen (`web/TODO.md` #11) — sonst funktioniert der
-   Magic-Link-Admin-Login auf der Live-Domain nicht.
-7. **Neu entdeckt & behoben (2026-07-16):** SEO-Metadaten (Sitemap/robots/JSON-LD/
-   `metadataBase`) zeigten auf die falsche Domain `kurvenbeck.de` statt `.com` — korrigiert.
-8. Restliche Fotos, kleinere Feinschliff-Punkte (`web/TODO.md` #10).
+**Was noch offen bleibt (kein Blocker mehr, echtes Nice-to-have):**
+
+1. **Google-Business-Profil verlinken** (NAP-Konsistenz) — macht der Kunde **bewusst erst nach
+   dem Go-Live** selbst (Entscheidung 2026-07-14).
+2. **Magic-Link-Login live mit echtem E-Mail-Empfang verifizieren** — die URL-Konfiguration in
+   Supabase ist gesetzt, aber noch nicht end-to-end auf `kurvenbeck.com/admin/login`
+   durchgeklickt.
+3. Restliche Fotos, kleinere Feinschliff-Punkte (`web/TODO.md` #10).
 
 **Bereits erledigt (nicht mehr offen):** Kontaktdaten-/Öffnungszeiten-Backend, Catering-Formular
 inkl. **E-Mail-Versand** (Admin-Benachrichtigung + Gast-Bestätigung, seit 2026-07-06/07 live),
@@ -255,8 +248,9 @@ Backstube-Vorbestellen inkl. UI-Feinschliff **und Gast-Bestätigungsmail** (2026
 automatischer Löschung, Local-SEO (JSON-LD, Sitemap, Robots), Catering-Kacheln bereinigt (kein
 totes „Menü ansehen" mehr), Repo-Umzug zu `Kurvenbeck/Homepage-Kurvenbeck` (2026-07-14),
 Header-CTA-Fixes, Admin-Login-Footer-Fix, Menü-Kategorie-Sichtbarkeit, „Route planen"-Pille
-(2026-07-14), Impressum-Registereintrag + KI-Bildhinweis im Footer, Vercel-Deployment +
-Domain-Anbindung `kurvenbeck.com` (2026-07-16).
+(2026-07-14), Impressum vollständig (Registernummer `B 749785`, Amtsgericht Ulm) + KI-Bildhinweis
+im Footer, AGB final bestätigt, Vercel-Deployment + Domain-Anbindung `kurvenbeck.com` inkl.
+Domain-Bug-Fix (`.de`→`.com`) + Supabase-Auth-URL-Umstellung (alle 2026-07-16).
 
 ## 9. Deployment ✅ live (Stand 2026-07-16)
 
@@ -284,9 +278,18 @@ bewusster Trade-off, da keine Secrets im Code liegen (alle Zugangsdaten ausschli
 Vercel-Environment-Variablen bzw. git-ignorierter `.env.local`). Repo bleibt dauerhaft public,
 kein Umschalten pro Push nötig.
 
-**Offen:** Supabase Auth-URLs (Site URL + Redirect URLs) noch von `localhost:3003` auf
-`https://kurvenbeck.com` umstellen (Dashboard → Authentication → URL Configuration) — sonst
-funktioniert der Magic-Link-Admin-Login auf der Live-Domain nicht.
+**Supabase Auth-URLs umgestellt (2026-07-16):** Site URL + Redirect URLs im Supabase-Dashboard
+(Authentication → URL Configuration) von `localhost:3003` auf `https://kurvenbeck.com` gesetzt
+(localhost zusätzlich in den Redirect URLs belassen, damit lokale Entwicklung weiter funktioniert).
+
+**Live-Check bestanden (2026-07-16):** `kurvenbeck.com` liefert aus — Startseite lädt, echte
+Kontaktdaten (keine Platzhalter), Foto-Heroes + KI-Bildhinweis im Footer sichtbar,
+`sitemap.xml` zeigt korrekt auf `kurvenbeck.com`-URLs. **Damit ist der Go-Live technisch
+abgeschlossen** — alle drei ursprünglichen Blocker (Impressum, Vercel-Deployment, Supabase
+Auth-URLs) sowie der zwischenzeitlich gefundene Domain-Bug sind behoben. Offener Restpunkt: die
+Magic-Link-Anmeldung selbst wurde noch nicht live mit echtem E-Mail-Empfang durchgeklickt
+(nur die URL-Konfiguration ist gesetzt) — beim nächsten Admin-Login auf `kurvenbeck.com/admin/login`
+verifizieren.
 
 ## 10. Menü-Backend (in Arbeit)
 
