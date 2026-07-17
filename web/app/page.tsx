@@ -133,7 +133,7 @@ export default async function HomePage() {
                 <span className="num">3</span>
                 <span className="lbl">Backstube</span>
               </span>
-              <h3>Sei schnell, sonst isch&apos;s weg.</h3>
+              <h3>Von Hand geformt, frisch aus dem Ofen.</h3>
               <p>
                 Brezel, Briegl, Körnerwecken und mehr — in der Nacht von Hand
                 geformt, am Morgen frisch aus dem Holzbackofen. Heute online

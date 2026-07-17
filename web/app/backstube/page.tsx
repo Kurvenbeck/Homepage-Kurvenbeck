@@ -51,7 +51,7 @@ export default async function BackstubePage() {
           <div className="subpage-hero-inner">
             <div className="container">
               <p className="eyebrow">Backstube</p>
-              <h1>Sei schnell, sonst isch&apos;s weg</h1>
+              <h1>Von Hand geformt, frisch aus dem Ofen.</h1>
               <p className="lede">
                 Brezel, Briegl, Körnerwecken und mehr — in der Nacht von Hand
                 geformt, am Morgen frisch aus dem Holzbackofen. Such dir deine
