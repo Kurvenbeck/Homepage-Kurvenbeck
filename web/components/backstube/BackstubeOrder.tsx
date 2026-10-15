@@ -415,8 +415,8 @@ function OrderDrawer({
                 ist bei uns eingegangen.
               </p>
               <p>
-                Abholung {backtag.pickupText}. Wir backen frisch — sei pünktlich,
-                sonst isch&apos;s weg.
+                Abholung {backtag.pickupText}. Wir backen frisch für dich und
+                freuen uns auf deinen Besuch!
               </p>
               <button
                 type="button"
@@ -433,7 +433,7 @@ function OrderDrawer({
             <div className="drawer-body">
               {lines.length === 0 ? (
                 <p className="drawer-empty">
-                  Noch nichts drin — schnapp dir eine Brezel, bevor sie weg ist.
+                  Noch nichts drin — such dir was Leckeres aus.
                 </p>
               ) : (
                 <>
