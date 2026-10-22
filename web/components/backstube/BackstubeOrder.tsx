@@ -363,14 +363,24 @@ function OrderDrawer({
       return;
     }
     setSubmitting(true);
-    const res = await submitBackstubeOrder({
-      name,
-      email,
-      phone,
-      note,
-      company,
-      items: lines.map((l) => ({ id: l.item.id, qty: l.qty })),
-    });
+    let res: Awaited<ReturnType<typeof submitBackstubeOrder>>;
+    try {
+      res = await submitBackstubeOrder({
+        name,
+        email,
+        phone,
+        note,
+        company,
+        items: lines.map((l) => ({ id: l.item.id, qty: l.qty })),
+      });
+    } catch {
+      // z. B. Seite war während eines Updates offen → nicht stumm hängen bleiben.
+      setSubmitting(false);
+      setError(
+        "Das hat gerade nicht geklappt. Bitte lade die Seite neu — dein Warenkorb bleibt erhalten.",
+      );
+      return;
+    }
     setSubmitting(false);
     if (res.ok) {
       setName("");
