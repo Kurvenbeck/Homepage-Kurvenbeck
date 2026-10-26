@@ -1,0 +1,26 @@
+# Dependabot: wöchentliche, gruppierte Update-PRs. Kein Auto-Merge —
+# jedes Update wird bewusst von Hand gemergt (ein Merge auf main deployt live).
+# Security-Updates kommen unabhängig vom Zeitplan sofort (Repo-Einstellung
+# "Dependabot security updates" muss aktiv sein).
+version: 2
+updates:
+  - package-ecosystem: "npm"
+    directory: "/web"
+    schedule:
+      interval: "weekly"
+      day: "monday"
+      time: "06:00"
+      timezone: "Europe/Berlin"
+    open-pull-requests-limit: 5
+    groups:
+      next-react:
+        patterns: ["next", "react", "react-dom", "eslint-config-next", "@types/react*"]
+      supabase:
+        patterns: ["@supabase/*"]
+      minor-and-patch:
+        update-types: ["minor", "patch"]
+        exclude-patterns: ["next", "react", "react-dom", "@supabase/*"]
+  - package-ecosystem: "github-actions"
+    directory: "/"
+    schedule:
+      interval: "monthly"
