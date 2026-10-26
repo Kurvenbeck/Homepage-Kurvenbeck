@@ -14,7 +14,14 @@ export async function GET(request: NextRequest) {
   const tokenHash = searchParams.get("token_hash");
   const type = searchParams.get("type") as EmailOtpType | null;
   const code = searchParams.get("code");
-  const next = searchParams.get("next") ?? "/admin";
+  // Nur interne Pfade zulassen ("//host" oder "/\\host" würden extern auflösen).
+  const nextParam = searchParams.get("next") ?? "/admin";
+  const next =
+    nextParam.startsWith("/") &&
+    !nextParam.startsWith("//") &&
+    !nextParam.startsWith("/\\")
+      ? nextParam
+      : "/admin";
 
   const supabase = await createClient();
 

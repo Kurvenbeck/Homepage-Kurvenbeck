@@ -2,6 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
+import { isRateLimited } from "@/lib/rateLimit";
 import { sendMailTo, sendNotificationMail } from "@/lib/mail";
 
 /**
@@ -104,6 +105,12 @@ export async function submitCateringRequest(
   try {
     // Honeypot: ausgefüllt → als Spam verwerfen, aber „Erfolg" vortäuschen.
     if (input.company.trim() !== "") return { ok: true };
+
+    if (await isRateLimited("catering", 8, 10 * 60 * 1000))
+      return {
+        ok: false,
+        error: "Gerade kommen sehr viele Anfragen. Bitte versuch es in ein paar Minuten noch einmal.",
+      };
 
     const name = input.name.trim();
     const email = input.email.trim();

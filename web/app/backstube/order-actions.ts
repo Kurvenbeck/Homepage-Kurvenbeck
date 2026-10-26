@@ -3,6 +3,7 @@
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
 import { getMenu } from "@/lib/menu";
+import { isRateLimited } from "@/lib/rateLimit";
 import { getBacktag } from "@/lib/getBacktag";
 import { sendMailTo } from "@/lib/mail";
 import type { Backtag } from "@/lib/backtag";
@@ -97,6 +98,12 @@ export async function submitBackstubeOrder(
   try {
     // Honeypot: ausgefüllt → als Spam verwerfen, aber „Erfolg" vortäuschen.
     if (input.company.trim() !== "") return { ok: true };
+
+    if (await isRateLimited("backstube", 8, 10 * 60 * 1000))
+      return {
+        ok: false,
+        error: "Gerade kommen sehr viele Anfragen. Bitte versuch es in ein paar Minuten noch einmal.",
+      };
 
     const backtag = await getBacktag();
     if (!backtag.active)
