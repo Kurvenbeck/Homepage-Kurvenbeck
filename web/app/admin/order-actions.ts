@@ -2,7 +2,7 @@
 
 import { revalidatePath } from "next/cache";
 import { createClient } from "@/utils/supabase/server";
-import { BACKTAG_KEYS } from "@/lib/backtag";
+import { BACKTAG_KEYS, DEADLINE_AT_RE } from "@/lib/backtag";
 import type { OrderStatus } from "@/lib/backstubeOrders";
 
 /**
@@ -29,6 +29,8 @@ export type BacktagInput = {
   active: boolean;
   date: string;
   deadlineText: string;
+  /** Bestellschluss „yyyy-MM-ddTHH:mm" (Berliner Ortszeit) oder leer. */
+  deadlineAt: string;
   pickupText: string;
 };
 
@@ -46,6 +48,10 @@ export async function updateBacktag(input: BacktagInput): Promise<ActionResult> 
         };
     }
 
+    const deadlineAt = input.deadlineAt.trim();
+    if (deadlineAt && !DEADLINE_AT_RE.test(deadlineAt))
+      return { ok: false, error: "Bestellschluss: ungültiges Datum/Uhrzeit." };
+
     const now = new Date().toISOString();
     const { error } = await supabase.from("site_settings").upsert(
       [
@@ -60,6 +66,7 @@ export async function updateBacktag(input: BacktagInput): Promise<ActionResult> 
           value: input.deadlineText.trim().slice(0, 100),
           updated_at: now,
         },
+        { key: BACKTAG_KEYS.deadlineAt, value: deadlineAt, updated_at: now },
         {
           key: BACKTAG_KEYS.pickupText,
           value: input.pickupText.trim().slice(0, 100),

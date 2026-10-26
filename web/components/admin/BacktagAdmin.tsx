@@ -2,6 +2,7 @@
 
 import { useState, useTransition } from "react";
 import { IconDeviceFloppy, IconCheck } from "@tabler/icons-react";
+import { isBacktagExpired } from "@/lib/backtag";
 import { updateBacktag, type BacktagInput } from "@/app/admin/order-actions";
 
 /**
@@ -19,6 +20,7 @@ export function BacktagAdmin({ initial }: { initial: BacktagInput }) {
     form.active !== saved.active ||
     form.date.trim() !== saved.date.trim() ||
     form.deadlineText.trim() !== saved.deadlineText.trim() ||
+    form.deadlineAt.trim() !== saved.deadlineAt.trim() ||
     form.pickupText.trim() !== saved.pickupText.trim();
 
   function save() {
@@ -47,6 +49,13 @@ export function BacktagAdmin({ initial }: { initial: BacktagInput }) {
           </span>
         </span>
       </label>
+      {saved.active &&
+        isBacktagExpired(saved.date || null, saved.deadlineAt || null) && (
+          <p className="admin-error">
+            Bestellschluss ist vorbei — auf der Seite steht automatisch „Aktuell
+            kein Backtag". Setz Datum und Bestellschluss für den nächsten Backtag.
+          </p>
+        )}
       <p className="admin-hint">
         Ist der Schalter aus (oder kein Datum gesetzt), zeigt die Backstube-Seite
         „Aktuell kein Backtag" und niemand kann bestellen.
@@ -61,6 +70,21 @@ export function BacktagAdmin({ initial }: { initial: BacktagInput }) {
           onChange={(e) => setForm({ ...form, date: e.target.value })}
         />
         <p className="admin-hint">Der Tag, für den vorbestellt und abgeholt wird.</p>
+      </div>
+
+      <div className="field">
+        <label htmlFor="backtag-deadline-at">Bestellschluss (Datum + Uhrzeit)</label>
+        <input
+          id="backtag-deadline-at"
+          type="datetime-local"
+          value={form.deadlineAt}
+          onChange={(e) => setForm({ ...form, deadlineAt: e.target.value })}
+        />
+        <p className="admin-hint">
+          Ab diesem Zeitpunkt schaltet sich die Vorbestellung automatisch ab
+          („Aktuell kein Backtag") — du musst nichts mehr ausschalten. Leer
+          gelassen schließt sie zu Beginn des Backtags.
+        </p>
       </div>
 
       <div className="field">

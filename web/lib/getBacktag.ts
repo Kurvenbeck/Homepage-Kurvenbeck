@@ -23,6 +23,8 @@ async function readRaw() {
     date: map.get(BACKTAG_KEYS.date) ?? FALLBACK_BACKTAG_RAW.date,
     deadlineText:
       map.get(BACKTAG_KEYS.deadlineText) ?? FALLBACK_BACKTAG_RAW.deadlineText,
+    deadlineAt:
+      map.get(BACKTAG_KEYS.deadlineAt) ?? FALLBACK_BACKTAG_RAW.deadlineAt,
     pickupText:
       map.get(BACKTAG_KEYS.pickupText) ?? FALLBACK_BACKTAG_RAW.pickupText,
   };
@@ -37,6 +39,7 @@ export type BacktagRaw = {
   active: boolean;
   date: string;
   deadlineText: string;
+  deadlineAt: string;
   pickupText: string;
 };
 
@@ -47,6 +50,7 @@ export async function getBacktagForAdmin(): Promise<BacktagRaw> {
     active: raw.active.trim() === "true",
     date: raw.date.trim(),
     deadlineText: raw.deadlineText,
+    deadlineAt: raw.deadlineAt.trim(),
     pickupText: raw.pickupText,
   };
 }
