@@ -9,6 +9,7 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 >       Skew Protection prüfen.
 > - [ ] GitHub: „Dependabot alerts/security updates" aktivieren; Major-PRs (`next-react`,
 >       `typescript`, `@types/node`) schließen.
+> - [x] 2026-11-09: Dependabot-PRs `minor-and-patch` + `supabase` gemergt (Icons 3.50, @supabase/ssr 0.12.7).
 > - [x] Dependabot, monatlicher Security-Check (Cloud-Routine, jeden 1.), Security-Header, Rate-Limit.
 
 > **✅ Erledigt — Menü-Backend (Biergarten + Backstube):** Supabase komplett angebunden

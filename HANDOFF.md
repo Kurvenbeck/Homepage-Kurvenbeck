@@ -610,7 +610,8 @@ verifiziert.
 **Gemacht (2026-10-26):** Security-Audit (`security-check.md`), Updates auf Next 15.5.28 / React
 19.0.9 / sharp 0.35.5, Security-Header + CSP in `next.config.mjs`, In-Memory-Rate-Limit
 (`lib/rateLimit.ts`, 8 Anfragen / 10 min pro IP, Catering + Backstube), Open-Redirect-Fix in
-`app/auth/confirm/route.ts`, Bestell-Button mit Fehlerbehandlung. **2026-11-09:** Next 15.5.29.
+`app/auth/confirm/route.ts`, Bestell-Button mit Fehlerbehandlung. **2026-11-09:** Next 15.5.29,
+Dependabot-Updates `@tabler/icons-react` 3.50 + `@supabase/ssr` 0.12.7 (lokal getestet, direkt gemergt).
 
 **Automatisierung:**
 - **Dependabot** (`.github/dependabot.yml`): montags 06:00, gruppierte npm-PRs (`next-react`,
