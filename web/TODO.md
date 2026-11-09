@@ -2,6 +2,15 @@
 
 Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 
+> **⏰ Wartung & Sicherheit (Stand 2026-11-09), Details HANDOFF.md §12:**
+> - [ ] **Mo 2026-12-07: Next-16-Update** (Next 15 Security-Support endet 2027-01-31).
+> - [ ] Nodemailer 9 → 10 (Major, npm audit high), danach Mailversand testen.
+> - [ ] Betreiber im Vercel-Dashboard: Firewall-Rate-Limit-Regel, `SMTP_PASSWORD` „Sensitive",
+>       Skew Protection prüfen.
+> - [ ] GitHub: „Dependabot alerts/security updates" aktivieren; Major-PRs (`next-react`,
+>       `typescript`, `@types/node`) schließen.
+> - [x] Dependabot, monatlicher Security-Check (Cloud-Routine, jeden 1.), Security-Header, Rate-Limit.
+
 > **✅ Erledigt — Menü-Backend (Biergarten + Backstube):** Supabase komplett angebunden
 > (Clients, Middleware, Schema, RLS, Seed). **Biergarten und Backstube** lesen ihre Karte
 > live aus der DB (Text-Format ohne Fotos); Magic-Link-Admin unter `/admin` pflegt beide
@@ -155,7 +164,8 @@ Gewünscht: echter Versand als **schöne E-Mail an `kontakt@kurvenbeck.com`** + 
       `kontakt@kurvenbeck.com`) — Zugangsdaten liegen jetzt in `web/.env.local` (git-ignoriert).
       Zentraler Helper `lib/mail.ts` (`nodemailer`, Absendername „Kurvenbeck Homepage", einheitlich
       für alle künftigen Mail-Funktionen zu nutzen). SMTP-Verbindung + Testversand verifiziert.
-- [ ] Optional härter: serverseitige **Rate-Limit-Prüfung** (Honeypot deckt einfache Bots ab).
+- [x] **Rate-Limit (2026-10-26):** In-Memory-Limit `lib/rateLimit.ts` (8 / 10 min pro IP), zusätzlich
+      Vercel-Firewall-Regel im Dashboard empfohlen (offen, siehe unten).
 - [x] **Catering-Kacheln bereinigt (2026-07-06):** „Menü ansehen →" entfernt (führte ins Leere,
       wird es nie geben), Preis-pro-Person/Mindestgästezahl entfernt — Kacheln zeigen nur noch
       Foto/Titel/Beschreibung, einzige Aktion ist das Formular unten. Hover-Effekt an `.hcard`

@@ -176,6 +176,17 @@ Dauerhafte Konventionen:
   ändert sich das grundlegend (Consent-Banner + Anpassung der
   Datenschutzerklärung nötig) — vorher mit dem Kunden abstimmen.
 
+## Wartung & Sicherheit
+
+- Updates immer im **eigenen Git-Worktree** bauen, `tsc` + `build` grün, lokal klicken, erst nach
+  Freigabe pushen (Push auf `main` deployt live). **Nicht deployen, während eine Bestellaktion läuft.**
+- Dependabot (`.github/dependabot.yml`): kein Auto-Merge, Major-Updates von Next/React/TypeScript/
+  @types/node werden ignoriert und bewusst von Hand gemacht. Monatlicher Security-Check läuft als
+  Cloud-Routine (nur lesend). **Next 16 bis spätestens 2027-01-31** (Termin Mo 2026-12-07).
+  Details/Stand: `HANDOFF.md` §12.
+- Backtag hat einen automatischen **Bestellschluss** (`backtag_deadline_at`, Berliner Zeit); der
+  Betreiber trägt ihn pro Backtag im Admin ein.
+
 ## Icons
 
 - Icon-Set: **`@tabler/icons-react`** (tree-shakeable). Beispiel:

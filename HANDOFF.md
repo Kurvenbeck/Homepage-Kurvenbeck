@@ -483,6 +483,12 @@ verifiziert.
   (`backtag_active`/`backtag_date`/`backtag_deadline_text`/`backtag_pickup_text`) — der Betreiber
   schaltet ihn im Admin ein/aus und setzt nach jedem Backtag den nächsten. Bewusst **keine** eigene
   Termintabelle → keine Abhängigkeit zum Öffnungszeiten-Backend.
+- **Automatischer Bestellschluss (live seit 2026-10-26):** zusätzlicher Key `backtag_deadline_at`
+  (Datum + Uhrzeit, Berliner Ortszeit, Format `yyyy-MM-ddTHH:mm`), im Admin als Feld
+  „Bestellschluss (Datum + Uhrzeit)". Ist der Zeitpunkt vorbei, ist der Backtag **automatisch
+  inaktiv** („Aktuell kein Backtag") — Logik `isBacktagExpired` in `lib/backtag.ts`, geprüft in
+  UI **und** in `submitBackstubeOrder`. Ohne Eintrag schließt der Backtag um 00:00 des Backtag-Datums.
+  **Der Betreiber muss den Bestellschluss für jeden neuen Backtag eintragen.**
 - **Gast-Flow:** Warenkorb (menügetrieben, live aus der DB), Vorbestellung mit Name (E-Mail/Telefon
   optional) → „Bestellung eingegangen". **Kein WhatsApp.** Ist kein Backtag aktiv, zeigt die Seite
   „Aktuell kein Backtag" und niemand kann bestellen.
@@ -598,3 +604,40 @@ verifiziert.
 - Erwünscht, aber **kein `Bakery`-Schema** (Titelschutz) — passenderer `schema.org`-Typ
   (z. B. `Restaurant`/`FoodEstablishment`) mit Adresse/Öffnungszeiten/Geo; `sitemap.xml`,
   `robots.txt`, Google-Business-Profil.
+
+## 12. Wartung & Sicherheit (Stand 2026-11-09)
+
+**Gemacht (2026-10-26):** Security-Audit (`security-check.md`), Updates auf Next 15.5.28 / React
+19.0.9 / sharp 0.35.5, Security-Header + CSP in `next.config.mjs`, In-Memory-Rate-Limit
+(`lib/rateLimit.ts`, 8 Anfragen / 10 min pro IP, Catering + Backstube), Open-Redirect-Fix in
+`app/auth/confirm/route.ts`, Bestell-Button mit Fehlerbehandlung. **2026-11-09:** Next 15.5.29.
+
+**Automatisierung:**
+- **Dependabot** (`.github/dependabot.yml`): montags 06:00, gruppierte npm-PRs (`next-react`,
+  `supabase`, `minor-and-patch`), **kein Auto-Merge** — jeder Merge auf `main` deployt live.
+  **Major-Updates** von Next/React/TypeScript/@types/node sind per `ignore` ausgeschlossen, werden
+  von Hand gemacht. Voraussetzung im Repo: „Dependabot alerts" + „security updates" an.
+- **Monatlicher Security-Check:** Cloud-Routine „Kurvenbeck Security-Check monatlich", jeden 1. um
+  ~06 Uhr, **nur lesend**, Bericht per Push + als Sitzung unter claude.ai/code. Grenzen: Die
+  Cloud-Sitzung erreicht `kurvenbeck.com` nicht (Live-Header-Check dort „unklar" → selbst mit
+  `curl -I https://kurvenbeck.com` prüfen); Aussagen zu Advisories im Bericht sind Websuche und
+  gegenzuprüfen (nicht alles wird wirklich ausgeführt, z. B. `npm audit`).
+
+**Update-Ablauf (so machen wir es):** eigener Git-Worktree (nicht im Dev-Ordner bauen, siehe
+CLAUDE.md), Versionen heben, `npx tsc --noEmit` + `npm run build`, lokal klicken (Start, Backstube,
+Admin-Login), erst nach Freigabe pushen, dann Vercel-Deployment auf „Ready" und Header live prüfen.
+**Nicht deployen, während eine Bestellaktion läuft** (offene Seiten können sonst veraltete
+Server-Action-IDs haben → Bestell-Button hängt).
+
+**⏰ Fester Termin — Mo 2026-12-07 (Kalendereintrag):** Update auf **Next 16** planen. Next 15 ist
+„Maintenance LTS", Security-Releases nur noch bis **2027-01-31**. Vorgehen: eigener Branch, Dependabot-
+PR `next-react` (Next 16.4.x, React 19.3.x) als Ausgangspunkt, Breaking Changes (Server Actions,
+Middleware, Caching) prüfen, Admin-Login + Testbestellung klicken, dann live.
+
+**Noch offen:**
+- **Nodemailer 9 → 10** (Major, `npm audit` high; Fix ab 10.4.0). Danach Mailversand testen
+  (Catering-Bestätigung, Backstube-Bestätigung über `lib/mail.ts`).
+- Vercel-Dashboard (nur der Betreiber): Firewall-Rate-Limit-Regel auf die Formular-Endpunkte,
+  `SMTP_PASSWORD` als „Sensitive" markieren, Skew Protection prüfen.
+- Optional: Einwilligungs-Checkbox beim Backstube-Checkout.
+- Dependabot-PRs `next-react`, `typescript`, `@types/node` auf GitHub schließen (Major, nicht mergen).
