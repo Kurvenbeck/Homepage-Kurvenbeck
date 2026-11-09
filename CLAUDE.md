@@ -16,6 +16,17 @@ Die lauffähige App liegt unter **`web/`** (Next.js App Router, TypeScript).
 **Einstieg/Übergabe:** `HANDOFF.md` (Root) bündelt Stand, Setup, Struktur und
 nächste Schritte — bei größeren Änderungen am Projektstand dort mitpflegen.
 
+## Doku-Pflicht vor Commit und Push (verbindlich)
+
+**Vor jedem `git commit` und erst recht vor jedem `git push`** prüfen, ob die Doku noch stimmt,
+und sie im **selben Commit** mitaktualisieren — nicht nachträglich, nicht erst auf Nachfrage:
+- `HANDOFF.md` (Stand, Konzepte, Wartung §12), `web/TODO.md` (Haken + offene Punkte),
+  bei neuen Regeln/Konventionen auch diese `CLAUDE.md`.
+- Gilt für Features, Admin-Änderungen, Sicherheits-/Versions-Updates, neue Env-Variablen,
+  Automatisierungen (Dependabot, Routinen), Termine und Beschlüsse.
+- Reine Tippfehler- oder Textkorrekturen ohne Auswirkung auf Stand/Verhalten brauchen keinen Eintrag.
+- Im Abschluss-Satz kurz nennen, welche Doku-Dateien angepasst wurden (oder warum keine nötig war).
+
 ## Sprache & Anrede (verbindlich)
 
 - Sämtliche **nutzersichtbaren Texte sind auf Deutsch**.
