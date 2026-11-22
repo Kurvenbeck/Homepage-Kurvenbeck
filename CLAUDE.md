@@ -144,6 +144,11 @@ Dauerhafte Konventionen:
   **Bestellungen** (Einzelbestellungen mit Namens-Suche). Bestellungen sind **offen oben,
   erledigt unten** sortiert (JS-Sort in `getBackstubeOrders`; Abhaken schiebt via
   `revalidatePath` live nach unten).
+- **Auswertung (beschlossen 2026-11-22):** `/admin/auswertung` liest nur **anonyme** Aggregate
+  (`backtag_stats_*`, RLS nur Admin), die `snapshot_backstube_orders()` per Cron (03:05, vor dem Löschjob
+  03:15) aus den Bestellungen schreibt — **nie Name/E-Mail/Telefon/Notiz** in diese Tabellen übernehmen.
+  Neue Auswertungs-Daten mit Personenbezug sind tabu (keine Stammkunden-Auswertung). Diagramme sind eigene
+  SVG-Komponenten (`components/admin/auswertung/`), nur Design-Tokens. Plan: `web/plans/auswertung-dashboard.md`.
 - **Allergene:** deutsches LMIV-Buchstaben-Schema (A–R) als Stammdaten; Anzeige als
   Codes am Gericht + Legende der verwendeten Allergene. Tags nur
   `vegetarisch` / `vegan` / `alkoholfrei`.

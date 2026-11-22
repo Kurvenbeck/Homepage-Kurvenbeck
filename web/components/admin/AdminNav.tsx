@@ -4,7 +4,7 @@ import Link from "next/link";
 export function AdminNav({
   active,
 }: {
-  active: "menu" | "hours" | "orders" | "catering" | "settings";
+  active: "menu" | "hours" | "orders" | "catering" | "evaluation" | "settings";
 }) {
   return (
     <nav className="admin-nav" aria-label="Verwaltungsbereiche">
@@ -35,6 +35,13 @@ export function AdminNav({
         aria-current={active === "catering" ? "page" : undefined}
       >
         Anfragen - Catering
+      </Link>
+      <Link
+        href="/admin/auswertung"
+        className={`admin-nav-link${active === "evaluation" ? " is-active" : ""}`}
+        aria-current={active === "evaluation" ? "page" : undefined}
+      >
+        Auswertung
       </Link>
       <Link
         href="/admin/einstellungen"

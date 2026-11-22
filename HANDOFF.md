@@ -594,6 +594,25 @@ verifiziert.
 - **Offen:** Google-Business-Profil verlinken (NAP-Konsistenz) — mit dem Kunden zu klären
   (Termin heute Abend, 2026-07-06).
 
+### Auswertung / Dashboard für den Betreiber (beschlossen 2026-11-22, Phase 1 gebaut, **noch nicht live**)
+- Admin-Menüpunkt **„Auswertung"** (`/admin/auswertung`, Admin-Check wie `bestellungen`, `AdminNav`).
+  Plan + Umfang + Phasen: `web/plans/auswertung-dashboard.md`.
+- **Anonyme Statistik vor der Löschung:** Migration `20261122100000_auswertung_stats.sql` legt
+  `backtag_stats_day/_item/_pair` an (nur Admin lesbar, RLS) und `snapshot_backstube_orders()`
+  (security definer, idempotent). Cron `snapshot-backstube-orders` **03:05**, vor dem Löschjob 03:15.
+  Ohne Name/E-Mail/Telefon/Notiz → fällt nicht unter die Löschpflicht; ein Satz dazu steht in der
+  Datenschutzerklärung (Abschnitt Backstube-Vorbestellung).
+- **Phase 1 (Code fertig, lokal geprüft):** Loader `lib/getAuswertung.ts`, Seite
+  `components/admin/auswertung/LiveDashboard.tsx` (Kennzahlen, Umsatz pro Backtag, Backwaren-Ranking
+  Stück/Umsatz, nächster Backtag live, offene Catering-Anfragen). Eigene SVG-Diagramme, keine Chart-Bibliothek.
+- **Prototyp** `/auswertung-prototyp` (Beispieldaten, 7 Tabs, `lib/auswertungMock.ts`) zeigt den Endausbau;
+  **vor dem Live-Gang entfernen** (öffentlich erreichbar). Phasen 2–4 (Verlauf, Kosten/„Nicht abgeholt"/
+  Preis-Historie, Prognose/Wetter/Was-wäre-wenn/Jahresrückblick) bauen darauf auf.
+- ⚠️ **Offen vor Go-Live:** Migration in Supabase einspielen (Live-DB!), pushen erst **außerhalb einer
+  Bestellaktion**. Je früher die Migration läuft, desto mehr Verlauf entsteht (Bestellungen sind nach 7 Tagen weg).
+- `next.config.mjs`: im **Dev-Modus** zusätzlich `unsafe-eval` + `ws://localhost:*` in der CSP (sonst
+  hydriert keine Seite); Production-Header unverändert.
+
 ### Admin-UX
 - ✅ **Erledigt:** Save-Status grün/rot (deckungsgleich mit Live ↔ ungespeichert),
   Löschen mit Anzahl-Rückfrage.
