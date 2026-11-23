@@ -12,6 +12,14 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 > - [x] 2026-11-09: Dependabot-PRs `minor-and-patch` + `supabase` gemergt (Icons 3.50, @supabase/ssr 0.12.7).
 > - [x] Dependabot, monatlicher Security-Check (Cloud-Routine, jeden 1.), Security-Header, Rate-Limit.
 
+> **🔜 Auswertung (Stand 2026-11-22, Details `plans/auswertung-dashboard.md`, HANDOFF.md §11):**
+> - [x] Prototyp mit Beispieldaten (`/auswertung-prototyp`), Phase 1 Code (`/admin/auswertung`) + Datenschutz-Satz, lokal committet auf Branch `auswertung-prototyp`.
+> - [x] 2026-11-23: Migration `20261122100000_auswertung_stats.sql` in Supabase eingespielt (Plugin), Erstlauf ok (20.11.: 10 Bestellungen, 60 Stück, 101,90 €), Cron `snapshot-backstube-orders` 03:05 aktiv. **Code noch nicht gepusht.**
+> - [ ] Datenschutz-Satz (Abschnitt Backstube-Vorbestellung) gegenlesen lassen.
+> - [x] 2026-11-23 gezeigt (alles 401/42501 permission denied): Fremd-Abfrage mit dem öffentlichen Schlüssel (ohne Login) auf `backtag_stats_*` und `backstube_orders` → muss leer/Fehler liefern (Nachweis, dass RLS greift).
+> - [ ] Prototyp-Route vor Go-Live entfernen.
+> - [ ] Phase 2–4: Verlauf/Heatmap, Einkaufspreis + „Nicht abgeholt" + Preis-Historie, Prognose/Wetter/Was-wäre-wenn/Jahresrückblick, Biergarten-Gästezahl-Feld.
+
 > **✅ Erledigt — Menü-Backend (Biergarten + Backstube):** Supabase komplett angebunden
 > (Clients, Middleware, Schema, RLS, Seed). **Biergarten und Backstube** lesen ihre Karte
 > live aus der DB (Text-Format ohne Fotos); Magic-Link-Admin unter `/admin` pflegt beide

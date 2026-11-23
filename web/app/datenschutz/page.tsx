@@ -181,6 +181,14 @@ export default function DatenschutzPage() {
           automatisiertem Spam-Versand setzen wir zusätzlich ein für dich nicht
           sichtbares Honeypot-Feld ein.
         </p>
+        <p>
+          <strong>Anonyme Statistik:</strong> Vor der Löschung übernehmen wir aus den
+          Bestellungen eines Backtags nur zusammengezählte Werte in eine Statistik, zum
+          Beispiel Stückzahlen je Backware, Umsatz und Anzahl der Bestellungen. Diese
+          Zahlen enthalten weder deinen Namen noch deine Kontaktdaten und lassen sich
+          keiner Person zuordnen. Sie dienen allein der Planung der Backstube und werden
+          deshalb nicht mit der Bestellung gelöscht.
+        </p>
 
         <h3>Cookies und lokale Speicherung</h3>
         <p>
