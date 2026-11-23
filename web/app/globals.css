@@ -1820,3 +1820,7 @@ body.enable-scroll-animations .scroll-reveal.is-visible {
 .ausw-tip-note strong { color: var(--color-text-primary); }
 .ausw-margin + .ausw-tip-note { margin-top: auto; }
 .ausw-card:has(> .ausw-margin) { display: flex; flex-direction: column; }
+
+/* Auswertung: Bereiche, die noch auf Daten warten */
+.ausw-soon-list { margin: var(--space-4) 0 0; padding-left: var(--space-5); display: grid; gap: var(--space-2); color: var(--color-text-primary); }
+.ausw-soon-needs { margin-top: var(--space-5); padding: var(--space-4); border: 1px dashed var(--color-border); border-radius: var(--radius-lg); color: var(--color-text-secondary); font-size: var(--text-sm); }

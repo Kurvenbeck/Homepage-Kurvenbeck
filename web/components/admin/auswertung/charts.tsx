@@ -308,6 +308,8 @@ export function LineChart({
 }
 
 export function Sparkline({ values }: { values: number[] }) {
+  // Eine Linie braucht mindestens zwei Punkte (sonst Division durch 0 → NaN im SVG).
+  if (values.length < 2) return null;
   const W = 84, H = 32, p = 4;
   const min = Math.min(...values), max = Math.max(...values);
   const span = max - min || 1;
