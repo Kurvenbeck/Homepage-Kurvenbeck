@@ -605,11 +605,11 @@ verifiziert.
 - **Phase 1 (Code fertig, lokal geprüft):** Loader `lib/getAuswertung.ts`, Seite
   `components/admin/auswertung/LiveDashboard.tsx` (Kennzahlen, Umsatz pro Backtag, Backwaren-Ranking
   Stück/Umsatz, nächster Backtag live, offene Catering-Anfragen). Eigene SVG-Diagramme, keine Chart-Bibliothek.
-- **Prototyp** `/auswertung-prototyp` (Beispieldaten, 7 Tabs, `lib/auswertungMock.ts`) zeigt den Endausbau;
-  **vor dem Live-Gang entfernen** (öffentlich erreichbar). Phasen 2–4 (Verlauf, Kosten/„Nicht abgeholt"/
-  Preis-Historie, Prognose/Wetter/Was-wäre-wenn/Jahresrückblick) bauen darauf auf.
-- ⚠️ **Offen vor Go-Live:** Migration in Supabase einspielen (Live-DB!), pushen erst **außerhalb einer
-  Bestellaktion**. Je früher die Migration läuft, desto mehr Verlauf entsteht (Bestellungen sind nach 7 Tagen weg).
+- **Prototyp entfernt (2026-11-23):** Der 7-Tab-Prototyp mit Beispieldaten (`/auswertung-prototyp`,
+  `Dashboard.tsx`, `tabs.tsx`, `lib/auswertungMock.ts`) lebt nur noch in der Git-Historie (Commit `0cd3a10`) und
+  dient als Vorlage für Phase 2–4. `charts.tsx`/`ui.tsx`/`lib/auswertung.ts` bleiben (von `LiveDashboard` genutzt). Phasen 2–4 (Verlauf, Kosten/„Nicht abgeholt"/
+  Preis-Historie, Prognose/Wetter/Was-wäre-wenn/Jahresrückblick) folgen.
+- **Stand 2026-11-23:** Migration in Supabase eingespielt (Erstlauf ok), Code gepusht/live. Phase 1 läuft.
 - `next.config.mjs`: im **Dev-Modus** zusätzlich `unsafe-eval` + `ws://localhost:*` in der CSP (sonst
   hydriert keine Seite); Production-Header unverändert.
 

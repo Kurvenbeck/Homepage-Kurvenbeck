@@ -89,8 +89,7 @@ Nicht deployen, während eine Bestellaktion läuft.
 
 ## Prototyp (Stand 2026-11-22)
 
-Branch `auswertung-prototyp` (Worktree `../Kurvenbeck-auswertung`), Route `/auswertung-prototyp`
-mit **Beispieldaten** (`lib/auswertungMock.ts`, deterministisch). 7 Tabs: Überblick · Backwaren · Verlauf ·
+Prototyp (Route `/auswertung-prototyp`, Beispieldaten) am 2026-11-23 entfernt, Stand in Git-Commit `0cd3a10`. 7 Tabs: Überblick · Backwaren · Verlauf ·
 Geld · Kalender · Vorausschau · Jahresrückblick. Eigene SVG-Diagramme in `components/admin/auswertung/`.
 Beim Umbau auf echte Daten: `buildMockData()` durch Loader auf `backtag_stats_*` ersetzen, Route nach
 `/admin/auswertung` verschieben (Admin-Check), `AdminNav` um „Auswertung" erweitern.

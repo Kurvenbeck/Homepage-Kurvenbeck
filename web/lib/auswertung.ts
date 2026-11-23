@@ -1,7 +1,7 @@
 /**
  * Auswertung (Prototyp): Typen, Formatierer und Rechenhelfer.
- * Client-sicher (kein Server-Import) — die Daten kommen aus `auswertungMock.ts`
- * (später aus den anonymen `backtag_stats_*`-Tabellen).
+ * Client-sicher (kein Server-Import) — die Daten kommen aus den anonymen
+ * `backtag_stats_*`-Tabellen (Loader: `getAuswertung.ts`).
  */
 
 export type Weather = "sonnig" | "wechselhaft" | "regen";
