@@ -602,9 +602,11 @@ verifiziert.
   (security definer, idempotent). Cron `snapshot-backstube-orders` **03:05**, vor dem Löschjob 03:15.
   Ohne Name/E-Mail/Telefon/Notiz → fällt nicht unter die Löschpflicht; ein Satz dazu steht in der
   Datenschutzerklärung (Abschnitt Backstube-Vorbestellung).
-- **Phase 1 (Code fertig, lokal geprüft):** Loader `lib/getAuswertung.ts`, Seite
-  `components/admin/auswertung/LiveDashboard.tsx` (Kennzahlen, Umsatz pro Backtag, Backwaren-Ranking
-  Stück/Umsatz, nächster Backtag live, offene Catering-Anfragen). Eigene SVG-Diagramme, keine Chart-Bibliothek.
+- **Phase 1 + Tabs (2026-11-23):** Loader `lib/getAuswertung.ts`, Tab-Shell `LiveDashboard.tsx`, Inhalte in
+  `liveTabs.tsx`. **Gefüllt (echte Daten):** Überblick (Kennzahlen, Umsatz pro Backtag, nächster Backtag live,
+  offene Catering-Anfragen), Backwaren (Ranking Stück/Umsatz, „Zusammen bestellt"), Verlauf (Heatmap Wochentag×Uhrzeit,
+  Bestellvorlauf in Tagen). **Platzhalter „kommt noch" mit Hinweis, was fehlt:** Geld, Kalender, Vorausschau,
+  Jahresrückblick. Unter 5 Backtagen zeigen Karten den Hinweis „Ab 5 Backtagen belastbar". Eigene SVG-Diagramme, keine Chart-Bibliothek.
 - **Prototyp entfernt (2026-11-23):** Der 7-Tab-Prototyp mit Beispieldaten (`/auswertung-prototyp`,
   `Dashboard.tsx`, `tabs.tsx`, `lib/auswertungMock.ts`) lebt nur noch in der Git-Historie (Commit `0cd3a10`) und
   dient als Vorlage für Phase 2–4. `charts.tsx`/`ui.tsx`/`lib/auswertung.ts` bleiben (von `LiveDashboard` genutzt). Phasen 2–4 (Verlauf, Kosten/„Nicht abgeholt"/
