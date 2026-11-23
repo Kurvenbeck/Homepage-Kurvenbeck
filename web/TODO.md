@@ -14,9 +14,9 @@ Offene Aufgaben für die Kurvenbeck-Web-App. Reihenfolge ≈ Priorität.
 
 > **🔜 Auswertung (Stand 2026-11-22, Details `plans/auswertung-dashboard.md`, HANDOFF.md §11):**
 > - [x] Prototyp mit Beispieldaten (`/auswertung-prototyp`), Phase 1 Code (`/admin/auswertung`) + Datenschutz-Satz, lokal committet auf Branch `auswertung-prototyp`.
-> - [ ] **Nach der Bestellaktion:** Migration `20261122100000_auswertung_stats.sql` in Supabase einspielen, Erstlauf prüfen, dann pushen.
+> - [x] 2026-11-23: Migration `20261122100000_auswertung_stats.sql` in Supabase eingespielt (Plugin), Erstlauf ok (20.11.: 10 Bestellungen, 60 Stück, 101,90 €), Cron `snapshot-backstube-orders` 03:05 aktiv. **Code noch nicht gepusht.**
 > - [ ] Datenschutz-Satz (Abschnitt Backstube-Vorbestellung) gegenlesen lassen.
-> - [ ] **Nach dem Einspielen dem Betreiber zeigen:** Fremd-Abfrage mit dem öffentlichen Schlüssel (ohne Login) auf `backtag_stats_*` und `backstube_orders` → muss leer/Fehler liefern (Nachweis, dass RLS greift).
+> - [x] 2026-11-23 gezeigt (alles 401/42501 permission denied): Fremd-Abfrage mit dem öffentlichen Schlüssel (ohne Login) auf `backtag_stats_*` und `backstube_orders` → muss leer/Fehler liefern (Nachweis, dass RLS greift).
 > - [ ] Prototyp-Route vor Go-Live entfernen.
 > - [ ] Phase 2–4: Verlauf/Heatmap, Einkaufspreis + „Nicht abgeholt" + Preis-Historie, Prognose/Wetter/Was-wäre-wenn/Jahresrückblick, Biergarten-Gästezahl-Feld.
 
